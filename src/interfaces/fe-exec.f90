@@ -81,7 +81,7 @@ contains
          ! Interface to PQresultErrorMessage in interface/libpq/fe-exec.c:
          !
          ! char *PQresultErrorMessage(const PGresult *res)
-
+         !
          function c_PQ_result_error_message (res) bind(c, name='PQresultErrorMessage')
             import c_ptr
             type(c_ptr), intent(in), value :: res
@@ -92,7 +92,7 @@ contains
       res => c_to_f_charpointer(c_PQ_result_error_message(pgresult))
 
    end function PQresultErrorMessage
-      
+   
 
    function PQgetvalue (pgresult, tuple_num, field_num)
       use :: character_pointer_wrapper
@@ -144,6 +144,7 @@ contains
       res = c_PQ_n_tuples(pgresult)
 
    end function PQntuples
+
 
    function PQnfields(pgresult) result(res)
       use, intrinsic :: iso_fortran_env
