@@ -5,27 +5,39 @@ module libpq
    
    use m_fe_exec, &
       only: PQexec, PQresultStatus, PQntuples, PQnfields, &
-            PQgetvalue, PQclear, PQresultErrorMessage
+            PQgetvalue, PQclear, PQresultErrorMessage, PQfname
 
    implicit none
    private
+
+   !------------------------------------------------------------------!
+   !-- PUBLIC Statements
   
+   ! From module m_fe_connect:
    public :: PQconnectdb
    public :: PQfinish
    public :: PQstatus
    public :: PQerrorMessage
    public :: PQping
 
+   ! From module m_fe_exec:
    public :: PQexec
    public :: PQresultStatus
    public :: PQresultErrorMessage
    public :: PQntuples
    public :: PQnfields
+   public :: PQfname
    public :: PQgetvalue
    public :: PQclear
 
+   ! Enumerators
    public :: CONNECTION_OK, CONNECTION_BAD
-   public :: PQPING_OK, PQPING_REJECT, PQPING_NO_RESPONSE, PQPING_NO_ATTEMPT
+   public :: PQPING_OK, PQPING_REJECT, PQPING_NO_RESPONSE, &
+             PQPING_NO_ATTEMPT
+
+
+   !------------------------------------------------------------------!
+   !-- ENUMERATOR declarations
 
    enum, bind(c) ! ConnStatusType in src/interfaces/libpq/libpq-fe.h
       enumerator :: CONNECTION_OK = 0 

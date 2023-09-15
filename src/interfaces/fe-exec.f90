@@ -8,6 +8,7 @@ module m_fe_exec
    public :: PQgetvalue
    public :: PQntuples
    public :: PQnfields
+   public :: PQfname
    public :: PQclear
 
 
@@ -168,7 +169,33 @@ contains
       res = c_PQ_n_fields(pgresult)
    end function PQnfields
 
+   function PQfname(pgresult, field_num) result(res)
+      use :: character_pointer_wrapper
+      use, intrinsic :: iso_fortran_env, only:int32
+      use, intrinsic :: iso_c_binding, only: c_ptr, c_int, c_char
+      implicit none
+      type(c_ptr), intent(in) :: pgresult
+      integer(int32), intent(in) :: field_num
+      character(:, kind=c_char), pointer :: res
 
+      interface
+         ! Interface to PQfname in src/interface/libpq/fe-exec.c:
+         !
+         ! char *PQfname(const PGresult *res, int field_num)
+         function c_PQ_field_name (pgresult, c_field_num) bind(c, name='PQfname')
+            import c_ptr, c_int
+            type(c_ptr), intent(in), value :: pgresult
+            integer(c_int), intent(in), value :: c_field_num
+            type(c_ptr) :: c_PQ_field_name
+         end function c_PQ_field_name
+      end interface
+      
+      res => c_to_f_charpointer(c_PQ_field_name(pgresult, field_num ))
+
+   end function PQfname
+
+
+   !-- Delete a PGresult
    subroutine PQclear(res)
       use, intrinsic :: iso_c_binding
       implicit none
