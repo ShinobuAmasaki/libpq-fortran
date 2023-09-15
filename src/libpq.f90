@@ -1,6 +1,7 @@
 module libpq
    use m_fe_connect, &
-      only: PQconnectdb, PQfinish, PQstatus, PQerrorMessage
+      only: PQconnectdb, PQfinish, PQstatus, PQerrorMessage, &
+            PQping
    
    use m_fe_exec, &
       only: PQexec, PQresultStatus, PQntuples, PQnfields, &
@@ -13,6 +14,7 @@ module libpq
    public :: PQfinish
    public :: PQstatus
    public :: PQerrorMessage
+   public :: PQping
 
    public :: PQexec
    public :: PQresultStatus
@@ -21,6 +23,9 @@ module libpq
    public :: PQnfields
    public :: PQgetvalue
    public :: PQclear
+
+   public :: CONNECTION_OK, CONNECTION_BAD
+   public :: PQPING_OK, PQPING_REJECT, PQPING_NO_RESPONSE, PQPING_NO_ATTEMPT
 
    enum, bind(c) ! ConnStatusType in src/interfaces/libpq/libpq-fe.h
       enumerator :: CONNECTION_OK = 0 

@@ -28,6 +28,30 @@ contains
       
    end function PQconnectdb
 
+   function PQping(conninfo) result(res)
+      use, intrinsic :: iso_c_binding
+      use, intrinsic :: iso_fortran_env
+      implicit none
+      character(*), intent(in) :: conninfo
+      character(:, kind=c_char), allocatable :: c_conninfo
+      integer(c_int) :: c_res
+      integer(int32) :: res
+
+      interface 
+         function c_PQ_ping (info) bind(c, name="PQping") result(c_res)
+            import c_char, c_int
+            character(1, kind=c_char), intent(in) :: info(*)
+            integer(c_int) :: c_res
+         end function c_PQ_ping
+      end interface
+
+      c_conninfo = conninfo//c_null_char
+
+      c_res = c_PQ_ping(c_conninfo)
+      res = c_res
+      
+   end function PQping
+      
 
    function PQstatus(conn) result(res)
       use, intrinsic :: iso_fortran_env, only: int32
