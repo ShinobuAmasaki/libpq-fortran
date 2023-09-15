@@ -1,6 +1,6 @@
-name = "postgresql"
+name = "libpq-fortran"
 version = "0.1.0"
-license = "license"
+license = "MIT License"
 author = "Amasaki Shinobu"
 maintainer = "amasaki203@gmail.com"
 copyright = "Copyright 2023, Amasaki Shinobu"
@@ -11,8 +11,12 @@ auto-examples = true
 module-naming = false
 link = ['pq']
 [install]
-library = false
+library = true
 [fortran]
 implicit-typing = false
 implicit-external = false
 source-form = "free"
+
+[[example]]
+name = "demo"
+main = "demo.f90"
