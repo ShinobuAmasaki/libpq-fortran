@@ -4,6 +4,7 @@ module m_fe_exec
 
    public :: PQexec
    public :: PQresultStatus
+   public :: PQresultErrorMessage
    public :: PQgetvalue
    public :: PQntuples
    public :: PQnfields
@@ -68,6 +69,30 @@ contains
 
    end function PQresultStatus
 
+
+   function PQresultErrorMessage(pgresult) result(res)
+      use :: character_pointer_wrapper
+      use, intrinsic :: iso_c_binding
+      implicit none
+      type(c_ptr), intent(in) :: pgresult
+      character(:, kind=c_char), pointer :: res
+
+      interface
+         ! Interface to PQresultErrorMessage in interface/libpq/fe-exec.c:
+         !
+         ! char *PQresultErrorMessage(const PGresult *res)
+
+         function c_PQ_result_error_message (res) bind(c, name='PQresultErrorMessage')
+            import c_ptr
+            type(c_ptr), intent(in), value :: res
+            type(c_ptr) :: c_PQ_result_error_message
+         end function c_PQ_result_error_message
+      end interface
+
+      res => c_to_f_charpointer(c_PQ_result_error_message(pgresult))
+
+   end function PQresultErrorMessage
+      
 
    function PQgetvalue (pgresult, tuple_num, field_num)
       use :: character_pointer_wrapper
