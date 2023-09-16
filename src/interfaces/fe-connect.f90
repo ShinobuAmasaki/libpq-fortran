@@ -21,6 +21,9 @@ module m_fe_connect
 
 contains
 
+   !==================================================================!
+   ! Database Connection Control Functions
+
    function PQconnectdb(conninfo) result(conn)
       use, intrinsic :: iso_c_binding, only: c_char, c_ptr, c_null_char
       implicit none
@@ -125,6 +128,74 @@ contains
    end function PQconnectdbParams
 
 
+   ! function PQsetdbLogin
+   ! function PQsetdb
+   ! function PQconnectStartParams
+   ! function PQconnectStart
+   ! function PQconnectPoll
+   ! function PQconndefaults
+   ! function PQconninfo
+   ! function PQconninfoParse
+
+
+   subroutine PQfinish(conn)
+      use, intrinsic :: iso_c_binding
+      implicit none
+      
+      type(c_ptr), intent(in) :: conn
+
+      interface
+         ! Interface ot PQfinish in interfaces/libpq/fe-connect.c:
+         ! 
+         ! void PQfinish(PGconn *conn)
+
+         subroutine c_PQ_finish(conn) bind(c, name='PQfinish')
+            import c_ptr
+            type(c_ptr), intent(in), value :: conn
+         end subroutine c_PQ_finish
+      end interface
+
+      call c_PQ_finish(conn)
+   end subroutine PQfinish
+
+
+   ! function PQreset
+   ! function PQresetStart
+   ! function PQresetPoll
+   ! function PQpingParam
+
+      
+   function PQping(conninfo) result(res)
+      use, intrinsic :: iso_c_binding
+      use, intrinsic :: iso_fortran_env
+      implicit none
+      character(*), intent(in) :: conninfo
+      character(:, kind=c_char), allocatable :: c_conninfo
+      integer(int32) :: res
+
+      interface 
+         function c_PQ_ping (info) bind(c, name="PQping") result(c_res)
+            import c_char, c_int
+            character(1, kind=c_char), intent(in) :: info(*)
+            integer(c_int) :: c_res
+         end function c_PQ_ping
+      end interface
+
+      c_conninfo = conninfo//c_null_char
+
+      res = c_PQ_ping(c_conninfo)
+
+   end function PQping
+
+
+   ! function PQsetSSLKeyPassHook_OpenSSL
+   ! function PQgetSSLKeyPassHook_OpenSSL
+   
+
+   !==================================================================!
+   ! Connection Status Functions
+
+
    function PQdb (conn) result(res)
       use :: character_pointer_wrapper
       use, intrinsic :: iso_c_binding
@@ -165,6 +236,9 @@ contains
       res => c_to_f_charpointer(c_PQ_user(conn))
 
    end function PQuser
+
+
+   ! function PQpass
 
 
    function PQhost (conn) result(res)
@@ -208,6 +282,10 @@ contains
 
    end function PQhostaddr
 
+   
+   ! function PQport
+
+
    function PQoptions (conn) result(res)
       use :: character_pointer_wrapper
       use, intrinsic :: iso_c_binding
@@ -227,29 +305,6 @@ contains
       res => c_to_f_charpointer(c_PQ_options(conn))
    
    end function PQoptions
-
-   
-   function PQping(conninfo) result(res)
-      use, intrinsic :: iso_c_binding
-      use, intrinsic :: iso_fortran_env
-      implicit none
-      character(*), intent(in) :: conninfo
-      character(:, kind=c_char), allocatable :: c_conninfo
-      integer(int32) :: res
-
-      interface 
-         function c_PQ_ping (info) bind(c, name="PQping") result(c_res)
-            import c_char, c_int
-            character(1, kind=c_char), intent(in) :: info(*)
-            integer(c_int) :: c_res
-         end function c_PQ_ping
-      end interface
-
-      c_conninfo = conninfo//c_null_char
-
-      res = c_PQ_ping(c_conninfo)
-
-   end function PQping
       
 
    function PQstatus(conn) result(res)
@@ -295,6 +350,11 @@ contains
    end function PQtransactionStatus
 
 
+   ! function PQparameterStatus
+   ! function PQprotocolVersion
+   ! function PQserverVersion
+
+
    function PQerrorMessage(conn)
       use ::  character_pointer_wrapper
       use, intrinsic :: iso_c_binding
@@ -319,25 +379,17 @@ contains
    end function PQerrorMessage
 
 
-   subroutine PQfinish(conn)
-      use, intrinsic :: iso_c_binding
-      implicit none
-      
-      type(c_ptr), intent(in) :: conn
+   ! function PQsocket
+   ! function PQbackendPID
+   ! function PQconnectionNeedsPassword
+   ! function PQconnectionUsedPassword
 
-      interface
-         ! Interface ot PQfinish in interfaces/libpq/fe-connect.c:
-         ! 
-         ! void PQfinish(PGconn *conn)
+   != for SSL connection
+   ! function PQsslInUse
+   ! function PQsslAttribute
+   ! function PQsslAttributeNames
+   ! function PQsslStruct
+   ! function PQgetssl
 
-         subroutine c_PQ_finish(conn) bind(c, name='PQfinish')
-            import c_ptr
-            type(c_ptr), intent(in), value :: conn
-         end subroutine c_PQ_finish
-      end interface
 
-      call c_PQ_finish(conn)
-   end subroutine PQfinish
-
-   
 end module m_fe_connect
