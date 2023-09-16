@@ -1,7 +1,9 @@
 module libpq
    use m_fe_connect, &
       only: PQconnectdb, PQfinish, PQstatus, PQerrorMessage, &
-            PQping, PQdb, PQuser, PQhost, PQhostaddr, PQconnectdbParams
+            PQping, PQdb, PQuser, PQhost, PQhostaddr, PQconnectdbParams, &
+            PQoptions
+
    
    use m_fe_exec, &
       only: PQexec, PQresultStatus, PQntuples, PQnfields, &
@@ -14,16 +16,20 @@ module libpq
    !-- PUBLIC Statements
   
    ! From module m_fe_connect:
-   public :: PQconnectdb
-   public :: PQconnectdbParams
-   public :: PQfinish
-   public :: PQstatus
-   public :: PQerrorMessage
-   public :: PQping
-   public :: PQdb
-   public :: PQuser
-   public :: PQhost
-   public :: PQhostaddr
+      ! Database Connection Control Functions
+      public :: PQconnectdb
+      public :: PQconnectdbParams
+      public :: PQfinish
+      public :: PQerrorMessage
+      public :: PQping
+
+      ! Connction Status Functions
+      public :: PQdb
+      public :: PQuser
+      public :: PQhost
+      public :: PQhostaddr
+      public :: PQoptions
+      public :: PQstatus
 
    ! From module m_fe_exec:
    public :: PQexec
@@ -70,5 +76,13 @@ module libpq
       enumerator :: PQPING_NO_RESPONSE
       enumerator :: PQPING_NO_ATTEMPT
    end enum 
+
+   enum, bind(c) ! PGTransactionStatusType
+      enumerator :: PQTRANS_IDLE = 0
+      enumerator :: PQTRANS_ACTIVE
+      enumerator :: PQTRANS_INTRANS
+      enumerator :: PQTRANS_INERROR
+      enumerator :: PQTRANS_UNKNOWN
+   end enum
 
 end module libpq

@@ -1,4 +1,23 @@
 module m_fe_connect
+   implicit none
+   private
+
+   public :: PQconnectdb
+   public :: PQconnectdbParams
+   public :: PQdb
+   public :: PQhost
+   public :: PQping
+   public :: PQuser
+   public :: PQhostaddr
+   public :: PQstatus
+   public :: PQfinish
+   public :: PQerrorMessage
+   public :: PQoptions
+
+   ! Deprecated functions
+   ! - PQtty
+   ! - 
+
 contains
 
    function PQconnectdb(conninfo) result(conn)
@@ -112,7 +131,7 @@ contains
       type(c_ptr), intent(in) :: conn
       character(:), pointer :: res
 
-      ! Interface PQdb in src/interfaces/
+      ! Interface PQdb in src/interfaces/fe-connection.c
       interface
          function  c_PQ_db(conn) bind(c, name="PQdb")
             import c_ptr
@@ -133,7 +152,7 @@ contains
       type(c_ptr), intent(in) :: conn
       character(:), pointer :: res
 
-      ! Interface PQdb in src/interfaces/
+      ! Interface PQuserin src/interfaces/fe-connection.c
       interface
          function  c_PQ_user(conn) bind(c, name="PQuser")
             import c_ptr
@@ -154,7 +173,7 @@ contains
       type(c_ptr), intent(in) :: conn
       character(:), pointer :: res
 
-      ! Interface PQdb in src/interfaces/
+      ! Interface PQhost in src/interfaces/fe-connection.c
       interface
          function  c_PQ_host(conn) bind(c, name="PQhost")
             import c_ptr
@@ -175,7 +194,7 @@ contains
       type(c_ptr), intent(in) :: conn
       character(:), pointer :: res
 
-      ! Interface PQdb in src/interfaces/
+      ! Interface PQhostaddr in src/interfaces/fe-connection.c
       interface
          function  c_PQ_hostaddr(conn) bind(c, name="PQhostaddr")
             import c_ptr
@@ -187,6 +206,26 @@ contains
       res => c_to_f_charpointer(c_PQ_hostaddr(conn))
 
    end function PQhostaddr
+
+   function PQoptions (conn) result(res)
+      use :: character_pointer_wrapper
+      use, intrinsic :: iso_c_binding
+      implicit none
+      type(c_ptr), intent(in) :: conn
+      character(:), pointer :: res
+
+      ! Interface PQoptions in src/interface/fe-connection.c
+      interface
+         function c_PQ_options (conn) bind(c, name="PQoptions")
+            import c_ptr
+            type(c_ptr), intent(in), value :: conn
+            type(c_ptr) :: c_PQ_options
+         end function c_PQ_options
+      end interface
+
+      res => c_to_f_charpointer(c_PQ_options(conn))
+   
+   end function PQoptions
 
    
    function PQping(conninfo) result(res)
