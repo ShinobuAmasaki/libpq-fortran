@@ -2,7 +2,7 @@ module libpq
    use m_fe_connect, &
       only: PQconnectdb, PQfinish, PQstatus, PQerrorMessage, &
             PQping, PQdb, PQuser, PQhost, PQhostaddr, PQconnectdbParams, &
-            PQoptions
+            PQoptions, PQtransactionStatus
 
    
    use m_fe_exec, &
@@ -30,6 +30,7 @@ module libpq
       public :: PQhostaddr
       public :: PQoptions
       public :: PQstatus
+      public :: PQtransactionStatus
 
    ! From module m_fe_exec:
    public :: PQexec
@@ -45,6 +46,8 @@ module libpq
    public :: CONNECTION_OK, CONNECTION_BAD
    public :: PQPING_OK, PQPING_REJECT, PQPING_NO_RESPONSE, &
              PQPING_NO_ATTEMPT
+   public :: PQTRANS_IDLE, PQTRANS_ACTIVE, PQTRANS_INTRANS, &
+             PQTRANS_INERROR, PQTRANS_UNKNOWN
 
 
    !------------------------------------------------------------------!

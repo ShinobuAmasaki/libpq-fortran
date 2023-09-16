@@ -13,6 +13,7 @@ module m_fe_connect
    public :: PQfinish
    public :: PQerrorMessage
    public :: PQoptions
+   public :: PQtransactionStatus
 
    ! Deprecated functions
    ! - PQtty
@@ -273,6 +274,25 @@ contains
       res = c_PQ_status(conn)
 
    end function PQstatus
+
+
+   function PQtransactionStatus (conn) result (res)
+      use, intrinsic :: iso_c_binding
+      implicit none
+      type(c_ptr), intent(in) :: conn
+      integer(c_int) :: res
+
+      interface
+         function c_PQ_transaction_status (conn)  &
+               bind(c, name="PQtransactionStatus") result(res)
+            import c_ptr, c_int
+            type(c_ptr), intent(in), value :: conn
+            integer(c_int) :: res
+         end function c_PQ_transaction_status
+      end interface
+
+      res = c_PQ_transaction_status(conn)
+   end function PQtransactionStatus
 
 
    function PQerrorMessage(conn)
