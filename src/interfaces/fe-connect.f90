@@ -29,6 +29,82 @@ contains
    end function PQconnectdb
 
 
+   function PQconnectdbParams (keywords, values, expand_dbname) result(conn)
+      use, intrinsic :: iso_c_binding, only: c_ptr, c_int, c_char,&
+                                             c_null_char, c_null_ptr, c_loc
+      implicit none
+
+      ! NULL終端ではない配列を受け取る
+      character(*), intent(in) :: keywords(:)
+      character(*), intent(in) :: values(:)
+
+      integer :: expand_dbname
+      type(c_ptr) :: conn
+
+      integer :: max_len_key, max_len_val, i, size_keys
+
+      interface
+         function c_PQ_connectdb_params (keywords, values, expand_dbname) &
+                                           bind(c, name="PQconnectdbParams") result(conn)
+            import c_ptr, c_int
+            ! ポインタの配列を渡すのでvalue属性は付けない。
+            type(c_ptr), intent(in) :: keywords ! an array of pointers
+            type(c_ptr), intent(in) :: values   ! an array of pointers
+            integer(c_int), intent(in) :: expand_dbname
+            type(c_ptr) :: conn
+         end function c_PQ_connectdb_params
+      end interface
+
+      ! keyword,valueのペアの個数を得る。
+      size_keys = size(keywords)
+
+      ! 下で確保する文字列配列の長さを知る。
+      max_len_key = 0
+      max_len_val = 0
+      do i = 1, size_keys
+         max_len_key = max(max_len_key, len_trim(keywords(i)))
+         max_len_val = max(max_len_val, len_trim(values(i)))
+      end do
+
+      block
+         ! null文字をつけるために最大値よりも1だけ大きい文字列を宣言する。
+         character(max_len_key+1, kind=c_char), target ::  c_keys(size_keys+1)
+         character(max_len_val+1, kind=c_char), target ::  c_values(size_keys+1)
+
+         ! ポインタの配列を宣言する。
+         type(c_ptr) :: ptr_keys(size_keys+1), ptr_values(size_keys+1)
+
+         ! c_int型整数を宣言する。
+         integer(c_int) :: c_expand_dbname
+
+         do i = 1, size_keys
+            ! keywords(i)の終端にnull文字を付けて、c_keys(i)に格納する。
+            c_keys(i) = trim(keywords(i))//c_null_char
+            ! ポインタの配列ptr_keys(i)に、文字列c_keys(i)のアドレスを格納する。
+            ptr_keys(i) = c_loc(c_keys(i))
+
+            ! value(i)の終端にnull文字を付けて、c_values(i)に格納する。
+            c_values(i) = trim(values(i))//c_null_char
+            ! ptr_values(i)に、文字列c_values(i)のアドレスを格納する。
+            ptr_values(i) = c_loc(c_values(i))
+         end do
+
+         ! Termination of pointer array
+         c_keys(size_keys+1) = c_null_char
+         c_values(size_keys+1) = c_null_char
+
+         ptr_keys(size_keys+1) = c_null_ptr
+         ptr_values(size_keys+1) = c_null_ptr
+
+         c_expand_dbname = expand_dbname
+
+         conn = c_PQ_connectdb_params(ptr_keys, ptr_values, c_expand_dbname)
+
+         end block
+
+   end function PQconnectdbParams
+
+
    function PQdb (conn) result(res)
       use :: character_pointer_wrapper
       use, intrinsic :: iso_c_binding
