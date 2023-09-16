@@ -1,6 +1,8 @@
 program main
    use :: libpq
    use, intrinsic :: iso_c_binding
+   implicit none
+   
 
    type(c_ptr) :: conn
 
@@ -30,5 +32,5 @@ program main
 
    call PQfinish(conn)
    print '(a)', "===== END TEST ====="
-   
+
 end program main
