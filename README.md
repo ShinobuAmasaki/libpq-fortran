@@ -1,6 +1,6 @@
-# libpq-fortran
+# Libpq-fortran
 
-libpq-fortran is a Modern Fortran wrapper for the PostgreSQL `libpq` [C Library](https://www.postgresql.org/docs/current/libpq.html).
+Libpq-fortran is a Modern Fortran interface to the PostgreSQL `libpq` [C Library](https://www.postgresql.org/docs/current/libpq.html).
 
 This does not contain the `libpq` library; only the wrapper is included.
 
@@ -8,16 +8,31 @@ This does not contain the `libpq` library; only the wrapper is included.
 
 ### Current
 
-- Build `fpm build --flag "<path/to/dir/contains/'libpq-fe.h'/>`
-   - Linux, FreeBSD
+- Build
+   - Add to your `fpm.toml`
+     ```toml
+     [build]
+     link = ["pq"]
+     [dependencies]
+     libpq-fortran = "https://github.com/shinobuamasaki/libpq-fortran"
+     ```
+
+   - Tested on Linux
+
 
 - Supported Compilers
-   - GNU Compiler Collection: `gfortran`
+   - GNU Compiler Collection: `gfortran`,
    - Intel oneAPI HPC toolkit: `ifort`/`ifx`
 
 - Supported PostgreSQL version
-   - v15.4
+   - PostgreSQL v15.4 (libpq v5.15)
 
+
+### Goals
+
+*Note that below does not represent the current state of this package.*
+
+- Libpq-fortran aims to wrap libpq as documented in the PostgreSQL documentation, including all non-deprecated functionallity with its *explicit* `interface`s.
 
 ### Non-Goals
 
@@ -61,7 +76,7 @@ PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 ```
 
 ### Everything Else
-The license for the remainder of this package appears in [LICENSE]().
+The license for the remainder of this package appears in [LICENSE](https://github.com/ShinobuAmasaki/libpq-fortran/blob/main/LICENSE).
 
 
 ## Acknowledgements
