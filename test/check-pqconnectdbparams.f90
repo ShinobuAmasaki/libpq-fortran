@@ -6,7 +6,7 @@ program main
 
    type(c_ptr) :: conn
 
-   integer, parameter :: npairs = 2
+   integer, parameter :: npairs = 1
    character(256, kind=c_char) :: keywords(npairs), values(npairs)
 
 
@@ -15,8 +15,7 @@ program main
    keywords(1) = "hostaddr"
    values(1)   = "127.0.0.1"
 
-
-
+   
    conn = PQconnectdbParams(keywords, values, 0)
 
    if (PQstatus(conn) /= 0) then
