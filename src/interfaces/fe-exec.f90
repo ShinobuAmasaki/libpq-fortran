@@ -14,6 +14,12 @@ module m_fe_exec
 
 contains
 
+
+   !==================================================================!
+   ! Command Execution Functions
+
+   !== Main Functions
+
    function PQexec(conn, query) result(res)
       use, intrinsic :: iso_c_binding
       implicit none
@@ -46,6 +52,13 @@ contains
 
    end function PQexec
 
+   
+   ! function PQexecParams
+   ! function PQprepare
+   ! function PQexecPrepared
+   ! function PQdescribePrepared
+   ! function PQdescribePortal
+
 
    function PQresultStatus(pgresult) result(res)
       use, intrinsic :: iso_fortran_env
@@ -71,6 +84,9 @@ contains
    end function PQresultStatus
 
 
+   ! function PQresStatus
+
+
    function PQresultErrorMessage(pgresult) result(res)
       use :: character_pointer_wrapper
       use, intrinsic :: iso_c_binding
@@ -93,35 +109,36 @@ contains
       res => c_to_f_charpointer(c_PQ_result_error_message(pgresult))
 
    end function PQresultErrorMessage
-   
 
-   function PQgetvalue (pgresult, tuple_num, field_num)
-      use :: character_pointer_wrapper
+
+   ! function PQresultVerboseErrorMessage
+   ! function PQresultErrorField
+
+
+   !-- Delete a PGresult
+   subroutine PQclear(res)
       use, intrinsic :: iso_c_binding
       implicit none
-
-      type(c_ptr), intent(in) :: pgresult
-      integer(c_int), intent(in) :: tuple_num, field_num
-      character(:, c_char), pointer :: PQgetvalue
+      
+      type(c_ptr), intent(in) :: res
 
       interface
-         ! Interface to PQgetvalue in interface/libpq/fe-exec.c:
+         ! Interface to PQclear in interface/libpq/fe-exec.c:
          !
-         ! char *PQgetvalue(const PGresult *res, int tup_num, int field_num)
+         ! void PQclear(PGresult *res)
          !
-         function c_PQ_get_value (res, tup_num, field_num) bind(c, name='PQgetvalue')
-            import c_ptr, c_int
+         subroutine c_PQ_clear(res) bind(c, name='PQclear')
+            import c_ptr
             type(c_ptr), intent(in), value :: res
-            integer(c_int), intent(in), value :: tup_num, field_num
-            type(c_ptr):: c_PQ_get_value
-         end function c_PQ_get_value
+         end subroutine c_PQ_clear
       end interface
-      
-      ! 
-      PQgetvalue => c_to_f_charpointer(c_PQ_get_value(pgresult, tuple_num, field_num))
 
-   end function PQgetvalue
+      call c_PQ_clear(res)
 
+   end subroutine PQclear
+
+   
+   !== Retrieving Query Result Information
 
    function PQntuples(pgresult) result(res)
       use, intrinsic :: iso_fortran_env
@@ -194,29 +211,105 @@ contains
 
    end function PQfname
 
+   
+   ! function PQfnumber
+   ! function PQftable
+   ! function PQftablecol
+   ! function PQfformat
+   ! function PQftype
+   ! funciton PQfmod
+   ! function PQfsize
+   ! function PQbinaryTuples
+  
 
-   !-- Delete a PGresult
-   subroutine PQclear(res)
+   function PQgetvalue (pgresult, tuple_num, field_num)
+      use :: character_pointer_wrapper
       use, intrinsic :: iso_c_binding
       implicit none
-      
-      type(c_ptr), intent(in) :: res
+
+      type(c_ptr), intent(in) :: pgresult
+      integer(c_int), intent(in) :: tuple_num, field_num
+      character(:, c_char), pointer :: PQgetvalue
 
       interface
-         ! Interface to PQclear in interface/libpq/fe-exec.c:
+         ! Interface to PQgetvalue in interface/libpq/fe-exec.c:
          !
-         ! void PQclear(PGresult *res)
+         ! char *PQgetvalue(const PGresult *res, int tup_num, int field_num)
          !
-         subroutine c_PQ_clear(res) bind(c, name='PQclear')
-            import c_ptr
+         function c_PQ_get_value (res, tup_num, field_num) &
+                                           bind(c, name='PQgetvalue')
+            import c_ptr, c_int
             type(c_ptr), intent(in), value :: res
-         end subroutine c_PQ_clear
+            integer(c_int), intent(in), value :: tup_num, field_num
+            type(c_ptr):: c_PQ_get_value
+         end function c_PQ_get_value
       end interface
+      
+      ! 
+      PQgetvalue => &
+         c_to_f_charpointer( &
+            c_PQ_get_value( pgresult, tuple_num, field_num) &
+         )
 
-      call c_PQ_clear(res)
-
-   end subroutine PQclear
+   end function PQgetvalue
 
 
+   ! function PQgetisnull
+   ! function PQgetlength
+   ! function PQnparams
+   ! function PQparamtype
+   ! function PQprint
+   
+
+   !== Retrieving Other Result Information
+
+   ! function PQcmdStatus
+   ! function PQcmdTuples
+   ! function PQoidValue
+   ! function PQoidStatus
+   
+   
+   !== Escaping Strings for Inclusion in SQL Commands
+
+   ! function PQescapeLiteral
+   ! function PQescapeIdentifier
+   ! function PQescapeStringConn
+   ! function PQescapeByteConn
+   ! function PQunescapeBytea
+
+
+   !==================================================================!
+   ! Asynchronous Command Processing
+
+   ! function PQsendQuery
+   ! function PQsendQueryParams
+   ! function PQsendPrepare
+   ! function PQsendQueryPrepared
+   ! function PQsendDescribePrepared
+   ! function PQsendDescribePortal
+   ! function PQgetResult
+   ! function PQconsumeInput
+   ! function PQisBusy
+   ! function PQsetnonblocking
+   ! funciton PQisnonblocking
+   ! function PQflush
+
+
+   !=================================================================!
+   ! Pipeline Mode
+   
+   ! function PQpipelineStatus
+   ! function PQenterPipelineMode
+   ! funciton PQexitPipelineMode
+   ! function PQpipelineSync
+   ! function PQsendFlushRequest
+   
+
+   !=================================================================!
+   ! Functions Associated with the COPY Command
+   
+   ! function PQputCopyData
+   ! function PQputCopyEnd
+   ! function PQgetCopyData
 
 end module m_fe_exec

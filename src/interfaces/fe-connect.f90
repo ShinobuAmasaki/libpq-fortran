@@ -17,7 +17,7 @@ module m_fe_connect
 
    ! Deprecated functions
    ! - PQtty
-   ! - 
+   ! - PQrequestCancel
 
 contains
 
@@ -391,5 +391,22 @@ contains
    ! function PQsslStruct
    ! function PQgetssl
 
+
+   !==================================================================!
+   ! Canceling Queries in Progress
+
+   ! funciton PQgetCancel
+   ! function PQfreeCancel
+   ! funciton PQcancel
+
+
+   !==================================================================!
+   ! Control Functions
+
+   ! function PQclientEncoding
+   ! function PQsetClientEncoding
+   ! function PQsetErrorVerbosity
+   ! function PQsetErrorContextVisibility
+   
 
 end module m_fe_connect
