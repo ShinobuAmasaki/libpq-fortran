@@ -28,6 +28,90 @@ contains
       
    end function PQconnectdb
 
+
+   function PQdb (conn) result(res)
+      use :: character_pointer_wrapper
+      use, intrinsic :: iso_c_binding
+      implicit none
+      type(c_ptr), intent(in) :: conn
+      character(:), pointer :: res
+
+      ! Interface PQdb in src/interfaces/
+      interface
+         function  c_PQ_db(conn) bind(c, name="PQdb")
+            import c_ptr
+            type(c_ptr), intent(in), value :: conn
+            type(c_ptr) :: c_PQ_db
+         end function c_PQ_db
+      end interface
+
+      res => c_to_f_charpointer(c_PQ_db(conn))
+
+   end function PQdb
+
+
+   function PQuser (conn) result(res)
+      use :: character_pointer_wrapper
+      use, intrinsic :: iso_c_binding
+      implicit none
+      type(c_ptr), intent(in) :: conn
+      character(:), pointer :: res
+
+      ! Interface PQdb in src/interfaces/
+      interface
+         function  c_PQ_user(conn) bind(c, name="PQuser")
+            import c_ptr
+            type(c_ptr), intent(in), value :: conn
+            type(c_ptr) :: c_PQ_user
+         end function c_PQ_user
+      end interface
+
+      res => c_to_f_charpointer(c_PQ_user(conn))
+
+   end function PQuser
+
+
+   function PQhost (conn) result(res)
+      use :: character_pointer_wrapper
+      use, intrinsic :: iso_c_binding
+      implicit none
+      type(c_ptr), intent(in) :: conn
+      character(:), pointer :: res
+
+      ! Interface PQdb in src/interfaces/
+      interface
+         function  c_PQ_host(conn) bind(c, name="PQhost")
+            import c_ptr
+            type(c_ptr), intent(in), value :: conn
+            type(c_ptr) :: c_PQ_host
+         end function c_PQ_host
+      end interface
+
+      res => c_to_f_charpointer(c_PQ_host(conn))
+
+   end function PQhost
+
+
+   function PQhostaddr (conn) result(res)
+      use :: character_pointer_wrapper
+      use, intrinsic :: iso_c_binding
+      implicit none
+      type(c_ptr), intent(in) :: conn
+      character(:), pointer :: res
+
+      ! Interface PQdb in src/interfaces/
+      interface
+         function  c_PQ_hostaddr(conn) bind(c, name="PQhostaddr")
+            import c_ptr
+            type(c_ptr), intent(in), value :: conn
+            type(c_ptr) :: c_PQ_hostaddr
+         end function c_PQ_hostaddr
+      end interface
+
+      res => c_to_f_charpointer(c_PQ_hostaddr(conn))
+
+   end function PQhostaddr
+
    
    function PQping(conninfo) result(res)
       use, intrinsic :: iso_c_binding

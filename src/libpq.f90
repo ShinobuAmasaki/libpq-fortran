@@ -1,7 +1,7 @@
 module libpq
    use m_fe_connect, &
       only: PQconnectdb, PQfinish, PQstatus, PQerrorMessage, &
-            PQping
+            PQping, PQdb, PQuser, PQhost, PQhostaddr
    
    use m_fe_exec, &
       only: PQexec, PQresultStatus, PQntuples, PQnfields, &
@@ -19,6 +19,10 @@ module libpq
    public :: PQstatus
    public :: PQerrorMessage
    public :: PQping
+   public :: PQdb
+   public :: PQuser
+   public :: PQhost
+   public :: PQhostaddr
 
    ! From module m_fe_exec:
    public :: PQexec
