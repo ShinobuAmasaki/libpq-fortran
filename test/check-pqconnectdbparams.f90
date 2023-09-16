@@ -13,10 +13,8 @@ program main
    print '(a)', "=== BEGIN TEST: check-pqconnectdbparams ==="
 
    keywords(1) = "hostaddr"
-   values(1)   = "192.168.11.13"
+   values(1)   = "127.0.0.1"
 
-   keywords(2) = "dbname"
-   values(2) = 'sandbox'
 
 
    conn = PQconnectdbParams(keywords, values, 0)
