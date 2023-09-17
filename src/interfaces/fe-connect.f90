@@ -16,6 +16,7 @@ module m_fe_connect
    public :: PQtransactionStatus
    public :: PQsetdbLogin
    public :: PQpingParams
+   public :: PQreset
 
    ! Deprecated functions
    ! - PQtty
@@ -194,7 +195,25 @@ contains
    end subroutine PQfinish
 
 
-   ! function PQreset
+   subroutine PQreset (conn)
+      use, intrinsic :: iso_c_binding
+      implicit none
+      
+      type(c_ptr), intent(inout) :: conn
+
+      interface
+         subroutine c_PQ_reset(conn) bind(c, name='PQreset')
+            import c_ptr
+            implicit none
+            type(c_ptr), intent(in), value :: conn
+         end subroutine c_PQ_reset
+      end interface
+
+      call c_PQ_reset(conn)
+
+   end subroutine PQreset
+            
+
    ! function PQresetStart
    ! function PQresetPoll
 
