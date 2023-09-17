@@ -14,6 +14,7 @@ module m_fe_connect
    public :: PQerrorMessage
    public :: PQoptions
    public :: PQtransactionStatus
+   public :: PQsetdbLogin
 
    ! Deprecated functions
    ! - PQtty
@@ -128,12 +129,58 @@ contains
    end function PQconnectdbParams
 
 
-   ! function PQsetdbLogin
-   ! function PQsetdb
+   function PQsetdbLogin (host, port, options, tty, dbName, login, pwd) result(conn)
+      use, intrinsic :: iso_c_binding
+      implicit none
+      character(*), intent(in) :: host
+      character(*), intent(in) :: port
+      character(*), intent(in) :: options
+      character(*), intent(in) :: tty
+      character(*), intent(in) :: dbName
+      character(*), intent(in) :: login
+      character(*), intent(in) :: pwd
+      
+      type(c_ptr) :: conn
+
+      interface
+         function c_PQ_setdb_login (pghost, pgport, pgoptions, pgtty, dbName, login, pwd) &
+               bind(c, name='PQsetdbLogin') result(res)
+            import c_ptr, c_char
+            character(1, kind=c_char), intent(in) :: pghost(*)
+            character(1, kind=c_char), intent(in) :: pgport(*)
+            character(1, kind=c_char), intent(in) :: pgoptions(*)
+            character(1, kind=c_char), intent(in) :: pgtty(*)
+            character(1, kind=c_char), intent(in) :: dbName(*)
+            character(1, kind=c_char), intent(in) :: login(*)
+            character(1, kind=c_char), intent(in) :: pwd(*)
+            type(c_ptr) :: res
+         end function c_PQ_setdb_login
+      end interface
+
+      block
+         character(:, kind=c_char), allocatable :: c_host, c_port, &
+                                       c_options, c_tty, c_dbName, &
+                                       c_login, c_pwd
+         
+         ! Cの関数にわたす文字列の末尾にNULL文字をつける。
+         c_host      = host//c_null_char
+         c_port      = port//c_null_char
+         c_options   = options//c_null_char
+         c_tty       = tty//c_null_char
+         c_dbName    = dbName//c_null_char
+         c_login     = login//c_null_char
+         c_pwd       = pwd//c_null_char
+
+         conn = c_PQ_setdb_login(c_host, c_port, c_options, c_tty, c_dbName, c_login, c_pwd)
+      end block
+
+   end function PQsetdbLogin
+
+
    ! function PQconnectStartParams
    ! function PQconnectStart
    ! function PQconnectPoll
-   ! function PQconndefaults
+   ! subroutine PQconninfodefaults
    ! function PQconninfo
    ! function PQconninfoParse
 
