@@ -53,4 +53,13 @@ module t_PQconninfoOption
       integer(c_int) :: dispsize
    end type
 
+   type, public :: c_PQconnOptionSizes
+      integer(c_int) :: keyword
+      integer(c_int) :: envvar
+      integer(c_int) :: compiled
+      integer(c_int) :: val
+      integer(c_int) :: label
+      integer(c_int) :: dispchar
+   end type
+
 end module t_PQconninfoOption

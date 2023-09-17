@@ -18,6 +18,8 @@ module m_fe_connect
    public :: PQpingParams
    public :: PQreset
 
+   public :: PQconndefaults
+
    ! Deprecated functions
    ! - PQtty
    ! - PQrequestCancel
@@ -172,7 +174,42 @@ contains
    ! function PQconnectStartParams
    ! function PQconnectStart
    ! function PQconnectPoll
-   ! subroutine PQconninfodefaults
+
+
+   subroutine PQconndefaults
+      use :: t_PQconninfoOption
+      use, intrinsic :: iso_c_binding
+      implicit none
+      
+      interface
+         function c_PQ_conndefault_prepare () bind(c, name="PQconndefaultPrepare") result(res)
+            import c_ptr
+            implicit none
+            type(c_ptr) :: res
+         end function c_PQ_conndefault_prepare
+      end interface
+
+      type(c_ptr) :: ptr
+      type(c_PQconnOptionSizes), pointer :: fptr
+
+
+      ptr = c_PQ_conndefault_prepare()
+      
+      call c_f_pointer(ptr, fptr)
+
+      print *, fptr%keyword
+      print *, fptr%envvar
+      print *, fptr%compiled
+      print *, fptr%val
+      print *, fptr%label
+      print *, fptr%dispchar
+
+
+
+      
+
+   end subroutine PQconndefaults
+
    ! function PQconninfo
    ! function PQconninfoParse
 

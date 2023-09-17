@@ -9,24 +9,29 @@ typedef struct
    int siz_val;
    int siz_label;
    int siz_dispchar;
-   int siz_dispsize;
 } PQFconninfoSize ;
 
-PQFconninfoSize *PQconndefaultPrepare(PQconninfoOption *options)
+
+PQFconninfoSize *PQconndefaultPrepare(void)
 {
-   options = PQconndefaults();
+
+   PQconninfoOption *options = PQconndefaults();
 
    PQFconninfoSize *ptr = (PQFconninfoSize *) malloc(sizeof(PQFconninfoSize));
 
-   ptr->siz_keyword = strlen(options->keyword);
-   ptr->siz_envvar = strlen(options->envvar);
-   ptr->siz_compiled = strlen(options->compiled);
-   ptr->siz_val = strlen(options->val);
-   ptr->siz_label = strlen(options->label);
-   ptr->siz_dispchar = strlen(options->dispchar);
-   ptr->siz_dispsize = strlen(options->dispsize);
+   ptr[0]->siz_keyword = getStrLen(options->keyword);
+   ptr->siz_envvar = getStrLen(options->envvar);
+   ptr->siz_compiled = getStrLen(options->compiled);
+   ptr->siz_val = getStrLen(options->val);
+   ptr->siz_label = getStrLen(options->label);
+   ptr->siz_dispchar = getStrLen(options->dispchar);
 
    PQconninfoFree(options);
 
    return ptr; 
+}
+
+
+int getStrLen(const char*str) {
+   return (str != NULL) ? strlen(str) : 0;
 }
