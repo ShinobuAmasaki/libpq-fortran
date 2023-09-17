@@ -16,10 +16,10 @@ contains
 
    end function max_length_char_array
 
-   
+
    ! Input: c_words
    ! Output: ptr_array (with null pointer termination)
-   subroutine cptr_array_form_cchar (c_words, ptr_array)
+   subroutine cptr_array_from_cchar (c_words, ptr_array)
       use, intrinsic :: iso_c_binding
       implicit none
       
@@ -37,7 +37,7 @@ contains
 
       ptr_array(siz) = c_null_ptr
 
-   end subroutine cptr_array_form_cchar
+   end subroutine cptr_array_from_cchar
    
 
 end module character_operations
