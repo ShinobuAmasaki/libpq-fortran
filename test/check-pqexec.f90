@@ -12,7 +12,7 @@ program main
 
    !conninfo = '' ! If this is empty, libpq uses only environmental variables for a connection. 
    
-   conninfo = 'host=localhost'
+   conninfo = 'host=localhost user=postgres'
    
    conn = PQconnectdb(conninfo)
    if (PQstatus(conn) /= 0) then

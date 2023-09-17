@@ -6,12 +6,9 @@ program main
 
    character(:, kind=c_char), allocatable :: conninfo, sql
 
-   print '(a)', "=== BEGIN TEST: check-pqdb,      ==="
-   print '(a)', "                      pquser,"
-   print '(a)', "                      pqhost,"
-   print '(a)', "                      pqhostaddr"
-
-   conninfo = "host=localhost user=postgres"
+   print '(a)', "=== BEGIN TEST: pqconnectdb ==="
+   
+   conninfo = "host=localhost user=postgres dbname=postgres"
 
    conn = PQconnectdb(conninfo)
    if (PQstatus(conn) /= 0) then
