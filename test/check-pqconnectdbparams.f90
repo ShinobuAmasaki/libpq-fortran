@@ -14,6 +14,9 @@ program main
 
    keywords(1) = "hostaddr"
    values(1)   = "127.0.0.1"
+   
+   keywords(2) = "user"
+   values(2) = "postgres"
 
    keywords(2) = "user"
    values(2)   = "postgres" 
