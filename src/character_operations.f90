@@ -25,16 +25,19 @@ contains
       integer(int32), intent(in) :: max_length
 
       character(max_length+1, kind=c_char), intent(out), &
-                                       allocatable :: c_words(:)
+                                       allocatable, target :: c_words(:)
       integer :: i, siz
 
       siz = size(words, dim=1)
 
-      allocate( c_words(siz) )
+      allocate( c_words(siz+1) )
 
       do i = 1, siz
          c_words(i) = trim(adjustl(words(i)))//c_null_char
       end do
+
+      ! 最後の要素はNull文字を代入する。
+      c_words(siz+1) = c_null_char
 
    end subroutine cchar_array_from_strings
 
