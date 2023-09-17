@@ -36,6 +36,7 @@ contains
          !
          function c_PQ_exec (conn, query) bind(c, name='PQexec') result(pgresult)
             import c_ptr, c_char
+            implicit none
             type(c_ptr), intent(in), value :: conn
             
             ! To pass a string to C, declare an array of type 'character' with kind 'c_char'.
@@ -74,6 +75,7 @@ contains
          !
          function c_PQ_result_status(pgresult) bind(c, name='PQresultStatus') result(res)
             import c_ptr, c_int
+            implicit none
             type(c_ptr), intent(in), value :: pgresult
             integer(c_int) :: res
          end function c_PQ_result_status
@@ -101,6 +103,7 @@ contains
          !
          function c_PQ_result_error_message (res) bind(c, name='PQresultErrorMessage')
             import c_ptr
+            implicit none
             type(c_ptr), intent(in), value :: res
             type(c_ptr) :: c_PQ_result_error_message
          end function c_PQ_result_error_message
@@ -129,6 +132,7 @@ contains
          !
          subroutine c_PQ_clear(res) bind(c, name='PQclear')
             import c_ptr
+            implicit none
             type(c_ptr), intent(in), value :: res
          end subroutine c_PQ_clear
       end interface
@@ -154,6 +158,7 @@ contains
          !
          function c_PQ_n_tuples (pgresult) bind(c, name='PQntuples')
             import c_ptr, c_int
+            implicit none
             type(c_ptr), intent(in), value :: pgresult
             integer(c_int) :: c_PQ_n_tuples
          end function c_PQ_n_tuples
@@ -178,6 +183,7 @@ contains
          !
          function c_PQ_n_fields (pgresult) bind(c, name='PQnfields')
             import c_ptr, c_int
+            implicit none
             type(c_ptr), intent(in), value :: pgresult
             integer(c_int) :: c_PQ_n_fields
          end function c_PQ_n_fields
@@ -201,6 +207,7 @@ contains
          ! char *PQfname(const PGresult *res, int field_num)
          function c_PQ_field_name (pgresult, c_field_num) bind(c, name='PQfname')
             import c_ptr, c_int
+            implicit none
             type(c_ptr), intent(in), value :: pgresult
             integer(c_int), intent(in), value :: c_field_num
             type(c_ptr) :: c_PQ_field_name
@@ -239,6 +246,7 @@ contains
          function c_PQ_get_value (res, tup_num, field_num) &
                                            bind(c, name='PQgetvalue')
             import c_ptr, c_int
+            implicit none
             type(c_ptr), intent(in), value :: res
             integer(c_int), intent(in), value :: tup_num, field_num
             type(c_ptr):: c_PQ_get_value

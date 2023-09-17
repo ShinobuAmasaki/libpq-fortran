@@ -43,6 +43,7 @@ contains
 
          function c_PQ_connectdb(info) bind(c, name="PQconnectdb") result(conn)
             import c_ptr, c_char
+            implicit none
             character(1, kind=c_char), intent(in) :: info(*)
             type(c_ptr) :: conn
          end function
@@ -74,6 +75,7 @@ contains
          function c_PQ_connectdb_params (keywords, values, expand_dbname) &
                                            bind(c, name="PQconnectdbParams") result(conn)
             import c_ptr, c_int
+            implicit none
             ! ポインタの配列を渡すのでvalue属性は付けない。
             type(c_ptr), intent(in) :: keywords ! an array of pointers
             type(c_ptr), intent(in) :: values   ! an array of pointers
@@ -135,6 +137,7 @@ contains
          function c_PQ_setdb_login (pghost, pgport, pgoptions, pgtty, dbName, login, pwd) &
                bind(c, name='PQsetdbLogin') result(res)
             import c_ptr, c_char
+            implicit none
             character(1, kind=c_char), intent(in) :: pghost(*)
             character(1, kind=c_char), intent(in) :: pgport(*)
             character(1, kind=c_char), intent(in) :: pgoptions(*)
@@ -187,6 +190,7 @@ contains
 
          subroutine c_PQ_finish(conn) bind(c, name='PQfinish')
             import c_ptr
+            implicit none
             type(c_ptr), intent(in), value :: conn
          end subroutine c_PQ_finish
       end interface
@@ -234,6 +238,7 @@ contains
          function c_PQ_ping_params (keywords, values, expand_dbname) &
                                        bind(c, name="PQpingParams")
             import c_ptr, c_int
+            implicit none
             type(c_ptr), intent(in) :: keywords
             type(c_ptr), intent(in) :: values
             integer(c_int), intent(in) :: expand_dbname
@@ -278,6 +283,7 @@ contains
       interface 
          function c_PQ_ping (info) bind(c, name="PQping") result(c_res)
             import c_char, c_int
+            implicit none
             character(1, kind=c_char), intent(in) :: info(*)
             integer(c_int) :: c_res
          end function c_PQ_ping
@@ -309,6 +315,7 @@ contains
       interface
          function  c_PQ_db(conn) bind(c, name="PQdb")
             import c_ptr
+            implicit none
             type(c_ptr), intent(in), value :: conn
             type(c_ptr) :: c_PQ_db
          end function c_PQ_db
@@ -330,6 +337,7 @@ contains
       interface
          function  c_PQ_user(conn) bind(c, name="PQuser")
             import c_ptr
+            implicit none
             type(c_ptr), intent(in), value :: conn
             type(c_ptr) :: c_PQ_user
          end function c_PQ_user
@@ -354,6 +362,7 @@ contains
       interface
          function  c_PQ_host(conn) bind(c, name="PQhost")
             import c_ptr
+            implicit none
             type(c_ptr), intent(in), value :: conn
             type(c_ptr) :: c_PQ_host
          end function c_PQ_host
@@ -375,6 +384,7 @@ contains
       interface
          function  c_PQ_hostaddr(conn) bind(c, name="PQhostaddr")
             import c_ptr
+            implicit none
             type(c_ptr), intent(in), value :: conn
             type(c_ptr) :: c_PQ_hostaddr
          end function c_PQ_hostaddr
@@ -399,6 +409,7 @@ contains
       interface
          function c_PQ_options (conn) bind(c, name="PQoptions")
             import c_ptr
+            implicit none
             type(c_ptr), intent(in), value :: conn
             type(c_ptr) :: c_PQ_options
          end function c_PQ_options
@@ -423,6 +434,7 @@ contains
 
          function c_PQ_status(conn) bind(c, name='PQstatus') result(res)
             import c_ptr, c_int
+            implicit none
             type(c_ptr), intent(in), value :: conn
             integer(c_int) :: res
          end function c_PQ_status
@@ -443,6 +455,7 @@ contains
          function c_PQ_transaction_status (conn)  &
                bind(c, name="PQtransactionStatus") result(res)
             import c_ptr, c_int
+            implicit none
             type(c_ptr), intent(in), value :: conn
             integer(c_int) :: res
          end function c_PQ_transaction_status
@@ -472,6 +485,7 @@ contains
 
          function c_PQ_error_message(conn) bind(c, name='PQerrorMessage')
             import c_ptr
+            implicit none
             type(c_ptr), intent(in), value :: conn
             type(c_ptr) :: c_PQ_error_message
          end function c_PQ_error_message
