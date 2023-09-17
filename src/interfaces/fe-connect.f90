@@ -177,6 +177,25 @@ contains
    ! function PQconninfoParse
 
 
+   !
+   subroutine PQconninfoFree (connopts)
+      use, intrinsic :: iso_c_binding
+      implicit none
+      
+      type(c_ptr), intent(in) :: connopts
+
+      interface
+         subroutine c_PQ_conninfo_free(connOptions) bind(c, name="PQconninfoFree")
+            import c_ptr
+            implicit none
+            type(c_ptr), intent(in), value :: connOptions
+         end subroutine c_PQ_conninfo_free
+      end interface
+
+      call c_PQ_conninfo_free(connopts)
+   end subroutine PQconninfoFree
+
+
    subroutine PQfinish(conn)
       use, intrinsic :: iso_c_binding
       implicit none
