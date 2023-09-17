@@ -93,7 +93,8 @@ contains
          character(max_len_val+1, kind=c_char), target ::  c_values(size_keys+1)
 
          ! ポインタの配列を宣言する。
-         type(c_ptr) :: ptr_keys(size_keys+1), ptr_values(size_keys+1)
+         type(c_ptr), allocatable :: ptr_keys(:)
+         type(c_ptr), allocatable :: ptr_values(:)
 
          ! c_int型整数を宣言する。
          integer(c_int) :: c_expand_dbname
@@ -101,21 +102,17 @@ contains
          do i = 1, size_keys
             ! keywords(i)の終端にnull文字を付けて、c_keys(i)に格納する。
             c_keys(i) = trim(keywords(i))//c_null_char
-            ! ポインタの配列ptr_keys(i)に、文字列c_keys(i)のアドレスを格納する。
-            ptr_keys(i) = c_loc(c_keys(i))
 
             ! value(i)の終端にnull文字を付けて、c_values(i)に格納する。
             c_values(i) = trim(values(i))//c_null_char
-            ! ptr_values(i)に、文字列c_values(i)のアドレスを格納する。
-            ptr_values(i) = c_loc(c_values(i))
          end do
 
          ! Termination of pointer array
          c_keys(size_keys+1) = c_null_char
          c_values(size_keys+1) = c_null_char
 
-         ptr_keys(size_keys+1) = c_null_ptr
-         ptr_values(size_keys+1) = c_null_ptr
+         call cptr_array_from_cchar(c_keys, ptr_keys)
+         call cptr_array_from_cchar(c_values, ptr_values)
 
          c_expand_dbname = expand_dbname
 
