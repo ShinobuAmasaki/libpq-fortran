@@ -2,7 +2,8 @@ module libpq
    use m_fe_connect, &
       only: PQconnectdb, PQfinish, PQstatus, PQerrorMessage, &
             PQping, PQdb, PQuser, PQhost, PQhostaddr, PQconnectdbParams, &
-            PQoptions, PQtransactionStatus, PQsetdbLogin, PQpingParams
+            PQoptions, PQtransactionStatus, PQsetdbLogin, PQpingParams, &
+            PQreset
 
    
    use m_fe_exec, &
@@ -24,6 +25,7 @@ module libpq
       public :: PQping
       public :: PQsetdbLogin
       public :: PQpingParams
+      public :: PQreset
 
       ! Connction Status Functions
       public :: PQdb
