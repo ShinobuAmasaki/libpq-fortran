@@ -5,16 +5,19 @@ program main
    
    type(c_ptr) :: conn
 
-   integer, parameter :: n = 1
+   integer, parameter :: n = 2
 
    integer :: res
 
    character(256, kind=c_char) :: keywords(n), values(n)
 
-   print '(a)', "=== BEGIN TEST: check-pqconnectdbparams ==="
+   print '(a)', "=== BEGIN TEST: check-pqtransaction ==="
 
    keywords(1) = 'hostaddr'
    values(1) = '127.0.0.1'
+   
+   keywords(2) = "user"
+   values(2)   = "postgres"
 
 
    conn = PQconnectdbParams(keywords, values, 0)

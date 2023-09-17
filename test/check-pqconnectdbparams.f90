@@ -18,9 +18,6 @@ program main
    keywords(2) = "user"
    values(2) = "postgres"
 
-   keywords(2) = "user"
-   values(2)   = "postgres" 
-
    
    conn = PQconnectdbParams(keywords, values, 0)
 

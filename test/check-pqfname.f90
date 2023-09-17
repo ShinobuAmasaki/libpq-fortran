@@ -9,7 +9,7 @@ program main
 
    print '(a)', "=== BEGIN TEST: check-pqfname ==="
 
-   conninfo = "host=localhost"
+   conninfo = "host=localhost user=postgres"
 
    conn = PQconnectdb(conninfo)
    if (PQstatus(conn) /= 0) then
