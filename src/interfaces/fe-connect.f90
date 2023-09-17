@@ -89,8 +89,8 @@ contains
 
       block
          ! null文字をつけるために最大値よりも1だけ大きい文字列を宣言する。
-         character(max_len_key+1, kind=c_char), target ::  c_keys(size_keys+1)
-         character(max_len_val+1, kind=c_char), target ::  c_values(size_keys+1)
+         character(max_len_key+1, kind=c_char), allocatable, target ::  c_keys(:)
+         character(max_len_val+1, kind=c_char), allocatable, target ::  c_values(:)
 
          ! ポインタの配列を宣言する。
          type(c_ptr), allocatable :: ptr_keys(:)
@@ -99,19 +99,14 @@ contains
          ! c_int型整数を宣言する。
          integer(c_int) :: c_expand_dbname
 
-         do i = 1, size_keys
-            ! keywords(i)の終端にnull文字を付けて、c_keys(i)に格納する。
-            c_keys(i) = trim(keywords(i))//c_null_char
-
-            ! value(i)の終端にnull文字を付けて、c_values(i)に格納する。
-            c_values(i) = trim(values(i))//c_null_char
-         end do
-
-         ! Termination of pointer array
-         c_keys(size_keys+1) = c_null_char
-         c_values(size_keys+1) = c_null_char
-
+         ! keywordsについて、Cに渡す文字列の配列を用意する。
+         call cchar_array_from_strings(keywords, c_keys, max_len_key)
+         ! keywordsについて、Cに渡すポインタの配列を用意する。
          call cptr_array_from_cchar(c_keys, ptr_keys)
+
+         ! valuesについて、Cに渡す文字列の配列を用意する。
+         call cchar_array_from_strings(values, c_values, max_len_val)
+         ! valuesについて、Cに渡すポインタの配列を用意する。
          call cptr_array_from_cchar(c_values, ptr_values)
 
          c_expand_dbname = expand_dbname
