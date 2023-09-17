@@ -15,6 +15,7 @@ module m_fe_connect
    public :: PQoptions
    public :: PQtransactionStatus
    public :: PQsetdbLogin
+   public :: PQpingParams
 
    ! Deprecated functions
    ! - PQtty
@@ -66,7 +67,7 @@ contains
       integer :: expand_dbname
       type(c_ptr) :: conn
 
-      integer :: max_len_key, max_len_val, i, size_keys
+      integer :: max_len_key, max_len_val
 
       interface
          function c_PQ_connectdb_params (keywords, values, expand_dbname) &
@@ -80,8 +81,6 @@ contains
          end function c_PQ_connectdb_params
       end interface
 
-      ! keyword,valueのペアの個数を得る。
-      size_keys = size(keywords)
 
       ! 下で確保する文字列配列の長さを知る。
       max_len_key = max_length_char_array(keywords)
@@ -198,8 +197,56 @@ contains
    ! function PQreset
    ! function PQresetStart
    ! function PQresetPoll
-   ! function PQpingParam
 
+
+   function PQpingParams (keywords, values, expand_dbname) result(res)
+      use :: character_operations
+      use, intrinsic :: iso_c_binding
+      implicit none
+      
+      character(*), intent(in) :: keywords(:)
+      character(*), intent(in) :: values(:)
+      integer, intent(in) :: expand_dbname
+      integer(c_int) :: res
+      
+      integer :: max_len_key, max_len_val
+
+      interface
+         function c_PQ_ping_params (keywords, values, expand_dbname) &
+                                       bind(c, name="PQpingParams")
+            import c_ptr, c_int
+            type(c_ptr), intent(in) :: keywords
+            type(c_ptr), intent(in) :: values
+            integer(c_int), intent(in) :: expand_dbname
+            integer(c_int) :: c_PQ_ping_params
+         end function c_PQ_ping_params
+      end interface
+
+      max_len_key = max_length_char_array(keywords)
+      max_len_val = max_length_char_array(values)
+
+      block
+         character(max_len_key+1, kind=c_char), allocatable, target :: c_keys(:)
+         character(max_len_val+1, kind=c_char), allocatable, target :: c_values(:)
+
+         type(c_ptr), allocatable :: ptr_keys(:)
+         type(c_ptr), allocatable :: ptr_values(:)
+
+         integer(c_int) :: c_expand_dbname
+
+         call cchar_array_from_strings(keywords, c_keys, max_len_key)
+         call cptr_array_from_cchar(c_keys, ptr_keys)
+
+         call cchar_array_from_strings(values, c_values, max_len_val)
+         call cptr_array_from_cchar(c_values, ptr_values)
+
+         c_expand_dbname = expand_dbname
+
+         res = c_PQ_ping_params(ptr_keys, ptr_values, c_expand_dbname)
+      end block
+
+   end function PQpingParams
+         
       
    function PQping(conninfo) result(res)
       use, intrinsic :: iso_c_binding
