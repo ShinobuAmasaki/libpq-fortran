@@ -54,6 +54,7 @@ contains
 
 
    function PQconnectdbParams (keywords, values, expand_dbname) result(conn)
+      use :: character_operations
       use, intrinsic :: iso_c_binding, only: c_ptr, c_int, c_char,&
                                              c_null_char, c_null_ptr, c_loc
       implicit none
@@ -83,12 +84,8 @@ contains
       size_keys = size(keywords)
 
       ! 下で確保する文字列配列の長さを知る。
-      max_len_key = 0
-      max_len_val = 0
-      do i = 1, size_keys
-         max_len_key = max(max_len_key, len_trim(keywords(i)))
-         max_len_val = max(max_len_val, len_trim(values(i)))
-      end do
+      max_len_key = max_length_char_array(keywords)
+      max_len_val = max_length_char_array(values)
 
       block
          ! null文字をつけるために最大値よりも1だけ大きい文字列を宣言する。
