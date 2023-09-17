@@ -17,6 +17,28 @@ contains
    end function max_length_char_array
 
 
+   subroutine cchar_array_from_strings (words, c_words, max_length)
+      use, intrinsic :: iso_fortran_env
+      use, intrinsic :: iso_c_binding
+      implicit none
+      character(*), intent(in)   :: words(:)
+      integer(int32), intent(in) :: max_length
+
+      character(max_length+1, kind=c_char), intent(out), &
+                                       allocatable :: c_words(:)
+      integer :: i, siz
+
+      siz = size(words, dim=1)
+
+      allocate( c_words(siz) )
+
+      do i = 1, siz
+         c_words(i) = trim(adjustl(words(i)))//c_null_char
+      end do
+
+   end subroutine cchar_array_from_strings
+
+
    ! Input: c_words
    ! Output: ptr_array (with null pointer termination)
    subroutine cptr_array_from_cchar (c_words, ptr_array)
