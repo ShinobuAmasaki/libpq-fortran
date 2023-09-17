@@ -6,7 +6,7 @@ program main
 
    type(c_ptr) :: conn
 
-   integer, parameter :: npairs = 1
+   integer, parameter :: npairs = 2
    character(256, kind=c_char) :: keywords(npairs), values(npairs)
 
 
@@ -14,6 +14,9 @@ program main
 
    keywords(1) = "hostaddr"
    values(1)   = "127.0.0.1"
+
+   keywords(2) = "user"
+   values(2)   = "postgres" 
 
    
    conn = PQconnectdbParams(keywords, values, 0)
