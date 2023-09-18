@@ -5,7 +5,7 @@ module libpq
             PQoptions, PQtransactionStatus, PQsetdbLogin, PQpingParams, &
             PQreset, PQpass, PQport, PQprotocolVersion, PQserverVersion, &
             PQconndefaults, PQconnectStart, PQconnectStartParams, &
-            PQconnectPoll 
+            PQconnectPoll, PQbackendPID, PQsocket
 
    
    use m_fe_exec, &
@@ -47,6 +47,8 @@ module libpq
       public :: PQtransactionStatus
       public :: PQserverVersion
       public :: PQprotocolVersion
+      public :: PQsocket
+      public :: PQbackendPID
 
    ! From module m_fe_exec:
    public :: PQexec

@@ -27,6 +27,8 @@ module m_fe_connect
    public :: PQconnectPoll
    public :: PQsocket
 
+   public :: PQbackendPID
+
    ! PRIVATE functions
    private :: PQconnectdbParams_back
 
@@ -834,7 +836,27 @@ contains
    end function PQsocket
 
 
-   ! function PQbackendPID
+   function PQbackendPID(conn)
+      use, intrinsic :: iso_c_binding
+      implicit none
+      
+      type(c_ptr), intent(in) :: conn
+      integer(c_int) :: PQbackendPID
+
+      interface
+         function c_PQ_backend_pid(conn) bind(c, name="PQbackendPID")
+            import c_ptr, c_int
+            implicit none
+            type(c_ptr), intent(in), value :: conn
+            integer(c_int) :: c_PQ_backend_pid
+         end function c_PQ_backend_pid
+      end interface
+
+      PQbackendPID = c_PQ_backend_pid(conn)
+
+   end function PQbackendPID
+
+
    ! function PQconnectionNeedsPassword
    ! function PQconnectionUsedPassword
 
