@@ -256,7 +256,7 @@ contains
          function c_PQ_connect_poll(conn) bind(c, name="PQconnectPoll")
             import c_ptr, c_int
             implicit none
-            type(c_ptr), intent(in) :: conn
+            type(c_ptr), intent(in), value :: conn
             integer(c_int) :: c_PQ_connect_poll
          end function c_PQ_connect_poll
       end interface
