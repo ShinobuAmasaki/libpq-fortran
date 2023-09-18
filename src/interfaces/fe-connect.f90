@@ -27,6 +27,7 @@ module m_fe_connect
    public :: PQconnectStart
    public :: PQconnectStartParams
    public :: PQconnectPoll
+   public :: PQsocket
 
    ! PRIVATE functions
    private :: PQconnectdbParams_back
@@ -814,7 +815,27 @@ contains
    end function PQerrorMessage
 
 
-   ! function PQsocket
+   function PQsocket (conn)
+      use, intrinsic :: iso_c_binding
+      implicit none
+      
+      type(c_ptr), intent(in) :: conn
+      integer(c_int) :: PQsocket
+
+      interface
+         function c_PQ_socket(conn) bind(c, name="PQsocket")
+            import c_ptr, c_int
+            implicit none
+            type(c_ptr), intent(in), value :: conn
+            integer(c_int) :: c_PQ_socket
+         end function c_PQ_socket
+      end interface
+
+      PQsocket = c_PQ_socket(conn)
+
+   end function PQsocket
+
+
    ! function PQbackendPID
    ! function PQconnectionNeedsPassword
    ! function PQconnectionUsedPassword
