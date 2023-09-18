@@ -3,7 +3,7 @@ module libpq
       only: PQconnectdb, PQfinish, PQstatus, PQerrorMessage, &
             PQping, PQdb, PQuser, PQhost, PQhostaddr, PQconnectdbParams, &
             PQoptions, PQtransactionStatus, PQsetdbLogin, PQpingParams, &
-            PQreset
+            PQreset, PQpass, PQport
 
    
    use m_fe_exec, &
@@ -30,7 +30,9 @@ module libpq
       ! Connction Status Functions
       public :: PQdb
       public :: PQuser
+      public :: PQpass
       public :: PQhost
+      public :: PQport
       public :: PQhostaddr
       public :: PQoptions
       public :: PQstatus

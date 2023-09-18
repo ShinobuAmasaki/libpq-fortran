@@ -10,6 +10,7 @@ program main
    print '(a)', "                      pquser,"
    print '(a)', "                      pqhost,"
    print '(a)', "                      pqhostaddr"
+   print '(a)', "                      pqport"
 
    conninfo = "host=localhost user=postgres"
 
@@ -23,6 +24,7 @@ program main
    print *, 'username : ', PQuser(conn)
    print *, 'host     : ', PQhost(conn)
    print *, 'hostaddr : ', PQhostaddr(conn)
+   print *, 'port     : ', PQport(conn)
 
    call PQfinish(conn)
 

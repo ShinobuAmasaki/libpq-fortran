@@ -8,6 +8,8 @@ module m_fe_connect
    public :: PQhost
    public :: PQping
    public :: PQuser
+   public :: PQpass
+   public :: PQport
    public :: PQhostaddr
    public :: PQstatus
    public :: PQfinish
@@ -501,7 +503,26 @@ contains
    end function PQuser
 
 
-   ! function PQpass
+   function PQpass (conn) result(res)
+      use :: character_pointer_wrapper
+      use, intrinsic :: iso_c_binding
+      implicit none
+      type(c_ptr), intent(in) :: conn
+      character(:), pointer :: res
+
+      interface
+         function c_PQ_pass(conn) bind(c, name="PQpass")
+            import c_ptr
+            implicit none
+            type(c_ptr), intent(in), value :: conn
+            type(c_ptr) :: c_PQ_pass
+         end function c_PQ_pass
+      end interface
+
+      res => c_to_f_charpointer(c_PQ_pass(conn))
+   
+   end function PQpass
+
 
 
    function PQhost (conn) result(res)
@@ -548,7 +569,25 @@ contains
    end function PQhostaddr
 
    
-   ! function PQport
+   function PQport(conn) result(res)
+      use :: character_pointer_wrapper
+      use, intrinsic :: iso_c_binding
+      implicit none
+      type(c_ptr), intent(in) :: conn
+      character(:), pointer :: res
+
+      interface
+         function c_PQ_port(conn) bind(c, name="PQport")
+            import c_ptr
+            implicit none
+            type(c_ptr), intent(in), value :: conn
+            type(c_ptr) :: c_PQ_port
+         end function c_PQ_port
+      end interface
+
+      res => c_to_f_charpointer(c_PQ_port(conn))
+
+   end function PQport
 
 
    function PQoptions (conn) result(res)
