@@ -27,9 +27,10 @@ module m_fe_connect
    public :: PQconnectPoll
    public :: PQsocket
    public :: PQbackendPID
-
    public :: PQresetPoll
    public :: PQresetStart
+
+   public :: PQparameterStatus
 
    ! PRIVATE functions
    private :: PQconnectdbParams_back
@@ -788,8 +789,37 @@ contains
    end function PQtransactionStatus
 
 
-   ! function PQparameterStatus
+   function PQparameterStatus(conn, paramName)
+      use :: character_pointer_wrapper
+      use, intrinsic :: iso_c_binding
+      implicit none
+      
+      type(c_ptr), intent(in) :: conn
+      character(*), intent(in) :: paramName
 
+      character(:), allocatable :: c_paramName
+      character(:), pointer :: PQparameterStatus
+
+      interface
+         function c_PQ_parameter_status(conn, param_name) bind(c, name="PQparameterStatus")
+            import c_ptr, c_char
+            implicit none
+            type(c_ptr), intent(in), value :: conn
+            character(1, kind=c_char), intent(in) :: param_name(*)
+            type(c_ptr) :: c_PQ_parameter_status
+         end function c_PQ_parameter_status
+      end interface
+
+      c_paramName = trim(adjustl(paramName))//c_null_char
+
+      PQparameterStatus => c_to_f_charpointer(c_PQ_parameter_status(conn, c_paramName))
+
+      if (.not. associated(PQparameterStatus)) then
+         PQparameterStatus = ''
+      end if
+
+   end function PQparameterStatus
+   
 
    function PQprotocolVersion(conn) result(res)
       use, intrinsic :: iso_c_binding

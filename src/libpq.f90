@@ -6,7 +6,7 @@ module libpq
             PQreset, PQpass, PQport, PQprotocolVersion, PQserverVersion, &
             PQconndefaults, PQconnectStart, PQconnectStartParams, &
             PQconnectPoll, PQbackendPID, PQsocket, PQresetStart, &
-            PQresetPoll
+            PQresetPoll, PQparameterStatus
 
    
    use m_fe_exec, &
@@ -52,6 +52,7 @@ module libpq
    public :: PQprotocolVersion
    public :: PQsocket
    public :: PQbackendPID
+   public :: PQparameterStatus
 
    ! From module m_fe_exec:
    public :: PQexec
