@@ -113,4 +113,4 @@ The creation of this package was inspired by iamed2's [LibPQ.jl](https://github.
 - [x] `PQhost`
 - [x] `PQhostaddr`
 - [x] `PQport`
-- [-] `PQtty` 
+- [ ] ~~ `PQtty` ~~ 
