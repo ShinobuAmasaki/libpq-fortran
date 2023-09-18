@@ -135,7 +135,7 @@ Note: The order of the following headings and the functions contained within the
 - [ ] `PQoptions`
 - [x] `PQstatus`
 - [x] `PQtransactionStatus`
-- [ ] `PQparameterStatus`
+- [x] `PQparameterStatus`
 - [x] `PQprotocolVersion`
 - [x] `PQserverVersion`
 - [x] `PQerrorMessage`
