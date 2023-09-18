@@ -182,27 +182,30 @@ contains
       implicit none
       
       interface
-         function c_PQ_conndefault_prepare () bind(c, name="PQconndefaultPrepare") result(res)
+         function c_PQ_conndefaults_prepare (optionsizes) bind(c, name="PQconndefaultsPrepare") result(res)
             import c_ptr
             implicit none
-            type(c_ptr) :: res
-         end function c_PQ_conndefault_prepare
+            type(c_ptr), intent(out) :: optionsizes
+            integer :: res
+         end function c_PQ_conndefaults_prepare
       end interface
 
+
       type(c_ptr) :: ptr
-      type(c_PQconnOptionSizes), pointer :: fptr
+      type(c_PQconnOptionSizes),dimension(:), pointer :: fptr
+      integer :: length, i
 
-
-      ptr = c_PQ_conndefault_prepare()
+      length = c_PQ_conndefaults_prepare(ptr)
       
-      call c_f_pointer(ptr, fptr)
+      print *, length
 
-      print *, fptr%keyword
-      print *, fptr%envvar
-      print *, fptr%compiled
-      print *, fptr%val
-      print *, fptr%label
-      print *, fptr%dispchar
+      call c_f_pointer(ptr, fptr, shape=[length])
+
+      print *, length
+      do i = 1, length
+         print '(6i3)', fptr(i)%keyword, fptr(i)%envvar, fptr(i)%compiled, &
+          fptr(i)%val, fptr(i)%label, fptr(i)%dispchar
+      end do
 
 
 

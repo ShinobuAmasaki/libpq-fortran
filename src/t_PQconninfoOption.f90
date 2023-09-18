@@ -31,15 +31,16 @@ module t_PQconninfoOption
 !   } PQconninfoOption;
 
 ! END Quote
-
+   
+   integer, parameter :: CONNINFO_LABEL_LEN = 64 
 
    type, public :: PQconninfoOption
-      character(:), allocatable :: keyword
-      character(:), allocatable :: envvar
-      character(:), allocatable :: compiled
-      character(:), allocatable :: val
-      character(:), allocatable :: label
-      character(:), allocatable :: dispchar
+      character(CONNINFO_LABEL_LEN) :: keyword
+      character(CONNINFO_LABEL_LEN) :: envvar
+      character(CONNINFO_LABEL_LEN) :: compiled
+      character(CONNINFO_LABEL_LEN) :: val
+      character(CONNINFO_LABEL_LEN) :: label
+      character(1) :: dispchar
       integer(int32)            :: dispsize
    end type
 
@@ -61,5 +62,8 @@ module t_PQconninfoOption
       integer(c_int) :: label
       integer(c_int) :: dispchar
    end type
+
+
+
 
 end module t_PQconninfoOption
