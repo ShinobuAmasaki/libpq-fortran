@@ -82,14 +82,16 @@ The license for the remainder of this package appears in [LICENSE](https://githu
 ## Acknowledgements
 The creation of this package was inspired by iamed2's [LibPQ.jl](https://github.com/iamed2/LibPQ.jl) and a discussion in the [Fortran-jp](https://fortran-jp.org/) community.
 
-## Implemented Functions
+## Appendix: Implemented Interface Functions List
+
+Note: The order of the following headings and the functions contained within them follows [the PostgreSQL documentation](https://www.postgresql.org/docs/current/libpq.html).
 
 ### Database Connection Control Functions
 
 - [x] `PQconnectdb`
 - [x] `PQconnectdbParams`
 - [x] `PQsetdbLogin`
-- [ ] `PQsetdb`
+- <s>`PQsetdb`</s>
 - [ ] `PQconnectStartParams`
 - [ ] `PQconnectStart`
 - [ ] `PQconnectPoll`
@@ -113,4 +115,152 @@ The creation of this package was inspired by iamed2's [LibPQ.jl](https://github.
 - [x] `PQhost`
 - [x] `PQhostaddr`
 - [x] `PQport`
-- [ ] <strike>`PQtty`</strike>
+-  <s>`PQtty`</s>
+- [ ] `PQoptions`
+- [x] `PQstatus`
+- [x] `PQtransactionStatus`
+- [ ] `PQparameterStatus`
+- [x] `PQprotocolVersion`
+- [x] `PQserverVersion`
+- [x] `PQerrorMessage`
+- [ ] `PQsocket`
+- [ ] `PQbackendPID`
+- [ ] `PQconnectionNeedsPassword`
+- [ ] `PQconnectionUsedPassword`
+- [ ] `PQsslInUse`
+- [ ] `PQsslAttribute`
+- [ ] `PQsslAttributeNames`
+- [ ] `PQsslStruct`
+- [ ] `PQgetssl`
+
+### Command Execution Functions
+
+#### Main Functions
+- [x] `PQexec`
+- [ ] `PQexecParams`
+- [ ] `PQprepare`
+- [ ] `PQexecPrepared`
+- [ ] `PQdescribePrepared`
+- [ ] `PQdescribePortal`
+- [x] `PQresultStatus`
+- [ ] `PQresStatus`
+- [ ] `PQresultErrorMessage`
+- [ ] `PQresultVerboseErrorMessage`
+- [ ] `PQresultErrorField`
+- [x] `PQclear`
+
+#### Retrieving Query Result Information
+- [x] `PQntuples`
+- [x] `PQnfields`
+- [x] `PQfname`
+- [ ] `PQftable`
+- [ ] `PQftablecol`
+- [ ] `PQfformat`
+- [ ] `PQftype`
+- [ ] `PQfmod`
+- [ ] `PQfsize`
+- [ ] `PQbinaryTuples`
+- [x] `PQgetvalue`
+- [ ] `PQgetisnull`
+- [ ] `PQgetlength`
+- [ ] `PQnparams`
+- [ ] `PQparamtype`
+- <s>`PQprint`</s>
+
+#### Retrieving Other Result Information
+- [ ] `PQcmdStatus`
+- [ ] `PQcmdTuples`
+- [ ] `PQoidValue`
+- [ ] `PQoidStatus`
+
+#### Escaping String for Inclusion in SQL Commands
+- [ ] `PQescapeLiteral`
+- [ ] `PQescapeIdentifier`
+- [ ] `PQescapeStringConn`
+- [ ] `PQescapeString`
+- [ ] `PQescapeByteaConn`
+- [ ] `PQescapeBytea`
+- [ ] `PQunescapeBytea`
+
+### Asynchronous Command Processing
+- [ ] `PQsendQuery`
+- [ ] `PQsendQueryParams`
+- [ ] `PQsendPrepare`
+- [ ] `PQsendQueryPrepared`
+- [ ] `PQsendDescribePrepared`
+- [ ] `PQsendDescribePortal`
+- [ ] `PQgetResult`
+- [ ] `PQconsumeInput`
+- [ ] `PQisBusy`
+- [ ] `PQsetnonblocking`
+- [ ] `PQisnonblocking`
+- [ ] `PQflush`
+
+### Pipeline Mode
+- [ ] `PQpipelineStatus`
+- [ ] `PQenterPipelineMode`
+- [ ] `PQexitPipelineMode`
+- [ ] `PQpipelineSync`
+- [ ] `PQsendFlushRequest`
+
+### Retrieving Query Result Row-by-Row
+- [ ] `PQsetSingleRowMode`
+
+### Canceling Queries in Progress
+- [ ] `PQgetCancel`
+- [ ] `PQfreeCancel`
+- [ ] `PQcancel`
+- [ ] `PQrequestCancel`
+
+### Functions Associated with the COPY Command
+- [ ] `PQnfields`
+- [ ] `PQbinaryTuples`
+- [ ] `PQfformat`
+- [ ] `PQputCopyData`
+- [ ] `PQputCopyEnd`
+- [ ] `PQgetCopyData`
+- <s>`PQgetline`</s>
+- <s>`PQgetlineAsync`</s>
+- <s>`PQputline`</s>
+- <s>`PQputnbytes`</s>
+- <s>`PQendcopy`</s>
+
+### Control Functions
+- [ ] `PQclientEncoding`
+- [ ] `PQsetclientEncoding`
+- [ ] `PQsetErrorVerbosity`
+- [ ] `PQsetErrorContextVisibility`
+- [ ] `PQtrace`
+- [ ] `PQsettraceFlags`
+- [ ] `PQuntrace`
+
+### Miscellaneous Functions
+- [ ] `PQfreemem`
+- [x] `PQconninfoFree`
+- [ ] `PQencryptPasswordConn`
+- [ ] `PQenctyptPassword`
+- [ ] `PQmakeEmptyPGresult`
+- [ ] `PQfireResultCreateEvents`
+- [ ] `PQcopyResult`
+- [ ] `PQsetResultAttrs`
+- [ ] `PQsetvalue`
+- [ ] `PQresultAlloc`
+- [ ] `PQresultMemorySize`
+- [ ] `PQlibVersion`
+
+### Event System
+- [ ] `PGEventProc`
+- [ ] `PQregisterEventProc`
+- [ ] `PQsetInstanceData`
+- [ ] `PQresultSetInstanceData`
+- [ ] `PQresultInstanceData`
+
+### SSL Support
+- [ ] `PQinitOpenSSL`
+- [ ] `PQinitSSL`
+
+### Behavior in Threaded Programs
+- [ ] `PQisthreadsafe`
+
+
+
