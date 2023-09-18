@@ -12,6 +12,8 @@ module libpq
       only: PQexec, PQresultStatus, PQntuples, PQnfields, &
             PQgetvalue, PQclear, PQresultErrorMessage, PQfname
 
+   use m_fe_misc, only: PQlibVersion
+
    implicit none
    private
 
@@ -55,6 +57,9 @@ module libpq
    public :: PQfname
    public :: PQgetvalue
    public :: PQclear
+
+   ! From module m_fe_misc
+   public :: PQlibVersion
 
    ! Enumerators
    public :: CONNECTION_OK, CONNECTION_BAD, &

@@ -1,6 +1,6 @@
-# Libpq-fortran
+# LibPQ-Fortran
 
-Libpq-fortran is a Modern Fortran interface to the PostgreSQL `libpq` [C Library](https://www.postgresql.org/docs/current/libpq.html).
+LibPQ-Fortran is a Modern Fortran interface to the PostgreSQL `libpq` [C Library](https://www.postgresql.org/docs/current/libpq.html).
 
 This does not contain the `libpq` library; only the wrapper is included.
 
@@ -246,7 +246,7 @@ Note: The order of the following headings and the functions contained within the
 - [ ] `PQsetvalue`
 - [ ] `PQresultAlloc`
 - [ ] `PQresultMemorySize`
-- [ ] `PQlibVersion`
+- [x] `PQlibVersion`
 
 ### Event System
 - [ ] `PGEventProc`
