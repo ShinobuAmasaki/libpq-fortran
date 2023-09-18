@@ -48,8 +48,6 @@ int PQconndefaultsPrepare(PQFconninfoSize **optionsizes)
       ptr[i].siz_label     = getStrLen(options[i].label);
       ptr[i].siz_dispchar  = getStrLen(options[i].dispchar);
    }
-
-   printf("%s\n", options[30].label);
    
    PQconninfoFree(options);
 
@@ -59,4 +57,8 @@ int PQconndefaultsPrepare(PQFconninfoSize **optionsizes)
    return length; 
 }
 
-
+void PQconndefaultPrepareFree(PQFconninfoSize *options)
+{
+   free(options);
+   return;
+}

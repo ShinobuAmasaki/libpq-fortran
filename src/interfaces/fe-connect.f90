@@ -176,11 +176,13 @@ contains
    ! function PQconnectPoll
 
 
-   subroutine PQconndefaults
+   subroutine PQconndefaults (options)
       use :: t_PQconninfoOption
       use, intrinsic :: iso_c_binding
       implicit none
-      
+
+      type(PQconninfoOption), dimension(:), allocatable, target, intent(out) :: options
+
       interface
          function c_PQ_conndefaults_prepare (optionsizes) bind(c, name="PQconndefaultsPrepare") result(res)
             import c_ptr
@@ -190,28 +192,120 @@ contains
          end function c_PQ_conndefaults_prepare
       end interface
 
+      interface
+         function c_PQ_conndefaults () bind(c, name="PQconndefaults")
+            import c_ptr
+            implicit none
+            type(c_ptr) :: c_PQ_conndefaults
+         end function
+      end interface 
 
-      type(c_ptr) :: ptr
+      interface
+         subroutine c_PQ_conndefault_prepare_free (cptr) bind(c, name="PQconndefaultPrepareFree")
+            import c_ptr
+            implicit none
+            type(c_ptr), intent(in), value :: cptr
+         end subroutine
+      end interface
+
+      type(c_ptr) :: cptr_siz, cptr_obj
       type(c_PQconnOptionSizes),dimension(:), pointer :: fptr
+      type(c_PQconninfoOption), dimension(:), pointer :: opts_ptr
+
       integer :: length, i
 
-      length = c_PQ_conndefaults_prepare(ptr)
+      length = c_PQ_conndefaults_prepare(cptr_siz)
       
-      print *, length
+      call c_f_pointer(cptr_siz, fptr, shape=[length])
 
-      call c_f_pointer(ptr, fptr, shape=[length])
+      cptr_obj = c_PQ_conndefaults()
 
-      print *, length
+      call c_f_pointer(cptr_obj, opts_ptr, shape=[length])
+
+      allocate(options(length))
+
       do i = 1, length
-         print '(6i3)', fptr(i)%keyword, fptr(i)%envvar, fptr(i)%compiled, &
-          fptr(i)%val, fptr(i)%label, fptr(i)%dispchar
+         call read_options(fptr(i), opts_ptr(i), options(i))
       end do
-
-
-
       
+      call c_PQ_conndefault_prepare_free(cptr_siz)
+      call PQconninfoFree(cptr_obj)
+
+      contains
+
+         subroutine read_options(sizes, c_option, option)
+            use :: t_PQconninfoOption
+            use, intrinsic :: iso_c_binding
+            implicit none
+            type(c_PQconnoptionSizes), intent(in), pointer :: sizes
+            type(c_PQconninfoOption), intent(inout) :: c_option
+            type(PQconninfoOption), intent(out) :: option
+
+            ! Cの構造体からFortranの派生型に、keywordの値をコピーする。
+            block
+               character(sizes%keyword), pointer :: keyword
+               call c_f_pointer(c_option%keyword, keyword)
+               option%keyword = trim(keyword)
+            end block
+
+            if (sizes%envvar > 0) then
+               block
+                  character(sizes%envvar), pointer :: envvar
+                  call c_f_pointer(c_option%envvar, envvar)
+                  option%envvar = trim(envvar)
+               end block
+            else 
+               option%envvar = '' 
+            end if
+
+            if (sizes%compiled >0) then
+               block
+                  character(sizes%compiled), pointer :: compiled
+                  call c_f_pointer(c_option%compiled, compiled)
+                  option%compiled = trim(compiled)
+               end block 
+            else
+               option%compiled = ''
+            end if
+
+            if (sizes%val >0) then
+               block
+                  character(sizes%val), pointer :: val
+                  call c_f_pointer(c_option%val, val)
+                  option%val = trim(val)
+               end block
+            else
+               option%val = ''
+            end if
+
+            if (sizes%label > 0) then
+               block
+                  character(sizes%label), pointer :: label
+                  call c_f_pointer(c_option%label, label)
+                  option%label = trim(label)
+               end block
+            else
+               option%label = ''
+            end if
+
+            if (sizes%dispchar > 0) then
+               block
+                  character(1), pointer :: dispchar
+                  call c_f_pointer(c_option%dispchar, dispchar)
+                  option%dispchar = trim(dispchar)
+               end block 
+            else
+               option%dispchar = ''
+            end if
+
+            block
+               option%dispsize = c_option%dispsize
+            end block
+
+         end subroutine read_options
 
    end subroutine PQconndefaults
+
 
    ! function PQconninfo
    ! function PQconninfoParse
