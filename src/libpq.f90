@@ -53,11 +53,26 @@ module libpq
    public :: PQclear
 
    ! Enumerators
-   public :: CONNECTION_OK, CONNECTION_BAD
+   public :: CONNECTION_OK, CONNECTION_BAD, &
+             CONNECTION_MADE, &
+             CONNECTION_AWAITING_RESPONSE, &
+             CONNECTION_AUTH_OK, & 
+             CONNECTION_SETENV, &
+             CONNECTION_SSL_STARTUP, &
+             CONNECTION_NEEDED, &
+             CONNECTION_CHECK_WRITABLE, &
+             CONNECTION_CONSUME, &
+             CONNECTION_GSS_STARTUP, &
+             CONNECTION_CHECK_TARGET, &
+             CONNECTION_CHECK_STANDBY
+
    public :: PQPING_OK, PQPING_REJECT, PQPING_NO_RESPONSE, &
              PQPING_NO_ATTEMPT
    public :: PQTRANS_IDLE, PQTRANS_ACTIVE, PQTRANS_INTRANS, &
              PQTRANS_INERROR, PQTRANS_UNKNOWN
+   public :: PGRES_POLLING_FAILED, PGRES_POLLING_READING, &
+             PGRES_POLLING_WRITING, PGRES_POLLING_OK, &
+             PGRES_POLLING_ACTIVE
 
 
    !------------------------------------------------------------------!
@@ -66,6 +81,17 @@ module libpq
    enum, bind(c) ! ConnStatusType in src/interfaces/libpq/libpq-fe.h
       enumerator :: CONNECTION_OK = 0 
       enumerator :: CONNECTION_BAD
+      enumerator :: CONNECTION_MADE
+      enumerator :: CONNECTION_AWAITING_RESPONSE
+      enumerator :: CONNECTION_AUTH_OK
+      enumerator :: CONNECTION_SETENV
+      enumerator :: CONNECTION_SSL_STARTUP
+      enumerator :: CONNECTION_NEEDED
+      enumerator :: CONNECTION_CHECK_WRITABLE
+      enumerator :: CONNECTION_CONSUME
+      enumerator :: CONNECTION_GSS_STARTUP
+      enumerator :: CONNECTION_CHECK_TARGET
+      enumerator :: CONNECTION_CHECK_STANDBY
    end enum
 
    enum, bind(c) ! ExecStatusType in src/interfaces/libpq/libpq-fe.h
@@ -96,6 +122,14 @@ module libpq
       enumerator :: PQTRANS_INTRANS
       enumerator :: PQTRANS_INERROR
       enumerator :: PQTRANS_UNKNOWN
+   end enum
+
+   enum,bind(c) ! PostgresPollingStatusType
+      enumerator :: PGRES_POLLING_FAILED = 0
+      enumerator :: PGRES_POLLING_READING
+      enumerator :: PGRES_POLLING_WRITING
+      enumerator :: PGRES_POLLING_OK
+      enumerator :: PGRES_POLLING_ACTIVE
    end enum
 
 end module libpq

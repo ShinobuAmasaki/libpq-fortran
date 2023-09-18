@@ -21,12 +21,16 @@ module m_fe_connect
    public :: PQreset
    public :: PQserverVersion
    public :: PQprotocolVersion
-
    public :: PQconndefaults
+   
+   ! On going
+   public :: PQconnectStart
+   public :: PQconnectStartParams
+   public :: PQconnectPoll
 
-   ! Deprecated functions
-   ! - PQtty
-   ! - PQrequestCancel
+   ! PRIVATE functions
+   private :: PQconnectdbParams_back
+
 
 contains
 
@@ -63,6 +67,18 @@ contains
 
 
    function PQconnectdbParams (keywords, values, expand_dbname) result(conn)
+      use, intrinsic :: iso_c_binding
+      character(*), intent(in) :: keywords(:)
+      character(*), intent(in) :: values(:)
+      integer :: expand_dbname
+      type(c_ptr) :: conn
+
+      conn =  PQconnectdbParams_back(keywords, values, expand_dbname, .false.)
+
+   end function PQconnectdbParams
+      
+
+   function PQconnectdbParams_back (keywords, values, expand_dbname, isNonblocking) result(conn)
       use :: character_operations
       use, intrinsic :: iso_c_binding, only: c_ptr, c_int, c_char,&
                                              c_null_char, c_null_ptr, c_loc
@@ -73,6 +89,8 @@ contains
       character(*), intent(in) :: values(:)
 
       integer :: expand_dbname
+      logical :: isNonblocking
+
       type(c_ptr) :: conn
 
       integer :: max_len_key, max_len_val
@@ -90,6 +108,17 @@ contains
          end function c_PQ_connectdb_params
       end interface
 
+      interface
+         function c_PQ_connect_start_params (keywords, values, expand_dbname) &
+                                             bind(c, name="PQconnectStartParams") result(conn)
+            import c_ptr, c_int
+            implicit none
+            type(c_ptr), intent(in) :: keywords
+            type(c_ptr), intent(in) :: values
+            integer(c_int), intent(in) :: expand_dbname
+            type(c_ptr) :: conn
+         end function c_PQ_connect_start_params
+      end interface
 
       ! 下で確保する文字列配列の長さを知る。
       max_len_key = max_length_char_array(keywords)
@@ -119,11 +148,16 @@ contains
 
          c_expand_dbname = expand_dbname
 
-         conn = c_PQ_connectdb_params(ptr_keys, ptr_values, c_expand_dbname)
+         ! ノンブロッキング接続かどうかで分岐する。
+         if (isNonblocking) then
+            conn = c_PQ_connect_start_params(ptr_keys, ptr_values, c_expand_dbname)
+         else
+            conn = c_PQ_connectdb_params(ptr_keys, ptr_values, c_expand_dbname)
+         end if
 
-         end block
+      end block
 
-   end function PQconnectdbParams
+   end function PQconnectdbParams_back
 
 
    function PQsetdbLogin (host, port, options, tty, dbName, login, pwd) result(conn)
@@ -175,9 +209,61 @@ contains
    end function PQsetdbLogin
 
 
-   ! function PQconnectStartParams
-   ! function PQconnectStart
-   ! function PQconnectPoll
+   function PQconnectStartParams(keywords, values, expand_dbname) result(conn)
+      use, intrinsic :: iso_c_binding
+      character(*), intent(in) :: keywords(:)
+      character(*), intent(in) :: values(:)
+      integer :: expand_dbname
+      type(c_ptr) :: conn
+
+      conn =  PQconnectdbParams_back(keywords, values, expand_dbname, .true.)
+
+   end function PQconnectStartParams
+
+
+   function PQconnectStart (conninfo) result(conn)
+      use, intrinsic :: iso_c_binding, only:c_char, c_ptr, c_null_char
+      implicit none
+      
+      character(*), intent(in) :: conninfo
+      character(:, kind=c_char), allocatable :: c_conninfo
+
+      type(c_ptr) :: conn
+
+      interface
+         function c_PQ_connect_start(info) bind(c, name="PQconnectStart") result(conn)
+            import c_ptr, c_char
+            implicit none
+            character(1, kind=c_char), intent(in) :: info(*)
+            type(c_ptr) :: conn
+         end function c_PQ_connect_start
+      end interface 
+
+      c_conninfo = conninfo//c_null_char
+
+      conn = c_PQ_connect_start(c_conninfo)
+
+   end function PQconnectStart
+
+
+   function PQconnectPoll(conn)
+      use, intrinsic :: iso_fortran_env
+      use, intrinsic :: iso_c_binding
+      type(c_ptr) :: conn
+      integer(int32) :: PQconnectPoll
+
+      interface
+         function c_PQ_connect_poll(conn) bind(c, name="PQconnectPoll")
+            import c_ptr, c_int
+            implicit none
+            type(c_ptr), intent(in) :: conn
+            integer(c_int) :: c_PQ_connect_poll
+         end function c_PQ_connect_poll
+      end interface
+
+      PQconnectPoll = c_PQ_connect_poll(conn)
+
+   end function PQconnectPoll
 
 
    subroutine PQconndefaults (options)
