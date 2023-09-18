@@ -4,25 +4,41 @@ LibPQ-Fortran is a Modern Fortran interface to the PostgreSQL `libpq` [C Library
 
 This does not contain the `libpq` library; only the wrapper is included.
 
+The source of this package is available on [GitHub](https://github.com/ShinobuAmasaki/libpq-fortran).
+
 ## Features
+
+### Build
+
+This package needs [Fortran Package Manager (`fpm`)](https://fpm.fortran-lang.org/index.html).
+
+- `libpq` is required
+   - For Ubuntu, exec `sudo apt isntall libpq-dev`
+
+- Add to your `fpm.toml`
+   ```toml
+   [build]
+   link = ["pq"]
+   [dependencies]
+   libpq-fortran = "https://github.com/shinobuamasaki/libpq-fortran"
+   ```
+
+Tested on
+   - FreeBSD (`flang`)
+   - Linux
+      - Gentoo Linux (`gfortran`/`ifort`)
+      - Ubuntu 22.04 LTS (`gfortran`/`ifort`)
+   - macOS (`flang`)
+   - Windows (MinGW/`ifort`)
 
 ### Current
 
-- Build
-   - Add to your `fpm.toml`
-     ```toml
-     [build]
-     link = ["pq"]
-     [dependencies]
-     libpq-fortran = "https://github.com/shinobuamasaki/libpq-fortran"
-     ```
-
-   - Tested on Linux
-
-
 - Supported Compilers
    - GNU Compiler Collection: `gfortran`,
-   - Intel oneAPI HPC toolkit: `ifort`/`ifx`
+   - Intel oneAPI HPC toolkit: `ifort`/`ifx`,
+   - LLVM Flang (version 15): `flang`/`flang15`.
+
+Other versions of Flang are not tested.
 
 - Supported PostgreSQL version
    - PostgreSQL v15.4 (libpq v5.15)
@@ -46,7 +62,7 @@ This package will not:
 ### Dependencies
 
 - Fortran Package Manager (`fpm`)
-- the PostgreSQL `libpq` library
+- The PostgreSQL `libpq` library
 
 ## Licenses
 
@@ -100,14 +116,14 @@ Note: The order of the following headings and the functions contained within the
 - [ ] `PQconninfoParse`
 - [x] `PQfinish`
 - [x] `PQreset`
-- [ ] `PQresetStart`
-- [ ] `PQresetPoll`
+- [x] `PQresetStart`
+- [x] `PQresetPoll`
 - [x] `PQpingParams`
 - [x] `PQping`
 - [ ] `PQsetSSLKeyPassHook_OpenSSL`
 - [ ] `PQgetSSLKeyPassHook_OpenSSL`
 
-### Connection Status Functions
+### Connection Status Functions 
 
 - [x] `PQdb`
 - [x] `PQuser`
