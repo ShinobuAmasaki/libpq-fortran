@@ -19,6 +19,8 @@ module m_fe_connect
    public :: PQsetdbLogin
    public :: PQpingParams
    public :: PQreset
+   public :: PQserverVersion
+   public :: PQprotocolVersion
 
    public :: PQconndefaults
 
@@ -658,8 +660,47 @@ contains
 
 
    ! function PQparameterStatus
-   ! function PQprotocolVersion
-   ! function PQserverVersion
+
+
+   function PQprotocolVersion(conn) result(res)
+      use, intrinsic :: iso_c_binding
+      implicit none
+      type(c_ptr), intent(in) :: conn
+      integer :: res
+
+      interface
+         function c_PQ_protocol_version (conn) bind(c, name="PQprotocolVersion")
+            import c_ptr, c_int
+            implicit none
+            type(c_ptr), intent(in), value :: conn
+            integer(c_int) :: c_PQ_protocol_version
+         end function c_PQ_protocol_version
+      end interface
+
+      res = c_PQ_protocol_version(conn)
+
+   end function PQprotocolVersion
+
+
+   function PQserverVersion (conn) result(res)
+         use, intrinsic :: iso_c_binding
+         implicit none
+         type(c_ptr), intent(in) :: conn
+         integer :: res
+   
+         interface
+            function c_PQ_server_version (conn) bind(c, name="PQserverVersion")
+               import c_ptr, c_int
+               implicit none
+               type(c_ptr), intent(in), value :: conn
+               integer(c_int) :: c_PQ_server_version
+            end function c_PQ_server_version
+         end interface
+   
+         res = c_PQ_server_version(conn)
+   
+   end function PQserverVersion
+   
 
 
    function PQerrorMessage(conn)
