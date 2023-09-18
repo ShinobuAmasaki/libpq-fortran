@@ -81,3 +81,36 @@ The license for the remainder of this package appears in [LICENSE](https://githu
 
 ## Acknowledgements
 The creation of this package was inspired by iamed2's [LibPQ.jl](https://github.com/iamed2/LibPQ.jl) and a discussion in the [Fortran-jp](https://fortran-jp.org/) community.
+
+## Implemented Functions
+
+### Database Connection Control Functions
+
+- [x] `PQconnectdb`
+- [x] `PQconnectdbParams`
+- [x] `PQsetdbLogin`
+- [ ] `PQsetdb`
+- [ ] `PQconnectStartParams`
+- [ ] `PQconnectStart`
+- [ ] `PQconnectPoll`
+- [x] `PQconndefaults`
+- [ ] `PQconninfo`
+- [ ] `PQconninfoParse`
+- [x] `PQfinish`
+- [x] `PQreset`
+- [ ] `PQresetStart`
+- [ ] `PQresetPoll`
+- [x] `PQpingParams`
+- [x] `PQping`
+- [ ] `PQsetSSLKeyPassHook_OpenSSL`
+- [ ] `PQgetSSLKeyPassHook_OpenSSL`
+
+### Connection Status Functions
+
+- [x] `PQdb`
+- [x] `PQuser`
+- [x] `PQpass`
+- [x] `PQhost`
+- [x] `PQhostaddr`
+- [x] `PQport`
+- [-] `PQtty` 
