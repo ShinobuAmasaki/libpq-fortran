@@ -26,8 +26,10 @@ module m_fe_connect
    public :: PQconnectStartParams
    public :: PQconnectPoll
    public :: PQsocket
-
    public :: PQbackendPID
+
+   public :: PQresetPoll
+   public :: PQresetStart
 
    ! PRIVATE functions
    private :: PQconnectdbParams_back
@@ -462,8 +464,48 @@ contains
    end subroutine PQreset
             
 
-   ! function PQresetStart
-   ! function PQresetPoll
+   function PQresetStart(conn)
+      use, intrinsic :: iso_fortran_env
+      use, intrinsic :: iso_c_binding
+      implicit none
+      
+      type(c_ptr), intent(in) :: conn
+      integer(int32) :: PQresetStart
+
+      interface
+         function c_PQ_reset_start (conn) bind(c, name="PQresetStart")
+            import c_ptr, c_int
+            implicit none
+            type(c_ptr), intent(in), value :: conn
+            integer(c_int) :: c_PQ_reset_start
+         end function c_PQ_reset_start
+      end interface 
+
+      PQresetStart = c_PQ_reset_start(conn)
+
+   end function PQresetStart
+
+   
+   function PQresetPoll (conn)
+      use, intrinsic :: iso_fortran_env
+      use, intrinsic :: iso_c_binding
+      implicit none
+      
+      type(c_ptr), intent(in) :: conn
+      integer(int32) :: PQresetPoll
+
+      interface
+         function c_PQ_reset_poll (conn) bind(c, name="PQresetPoll")
+            import c_ptr, c_int
+            implicit none
+            type(c_ptr), intent(in), value :: conn
+            integer(c_int) :: c_PQ_reset_poll
+         end function c_PQ_reset_poll
+      end interface
+
+      PQresetPoll = c_PQ_reset_poll(conn)
+
+   end function PQresetPoll
 
 
    function PQpingParams (keywords, values, expand_dbname) result(res)

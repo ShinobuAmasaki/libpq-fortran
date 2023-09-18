@@ -5,7 +5,8 @@ module libpq
             PQoptions, PQtransactionStatus, PQsetdbLogin, PQpingParams, &
             PQreset, PQpass, PQport, PQprotocolVersion, PQserverVersion, &
             PQconndefaults, PQconnectStart, PQconnectStartParams, &
-            PQconnectPoll, PQbackendPID, PQsocket
+            PQconnectPoll, PQbackendPID, PQsocket, PQresetStart, &
+            PQresetPoll
 
    
    use m_fe_exec, &
@@ -17,38 +18,40 @@ module libpq
    implicit none
    private
 
-   !------------------------------------------------------------------!
-   !-- PUBLIC Statements
+!------------------------------------------------------------------!
+!-- PUBLIC Statements
   
-   ! From module m_fe_connect:
-      ! Database Connection Control Functions
-      public :: PQconnectdb
-      public :: PQconnectdbParams
-      public :: PQfinish
-      public :: PQerrorMessage
-      public :: PQping
-      public :: PQsetdbLogin
-      public :: PQpingParams
-      public :: PQreset
-      public :: PQconndefaults
-      public :: PQconnectStart
-      public :: PQconnectStartParams
-      public :: PQconnectPoll
+! From module m_fe_connect:
+   ! Database Connection Control Functions
+   public :: PQconnectdb
+   public :: PQconnectdbParams
+   public :: PQfinish
+   public :: PQerrorMessage
+   public :: PQping
+   public :: PQsetdbLogin
+   public :: PQpingParams
+   public :: PQreset
+   public :: PQconndefaults
+   public :: PQconnectStart
+   public :: PQconnectStartParams
+   public :: PQconnectPoll
+   public :: PQresetPoll
+   public :: PQresetStart
 
-      ! Connction Status Functions
-      public :: PQdb
-      public :: PQuser
-      public :: PQpass
-      public :: PQhost
-      public :: PQport
-      public :: PQhostaddr
-      public :: PQoptions
-      public :: PQstatus
-      public :: PQtransactionStatus
-      public :: PQserverVersion
-      public :: PQprotocolVersion
-      public :: PQsocket
-      public :: PQbackendPID
+   ! Connction Status Functions
+   public :: PQdb
+   public :: PQuser
+   public :: PQpass
+   public :: PQhost
+   public :: PQport
+   public :: PQhostaddr
+   public :: PQoptions
+   public :: PQstatus
+   public :: PQtransactionStatus
+   public :: PQserverVersion
+   public :: PQprotocolVersion
+   public :: PQsocket
+   public :: PQbackendPID
 
    ! From module m_fe_exec:
    public :: PQexec
