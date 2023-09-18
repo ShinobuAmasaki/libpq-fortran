@@ -314,7 +314,7 @@ contains
       allocate(options(length))
 
       do i = 1, length
-         call read_options(fptr(i), opts_ptr(i), options(i))
+         call read_option(fptr(i), opts_ptr(i), options(i))
       end do
       
       call c_PQ_conndefault_prepare_free(cptr_siz)
@@ -322,7 +322,7 @@ contains
 
       contains
 
-         subroutine read_options(sizes, c_option, option)
+         subroutine read_option(sizes, c_option, option)
             use :: t_PQconninfoOption
             use, intrinsic :: iso_c_binding
             implicit none
@@ -391,7 +391,7 @@ contains
                option%dispsize = c_option%dispsize
             end block
 
-         end subroutine read_options
+         end subroutine read_option
 
    end subroutine PQconndefaults
 
