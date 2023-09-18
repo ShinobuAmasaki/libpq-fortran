@@ -13,23 +13,22 @@ program main
    ! typically allocated by the PQconndefaults procedure.
    type(PQconninfoOption), allocatable, target :: options(:)
    
-   
 
    integer :: i
-
+   print '(a)', "=== BEGIN TEST: pqconndefaults ==="
    ! 
    call PQconndefaults(options)
 
    do i = 1, size(options)
-         print *, options(i)%keyword
-         print *, options(i)%envvar
-         print *, options(i)%compiled
-         print *, options(i)%val
-         print *, options(i)%label
-         print *, options(i)%dispchar
-         print *, options(i)%dispsize
-         print *, '==================='
+      print '(12a, i0)', trim(options(i)%keyword)," : ", &
+         trim(options(i)%envvar), " : ", &
+         trim(options(i)%compiled), " : ", &
+         trim(options(i)%val), " : ", &
+         trim(options(i)%label), " : ", &
+         trim(options(i)%dispchar), " : ", &
+         options(i)%dispsize
    end do
 
+   print '(a)', "===== END TEST ====="
 end program main
     
