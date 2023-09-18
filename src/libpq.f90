@@ -4,7 +4,8 @@ module libpq
             PQping, PQdb, PQuser, PQhost, PQhostaddr, PQconnectdbParams, &
             PQoptions, PQtransactionStatus, PQsetdbLogin, PQpingParams, &
             PQreset, PQpass, PQport, PQprotocolVersion, PQserverVersion, &
-            PQconndefaults
+            PQconndefaults, PQconnectStart, PQconnectStartParams, &
+            PQconnectPoll 
 
    
    use m_fe_exec, &
@@ -28,6 +29,9 @@ module libpq
       public :: PQpingParams
       public :: PQreset
       public :: PQconndefaults
+      public :: PQconnectStart
+      public :: PQconnectStartParams
+      public :: PQconnectPoll
 
       ! Connction Status Functions
       public :: PQdb

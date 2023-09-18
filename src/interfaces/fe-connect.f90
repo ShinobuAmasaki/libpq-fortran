@@ -22,8 +22,6 @@ module m_fe_connect
    public :: PQserverVersion
    public :: PQprotocolVersion
    public :: PQconndefaults
-   
-   ! On going
    public :: PQconnectStart
    public :: PQconnectStartParams
    public :: PQconnectPoll

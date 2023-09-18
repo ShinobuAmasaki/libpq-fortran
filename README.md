@@ -92,9 +92,9 @@ Note: The order of the following headings and the functions contained within the
 - [x] `PQconnectdbParams`
 - [x] `PQsetdbLogin`
 - <s>`PQsetdb`</s>
-- [ ] `PQconnectStartParams`
-- [ ] `PQconnectStart`
-- [ ] `PQconnectPoll`
+- [x] `PQconnectStartParams`
+- [x] `PQconnectStart`
+- [x] `PQconnectPoll`
 - [x] `PQconndefaults`
 - [ ] `PQconninfo`
 - [ ] `PQconninfoParse`
