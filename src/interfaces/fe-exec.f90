@@ -12,6 +12,8 @@ module m_fe_exec
    public :: PQfnumber
    public :: PQclear
 
+   public :: PQfreemem
+
 
 contains
 
@@ -348,5 +350,24 @@ contains
    ! function PQputCopyData
    ! function PQputCopyEnd
    ! function PQgetCopyData
+   
+
+   subroutine PQfreemem(cptr)
+      use, intrinsic :: iso_c_binding
+      implicit none
+      type(c_ptr), intent(in) :: cptr
+
+      interface
+         subroutine c_PQ_free_memory (cptr)
+            import c_ptr
+            implicit none
+            type(c_ptr), intent(in), value :: cptr
+         end subroutine c_PQ_free_memory
+      end interface
+
+      call c_PQ_free_memory(cptr)
+
+   end subroutine PQfreemem 
+
 
 end module m_fe_exec

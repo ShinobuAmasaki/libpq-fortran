@@ -3,19 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-typedef struct
-{
-   int siz_keyword;
-   int siz_envvar;
-   int siz_compiled;
-   int siz_val;
-   int siz_label;
-   int siz_dispchar;
-} PQFconninfoSize ;
-
-int getStrLen(const char*str) {
-   return (str != NULL) ? strlen(str) : 0;
-}
+#include "pqf-wraps.h"
 
 
 int PQconndefaultsPrepare(PQFconninfoSize **optionsizes)

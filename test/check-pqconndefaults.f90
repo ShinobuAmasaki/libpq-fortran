@@ -1,6 +1,6 @@
 program main
    use t_PQconninfoOption
-   use m_fe_connect, only: PQconndefaults
+   use libpq, only: PQconndefaults
 
    ! PQconninfoOption派生型の配列の宣言
    ! この配列はallocatableかたtargetでなければならない。
