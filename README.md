@@ -24,12 +24,12 @@ This package needs [Fortran Package Manager (`fpm`)](https://fpm.fortran-lang.or
    ```
 
 Tested on
-   - FreeBSD (`flang`)
+   - FreeBSD
    - Linux
-      - Gentoo Linux (`gfortran`/`ifort`)
-      - Ubuntu 22.04 LTS (`gfortran`/`ifort`)
-   - macOS (`flang`)
-   - Windows (MinGW/`ifort`)
+      - Gentoo Linux
+      - Ubuntu 22.04 LTS
+   - macOS
+   - Windows
 
 ### Current
 
@@ -139,10 +139,10 @@ Note: The order of the following headings and the functions contained within the
 - [x] `PQprotocolVersion`
 - [x] `PQserverVersion`
 - [x] `PQerrorMessage`
-- [ ] `PQsocket`
-- [ ] `PQbackendPID`
-- [ ] `PQconnectionNeedsPassword`
-- [ ] `PQconnectionUsedPassword`
+- [x] `PQsocket`
+- [x] `PQbackendPID`
+- [x] `PQconnectionNeedsPassword`
+- [x] `PQconnectionUsedPassword`
 - [ ] `PQsslInUse`
 - [ ] `PQsslAttribute`
 - [ ] `PQsslAttributeNames`
