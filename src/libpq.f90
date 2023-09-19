@@ -13,7 +13,8 @@ module libpq
    use m_fe_exec, &
       only: PQexec, PQresultStatus, PQntuples, PQnfields, &
             PQgetvalue, PQclear, PQresultErrorMessage, PQfname, &
-            PQfnumber, PQgetisnull
+            PQfnumber, PQgetisnull, PQresultVerboseErrorMessage, &
+            PQbinaryTuples, PQftablecol, PQfformat, PQfmod, PQfsize
 
    use m_fe_misc, only: PQlibVersion
 
@@ -66,6 +67,7 @@ module libpq
    public :: PQexec
    public :: PQresultStatus
    public :: PQresultErrorMessage
+   public :: PQresultVerboseErrorMessage
    public :: PQntuples
    public :: PQnfields
    public :: PQfname
@@ -73,6 +75,12 @@ module libpq
    public :: PQgetvalue
    public :: PQgetisnull
    public :: PQclear
+   public :: PQbinaryTuples
+   public :: PQfformat
+   public :: PQfmod
+   public :: PQfsize
+   public :: PQftablecol
+
 
    ! From module m_fe_misc
    public :: PQlibVersion
@@ -102,6 +110,9 @@ module libpq
              PGRES_POLLING_WRITING, PGRES_POLLING_OK, &
              PGRES_POLLING_ACTIVE
 
+   public :: PQERRORS_TERSE, PQERRORS_DEFAULT, PQERRORS_VERBOSE, PQERRORS_SQLSTATE
+
+   public :: PQSHOW_CONTEXT_NEVER, PQSHOW_CONTEXT_ERRORS, PQSHOW_ALWAYS
 
    !------------------------------------------------------------------!
    !-- ENUMERATOR declarations
@@ -158,6 +169,19 @@ module libpq
       enumerator :: PGRES_POLLING_WRITING
       enumerator :: PGRES_POLLING_OK
       enumerator :: PGRES_POLLING_ACTIVE
+   end enum
+
+   enum,bind(c) ! PGverbosity
+      enumerator :: PQERRORS_TERSE = 0
+      enumerator :: PQERRORS_DEFAULT
+      enumerator :: PQERRORS_VERBOSE
+      enumerator :: PQERRORS_SQLSTATE
+   end enum
+
+   enum, bind(c)  ! PQContextVisibility
+      enumerator :: PQSHOW_CONTEXT_NEVER = 0
+      enumerator :: PQSHOW_CONTEXT_ERRORS
+      enumerator :: PQSHOW_ALWAYS
    end enum
 
 end module libpq

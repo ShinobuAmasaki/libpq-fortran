@@ -5,6 +5,7 @@ module m_fe_exec
    public :: PQexec
    public :: PQresultStatus
    public :: PQresultErrorMessage
+   public :: PQresultVerboseErrorMessage
    public :: PQgetvalue
    public :: PQntuples
    public :: PQnfields
@@ -14,6 +15,12 @@ module m_fe_exec
    public :: PQgetisnull
 
    public :: PQfreemem
+
+   public :: PQbinaryTuples
+   public :: PQfformat
+   public :: PQfmod
+   public :: PQfsize
+   public :: PQftablecol
 
 
 contains
@@ -118,7 +125,32 @@ contains
    end function PQresultErrorMessage
 
 
-   ! function PQresultVerboseErrorMessage
+   function PQresultVerboseErrorMessage(pgresult, verbosity, show_context) result(res)
+      use :: character_pointer_wrapper
+      use, intrinsic :: iso_fortran_env
+      use, intrinsic :: iso_c_binding
+      implicit none
+      type(c_ptr), intent(in) :: pgresult
+      integer(int32), intent(in) :: verbosity
+      integer(int32), intent(in) :: show_context
+
+      character(:, kind=c_char), pointer :: res
+
+      interface
+         function c_PQ_result_verbose_error_message (res, verbosity, show_context ) &
+                                          bind(c, name='PQresultVerboseErrorMessage')
+            import c_ptr, c_int
+            implicit none
+            type(c_ptr), intent(in), value :: res
+            integer(c_int), intent(in), value :: verbosity, show_context
+            type(c_ptr) :: c_PQ_result_verbose_error_message
+         end function c_PQ_result_verbose_error_message
+      end interface
+
+      res => c_to_f_charpointer(c_PQ_result_verbose_error_message(pgresult, verbosity, show_context))
+   end function PQresultVerboseErrorMessage
+
+
    ! function PQresultErrorField
 
 
@@ -249,16 +281,145 @@ contains
       PQfnumber = c_PQ_field_number(pgresult, c_column_name)
 
    end function PQfnumber
-   
 
    
    ! function PQftable
-   ! function PQftablecol
-   ! function PQfformat
+
+
+   function PQftablecol (pgresult, column_number) result(res)
+      use, intrinsic :: iso_c_binding
+      use, intrinsic :: iso_fortran_env
+      implicit none
+
+      type(c_ptr), intent(in) :: pgresult
+      integer(int32), intent(in) :: column_number
+      integer(int32) :: res
+
+      interface
+         function c_PQ_field_table_column(pgresult, column_number) &
+                                 bind(c, name="PQftablecol") result(res)
+            import c_ptr, c_int
+            implicit none
+            type(c_ptr), intent(in), value :: pgresult
+            integer(c_int), intent(in), value :: column_number
+            integer(c_int) :: res
+         end function c_PQ_field_table_column
+      end interface
+
+      res = c_PQ_field_table_column(pgresult, column_number)
+
+   end function PQftablecol
+
+
+   function PQfformat (pgresult, column_number) result(res)
+      use, intrinsic :: iso_c_binding
+      use, intrinsic :: iso_fortran_env
+      implicit none
+
+      type(c_ptr), intent(in) :: pgresult
+      integer(int32), intent(in) :: column_number
+      integer(int32) :: res
+
+      interface
+         function c_PQ_field_format (pgresult, column_number) &
+                                 bind(c, name="PQfformat") result(res)
+            import c_ptr, c_int
+            implicit none
+            type(c_ptr), intent(in), value :: pgresult
+            integer(c_int), intent(in), value :: column_number
+            integer(c_int) :: res
+         end function c_PQ_field_format
+      end interface
+
+      res = c_PQ_field_format(pgresult, column_number)
+
+   end function PQfformat
+
+
    ! function PQftype
-   ! funciton PQfmod
-   ! function PQfsize
-   ! function PQbinaryTuples
+
+
+   function PQfmod(pgresult, column_number) result(res)
+      use, intrinsic :: iso_c_binding
+      use, intrinsic :: iso_fortran_env
+      implicit none
+
+      type(c_ptr), intent(in) :: pgresult
+      integer(int32), intent(in) :: column_number
+      integer(int32) :: res
+
+      interface
+         function c_PQ_field_modifier (pgresult, column_number) &
+                                 bind(c, name="PQfmod") result(res)
+            import c_ptr, c_int
+            implicit none
+            type(c_ptr), intent(in), value :: pgresult
+            integer(c_int), intent(in), value :: column_number
+            integer(c_int) :: res
+         end function c_PQ_field_modifier
+      end interface
+
+      res = c_PQ_field_modifier(pgresult, column_number)
+
+   end function PQfmod
+
+
+   function PQfsize (pgresult, column_number) result(res)
+      use, intrinsic :: iso_c_binding
+      use, intrinsic :: iso_fortran_env
+      implicit none
+
+      type(c_ptr), intent(in) :: pgresult
+      integer(int32), intent(in) :: column_number
+      integer(int32) :: res
+
+      interface
+         function c_PQ_field_size (pgresult, column_number) &
+                                 bind(c, name="PQfsize") result(res)
+            import c_ptr, c_int
+            implicit none
+            type(c_ptr), intent(in), value :: pgresult
+            integer(c_int), intent(in), value :: column_number
+            integer(c_int) :: res
+         end function c_PQ_field_size
+      end interface
+
+      res = c_PQ_field_size(pgresult, column_number)
+
+   end function PQfsize
+
+
+   function PQbinaryTuples (pgresult)
+      use, intrinsic :: iso_c_binding
+      use, intrinsic :: iso_fortran_env
+      implicit none
+
+      type(c_ptr), intent(in) :: pgresult
+      integer(int32) :: res
+      logical :: PQbinaryTuples
+
+      interface
+         function c_PQ_binary_tuples (pgresult) &
+                                 bind(c, name="PQbinaryTuples") result(res)
+            import c_ptr, c_int
+            implicit none
+            type(c_ptr), intent(in), value :: pgresult
+            integer(c_int) :: res
+         end function c_PQ_binary_tuples
+      end interface
+         
+      res = c_PQ_binary_tuples(pgresult)
+      
+      if (res == 1) then
+         PQbinaryTuples = .true.
+
+      else
+         PQbinaryTuples = .false.
+
+      end if
+
+   end function PQbinaryTuples
+
   
 
    function PQgetvalue (pgresult, tuple_num, field_num)
