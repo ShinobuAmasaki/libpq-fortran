@@ -29,10 +29,10 @@ module m_fe_connect
    public :: PQbackendPID
    public :: PQresetPoll
    public :: PQresetStart
-
    public :: PQparameterStatus
    public :: PQconnectionNeedsPassword
    public :: PQconnectionUsedPassword
+   public :: PQconninfo
 
    ! PRIVATE functions
    private :: PQconnectdbParams_back
@@ -403,7 +403,68 @@ contains
    end subroutine PQconndefaults
 
 
-   ! function PQconninfo
+   subroutine PQconninfo (conn, options)
+      use :: character_operations
+      use :: t_PQconninfoOption
+      use, intrinsic :: iso_c_binding
+      implicit none
+
+      type(c_ptr), intent(in) :: conn
+      type(PQconninfoOption), dimension(:), allocatable, target, intent(out) :: options
+
+      interface
+         function c_PQ_conninfo_prepare (conn, optionsizes) bind(c, name="PQconninfoPrepare") result(res)
+            import c_ptr
+            implicit none
+            type(c_ptr), intent(in), value :: conn
+            type(c_ptr), intent(out) :: optionsizes
+            integer :: res
+         end function c_PQ_conninfo_prepare
+      end interface
+
+      interface
+         function c_PQ_conninfo (conn) bind(c, name="PQconninfo")
+            import c_ptr
+            implicit none
+            type(c_ptr), intent(in), value :: conn 
+            type(c_ptr) :: c_PQ_conninfo
+         end function c_PQ_conninfo
+      end interface
+
+      interface
+         subroutine c_PQ_conninfo_prepare_free (cptr) bind(c, name="PQconninfoPrepareFree")
+            import c_ptr
+            implicit none
+            type(c_ptr), intent(in), value :: cptr
+         end subroutine
+      end interface
+
+      type(c_ptr) :: cptr_siz, cptr_obj
+      type(c_PQconnOptionSizes), dimension(:), pointer :: fptr
+      type(c_PQconninfoOption), dimension(:), pointer :: opts_ptr
+      integer :: length, i
+
+      length = c_PQ_conninfo_prepare(conn, cptr_siz)
+
+      call c_f_pointer(cptr_siz, fptr, shape=[length])
+
+      cptr_obj = c_PQ_conninfo(conn)
+
+      call c_f_pointer(cptr_obj, opts_ptr, shape=[length])
+
+      allocate(options(length))
+
+      do i = 1, length
+         call read_option(fptr(i), opts_ptr(i), options(i))
+      end do
+
+      call c_PQ_conninfo_prepare_free(cptr_siz)
+      call PQconninfoFree(cptr_obj)
+
+
+   end subroutine PQconninfo
+            
+
    ! function PQconninfoParse
 
 

@@ -112,7 +112,7 @@ Note: The order of the following headings and the functions contained within the
 - [x] `PQconnectStart`
 - [x] `PQconnectPoll`
 - [x] `PQconndefaults`
-- [ ] `PQconninfo`
+- [x] `PQconninfo`
 - [ ] `PQconninfoParse`
 - [x] `PQfinish`
 - [x] `PQreset`

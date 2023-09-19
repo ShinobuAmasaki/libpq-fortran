@@ -7,7 +7,7 @@ module libpq
             PQconndefaults, PQconnectStart, PQconnectStartParams, &
             PQconnectPoll, PQbackendPID, PQsocket, PQresetStart, &
             PQresetPoll, PQparameterStatus, PQconnectionNeedsPassword, &
-            PQconnectionUsedPassword
+            PQconnectionUsedPassword, PQconninfo
 
    
    use m_fe_exec, &
@@ -16,6 +16,8 @@ module libpq
             PQfnumber
 
    use m_fe_misc, only: PQlibVersion
+
+   use t_PQconninfoOption, only: PQconninfoOption
 
    implicit none
    private
@@ -40,6 +42,7 @@ module libpq
    public :: PQconnectPoll
    public :: PQresetPoll
    public :: PQresetStart
+   public :: PQconninfo
 
    ! Connction Status Functions
    public :: PQdb
@@ -72,6 +75,9 @@ module libpq
 
    ! From module m_fe_misc
    public :: PQlibVersion
+
+   ! Derived types
+   public :: PQconninfoOption
 
    ! Enumerators
    public :: CONNECTION_OK, CONNECTION_BAD, &

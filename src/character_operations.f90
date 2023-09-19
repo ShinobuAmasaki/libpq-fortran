@@ -63,6 +63,79 @@ contains
       ptr_array(siz) = c_null_ptr
 
    end subroutine cptr_array_from_cchar
+  
    
+   subroutine read_option(sizes, c_option, option)
+      use :: t_PQconninfoOption
+      use, intrinsic :: iso_c_binding
+      implicit none
+      type(c_PQconnoptionSizes), intent(in), pointer :: sizes
+      type(c_PQconninfoOption), intent(inout) :: c_option
+      type(PQconninfoOption), intent(out) :: option
+
+      ! Cの構造体からFortranの派生型に、keywordの値をコピーする。
+      block
+         character(sizes%keyword), pointer :: keyword
+         call c_f_pointer(c_option%keyword, keyword)
+         option%keyword = trim(keyword)
+      end block
+
+      if (sizes%envvar > 0) then
+         block
+            character(sizes%envvar), pointer :: envvar
+            call c_f_pointer(c_option%envvar, envvar)
+            option%envvar = trim(envvar)
+         end block
+      else 
+         option%envvar = '' 
+      end if
+
+      if (sizes%compiled >0) then
+         block
+            character(sizes%compiled), pointer :: compiled
+            call c_f_pointer(c_option%compiled, compiled)
+            option%compiled = trim(compiled)
+         end block 
+      else
+         option%compiled = ''
+      end if
+
+      if (sizes%val >0) then
+         block
+            character(sizes%val), pointer :: val
+            call c_f_pointer(c_option%val, val)
+            option%val = trim(val)
+         end block
+      else
+         option%val = ''
+      end if
+
+      if (sizes%label > 0) then
+         block
+            character(sizes%label), pointer :: label
+            call c_f_pointer(c_option%label, label)
+            option%label = trim(label)
+         end block
+      else
+         option%label = ''
+      end if
+
+      if (sizes%dispchar > 0) then
+         block
+            character(1), pointer :: dispchar
+            call c_f_pointer(c_option%dispchar, dispchar)
+            option%dispchar = trim(dispchar)
+         end block 
+      else
+         option%dispchar = ''
+      end if
+
+      block
+         option%dispsize = c_option%dispsize
+      end block
+
+   end subroutine read_option
+
+
 
 end module character_operations
