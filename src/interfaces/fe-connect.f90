@@ -31,6 +31,8 @@ module m_fe_connect
    public :: PQresetStart
 
    public :: PQparameterStatus
+   public :: PQconnectionNeedsPassword
+   public :: PQconnectionUsedPassword
 
    ! PRIVATE functions
    private :: PQconnectdbParams_back
@@ -929,8 +931,49 @@ contains
    end function PQbackendPID
 
 
-   ! function PQconnectionNeedsPassword
-   ! function PQconnectionUsedPassword
+   function PQconnectionNeedsPassword(conn)
+      use, intrinsic :: iso_c_binding
+      use, intrinsic :: iso_fortran_env
+
+      type(c_ptr), intent(in) :: conn
+      integer(int32) :: PQconnectionNeedsPassword
+
+      interface
+         function c_PQ_connection_needs_password (conn)  &
+                  bind(c, name="PQconnectionNeedsPassword") result(res)
+            import c_ptr, c_int
+            implicit none
+            type(c_ptr), intent(in), value :: conn
+            integer(c_int) :: res
+         end function c_PQ_connection_needs_password
+      end interface
+
+      PQconnectionNeedsPassword = c_PQ_connection_needs_password(conn)
+
+   end function PQconnectionNeedsPassword
+
+
+   function PQconnectionUsedPassword (conn)
+      use, intrinsic :: iso_c_binding
+      use, intrinsic :: iso_fortran_env
+
+      type(c_ptr), intent(in) :: conn
+      integer(int32) :: PQconnectionUsedPassword
+
+      interface
+         function c_PQ_connection_used_password (conn) &
+                  bind(c, name="PQconnectionUsedPassword") result(res)
+            import c_ptr, c_int
+            implicit none
+            type(c_ptr), intent(in), value :: conn
+            integer(c_int) :: res
+         end function c_PQ_connection_used_password
+      end interface
+
+      PQconnectionUsedPassword = c_PQ_connection_used_password(conn)
+
+   end function PQconnectionUsedPassword
+
 
    != for SSL connection
    ! function PQsslInUse

@@ -6,7 +6,8 @@ module libpq
             PQreset, PQpass, PQport, PQprotocolVersion, PQserverVersion, &
             PQconndefaults, PQconnectStart, PQconnectStartParams, &
             PQconnectPoll, PQbackendPID, PQsocket, PQresetStart, &
-            PQresetPoll, PQparameterStatus
+            PQresetPoll, PQparameterStatus, PQconnectionNeedsPassword, &
+            PQconnectionUsedPassword
 
    
    use m_fe_exec, &
@@ -18,9 +19,10 @@ module libpq
    implicit none
    private
 
+
 !------------------------------------------------------------------!
 !-- PUBLIC Statements
-  
+
 ! From module m_fe_connect:
    ! Database Connection Control Functions
    public :: PQconnectdb
@@ -53,6 +55,8 @@ module libpq
    public :: PQsocket
    public :: PQbackendPID
    public :: PQparameterStatus
+   public :: PQconnectionNeedsPassword
+   public :: PQconnectionUsedPassword
 
    ! From module m_fe_exec:
    public :: PQexec
