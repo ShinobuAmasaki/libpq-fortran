@@ -178,7 +178,7 @@ Note: The order of the following headings and the functions contained within the
 - [ ] `PQfsize`
 - [ ] `PQbinaryTuples`
 - [x] `PQgetvalue`
-- [ ] `PQgetisnull`
+- [x] `PQgetisnull`
 - [ ] `PQgetlength`
 - [ ] `PQnparams`
 - [ ] `PQparamtype`
@@ -252,7 +252,7 @@ Note: The order of the following headings and the functions contained within the
 - [ ] `PQuntrace`
 
 ### Miscellaneous Functions
-- [ ] `PQfreemem`
+- [x] `PQfreemem`
 - [x] `PQconninfoFree`
 - [ ] `PQencryptPasswordConn`
 - [ ] `PQenctyptPassword`

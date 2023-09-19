@@ -11,6 +11,7 @@ module m_fe_exec
    public :: PQfname
    public :: PQfnumber
    public :: PQclear
+   public :: PQgetisnull
 
    public :: PQfreemem
 
@@ -293,7 +294,42 @@ contains
    end function PQgetvalue
 
 
-   ! function PQgetisnull
+   function PQgetisnull (pgresult, row_number, column_number)
+      use, intrinsic :: iso_c_binding
+      use, intrinsic :: iso_fortran_env
+      
+      type(c_ptr), intent(in) :: pgresult
+      integer(int32), intent(in) :: row_number, column_number
+      logical :: PQgetisnull
+
+      interface
+         function c_PQ_get_is_null (res, row_number, column_number) bind(c, name="PQgetisnull")
+            import c_ptr, c_int
+            implicit none
+            type(c_ptr), intent(in), value :: res
+            integer(c_int), intent(in), value :: row_number
+            integer(c_int), intent(in), value :: column_number
+            integer(c_int) :: c_PQ_get_is_null
+         end function c_PQ_get_is_null
+      end interface
+
+      block
+         integer :: func_result
+
+         func_result = c_PQ_get_is_null(pgresult, row_number, column_number)
+
+         PQgetisnull = .false.
+
+         if (func_result == 0) then 
+            PQgetisnull = .false.
+         
+         else if (func_result == 1 ) then
+            PQgetisnull = .true.
+         end if
+         
+      end block
+
+   end function PQgetisnull
    ! function PQgetlength
    ! function PQnparams
    ! function PQparamtype
@@ -350,7 +386,7 @@ contains
    ! function PQputCopyData
    ! function PQputCopyEnd
    ! function PQgetCopyData
-   
+
 
    subroutine PQfreemem(cptr)
       use, intrinsic :: iso_c_binding
@@ -358,7 +394,7 @@ contains
       type(c_ptr), intent(in) :: cptr
 
       interface
-         subroutine c_PQ_free_memory (cptr)
+         subroutine c_PQ_free_memory (cptr) bind(c, name="PQfreemem")
             import c_ptr
             implicit none
             type(c_ptr), intent(in), value :: cptr
