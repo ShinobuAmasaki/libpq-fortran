@@ -9,6 +9,7 @@ module m_fe_exec
    public :: PQntuples
    public :: PQnfields
    public :: PQfname
+   public :: PQfnumber
    public :: PQclear
 
 
@@ -219,7 +220,35 @@ contains
    end function PQfname
 
    
-   ! function PQfnumber
+   function PQfnumber (pgresult, column_name)
+      use :: character_pointer_wrapper
+      use, intrinsic :: iso_c_binding
+      implicit none
+      
+      type(c_ptr), intent(in) :: pgresult
+      character(*), intent(in) :: column_name
+      character(:, kind=c_char), allocatable :: c_column_name
+      integer :: PQfnumber
+
+      interface 
+         function c_PQ_field_number(pgresult, c_name) bind(c, name='PQfnumber') &
+                                                      result(res)
+            import c_ptr, c_int, c_char
+            implicit none
+            type(c_ptr), intent(in), value :: pgresult
+            character(1, kind=c_char), intent(in) :: c_name(*)
+            integer(c_int) :: res
+         end function c_PQ_field_number
+      end interface
+
+      c_column_name = trim(adjustl(column_name))//c_null_char
+
+      PQfnumber = c_PQ_field_number(pgresult, c_column_name)
+
+   end function PQfnumber
+   
+
+   
    ! function PQftable
    ! function PQftablecol
    ! function PQfformat

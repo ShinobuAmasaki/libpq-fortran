@@ -96,7 +96,7 @@ The license for the remainder of this package appears in [LICENSE](https://githu
 
 
 ## Acknowledgements
-The creation of this package was inspired by iamed2's [LibPQ.jl](https://github.com/iamed2/LibPQ.jl) and a discussion in the [Fortran-jp](https://fortran-jp.org/) community.
+The creation of this package was inspired by a discussion in the [Fortran-jp](https://fortran-jp.org/) community.
 
 ## Appendix: Implemented Interface Functions List
 
@@ -132,7 +132,7 @@ Note: The order of the following headings and the functions contained within the
 - [x] `PQhostaddr`
 - [x] `PQport`
 -  <s>`PQtty`</s>
-- [ ] `PQoptions`
+- [x] `PQoptions`
 - [x] `PQstatus`
 - [x] `PQtransactionStatus`
 - [x] `PQparameterStatus`
@@ -148,7 +148,7 @@ Note: The order of the following headings and the functions contained within the
 - [ ] `PQsslAttributeNames`
 - [ ] `PQsslStruct`
 - [ ] `PQgetssl`
-
+ 
 ### Command Execution Functions
 
 #### Main Functions
@@ -169,6 +169,7 @@ Note: The order of the following headings and the functions contained within the
 - [x] `PQntuples`
 - [x] `PQnfields`
 - [x] `PQfname`
+- [x] `PQfnumber`
 - [ ] `PQftable`
 - [ ] `PQftablecol`
 - [ ] `PQfformat`

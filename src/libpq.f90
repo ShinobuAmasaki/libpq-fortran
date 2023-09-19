@@ -12,7 +12,8 @@ module libpq
    
    use m_fe_exec, &
       only: PQexec, PQresultStatus, PQntuples, PQnfields, &
-            PQgetvalue, PQclear, PQresultErrorMessage, PQfname
+            PQgetvalue, PQclear, PQresultErrorMessage, PQfname, &
+            PQfnumber
 
    use m_fe_misc, only: PQlibVersion
 
@@ -65,6 +66,7 @@ module libpq
    public :: PQntuples
    public :: PQnfields
    public :: PQfname
+   public :: PQfnumber
    public :: PQgetvalue
    public :: PQclear
 
