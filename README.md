@@ -28,8 +28,6 @@ Tested on
    - Linux
       - Gentoo Linux
       - Ubuntu 22.04 LTS
-   - macOS
-   - Windows
 
 ### Current
 
@@ -113,7 +111,7 @@ Note: The order of the following headings and the functions contained within the
 - [x] `PQconnectPoll`
 - [x] `PQconndefaults`
 - [x] `PQconninfo`
-- [ ] `PQconninfoParse`
+- [x] `PQconninfoParse`
 - [x] `PQfinish`
 - [x] `PQreset`
 - [x] `PQresetStart`
@@ -160,23 +158,23 @@ Note: The order of the following headings and the functions contained within the
 - [ ] `PQdescribePortal`
 - [x] `PQresultStatus`
 - [ ] `PQresStatus`
-- [ ] `PQresultErrorMessage`
-- [ ] `PQresultVerboseErrorMessage`
+- [x] `PQresultErrorMessage`
+- [x] `PQresultVerboseErrorMessage`
 - [ ] `PQresultErrorField`
 - [x] `PQclear`
-
+ 
 #### Retrieving Query Result Information
 - [x] `PQntuples`
 - [x] `PQnfields`
 - [x] `PQfname`
 - [x] `PQfnumber`
 - [ ] `PQftable`
-- [ ] `PQftablecol`
-- [ ] `PQfformat`
+- [x] `PQftablecol`
+- [x] `PQfformat`
 - [ ] `PQftype`
-- [ ] `PQfmod`
-- [ ] `PQfsize`
-- [ ] `PQbinaryTuples`
+- [x] `PQfmod`
+- [x] `PQfsize`
+- [x] `PQbinaryTuples`
 - [x] `PQgetvalue`
 - [x] `PQgetisnull`
 - [ ] `PQgetlength`

@@ -7,7 +7,7 @@ module libpq
             PQconndefaults, PQconnectStart, PQconnectStartParams, &
             PQconnectPoll, PQbackendPID, PQsocket, PQresetStart, &
             PQresetPoll, PQparameterStatus, PQconnectionNeedsPassword, &
-            PQconnectionUsedPassword, PQconninfo
+            PQconnectionUsedPassword, PQconninfo, PQconninfoParse
 
    
    use m_fe_exec, &
@@ -44,6 +44,7 @@ module libpq
    public :: PQresetPoll
    public :: PQresetStart
    public :: PQconninfo
+   public :: PQconninfoParse
 
    ! Connction Status Functions
    public :: PQdb

@@ -33,6 +33,7 @@ module m_fe_connect
    public :: PQconnectionNeedsPassword
    public :: PQconnectionUsedPassword
    public :: PQconninfo
+   public :: PQconninfoParse
 
    ! PRIVATE functions
    private :: PQconnectdbParams_back
@@ -465,7 +466,100 @@ contains
    end subroutine PQconninfo
             
 
-   ! function PQconninfoParse
+   subroutine PQconninfoParse(conninfo, options, errmsg, errflag)
+      use :: t_PQconninfoOption
+      use :: character_operations
+      use, intrinsic :: iso_c_binding
+      implicit none
+      
+      character(*), intent(in) :: conninfo
+      character(*), intent(out) :: errmsg
+      character(:, kind=c_char), allocatable :: c_conninfo
+      type(PQconninfoOption), dimension(:), allocatable, target, intent(out) :: options
+
+      type(c_ptr) :: cptr_siz, cptr_obj, cptr_errmsg
+      type(c_PQconnOptionSizes), dimension(:), pointer :: fptr
+      type(c_PQconninfoOption), dimension(:), pointer :: opts_ptr
+      logical :: errflag
+      integer :: length, i, errlen
+
+      interface
+         function c_PQ_conninfo_parse_prepare (info, errmsg, errlen, optionsizes)  &
+                                    bind(c, name="PQconninfoParsePrepare") result(res)
+            import c_ptr, c_char, c_int
+            implicit none
+            character(1, kind=c_char), intent(in) :: info(*)
+            type(c_ptr), intent(inout) :: errmsg
+            integer(c_int), intent(out) :: errlen
+            type(c_ptr), intent(out) :: optionsizes
+            integer(c_int) :: res
+         end function c_PQ_conninfo_parse_prepare
+      end interface
+
+      interface
+         function c_PQ_conninfo_parse (info, errmsg) bind(c, name="PQconninfoParse")
+            import c_ptr, c_char
+            implicit none
+            character(1, kind=c_char), intent(in) :: info(*)
+            type(c_ptr) :: errmsg
+            type(c_ptr) :: c_PQ_conninfo_parse
+         end function c_PQ_conninfo_parse
+      end interface
+
+      interface
+         subroutine c_PQ_conninfo_parse_free (cptr) bind(c, name="PQconninfoParsePrepareFree")
+            import c_ptr
+            implicit none
+            type(c_ptr), intent(in), value :: cptr
+         end subroutine c_PQ_conninfo_parse_free
+      end interface
+
+      ! エラーフラグを初期化する。
+      errflag = .false.
+      errlen = 0
+
+      ! C文字列へ変換してCの関数を呼び出す。
+      c_conninfo = trim(conninfo)//c_null_char
+      length = c_PQ_conninfo_parse_prepare(c_conninfo, cptr_errmsg, errlen, cptr_siz)
+      
+      !　エラーメッセージが返された場合 
+      if (.not. c_associated(cptr_siz)) then
+         block
+            character(errlen), pointer :: fptr_errmsg
+            call c_f_pointer(cptr_errmsg, fptr_errmsg)
+            if (associated(fptr_errmsg)) then
+               ! errlen-1は末尾の改行を含めないため。
+               errmsg = fptr_errmsg(1:errlen-1)
+
+            end if
+         end block
+         errflag = .true.
+         return
+      end if
+
+      ! Cから返されたポインタをFortranのポインタに関連付ける。
+      call c_f_pointer(cptr_siz, fptr, shape=[length])
+
+      ! 関数c_PQ_conninfo_parseを呼び出して、結果をcptr_objに格納する。ここでのエラーメッセージは捨てる。
+      block 
+         type(c_ptr) :: trush 
+         cptr_obj = c_PQ_conninfo_parse(c_conninfo, trush)
+      end block
+      
+      ! Cから返されたポインタをFortranポインタに関連付ける。
+      call c_f_pointer(cptr_obj, opts_ptr, shape=[length])
+      
+      ! オプション情報を配列optionsにコピーする。
+      allocate(options(length))
+      do i = 1, length
+         call read_option(fptr(i), opts_ptr(i), options(i))
+      end do
+
+      ! 使用済みメモリを解放する。
+      call c_PQ_conninfo_parse_free(cptr_siz)
+      call PQconninfoFree(cptr_obj)
+
+   end subroutine PQconninfoParse
 
 
    !
