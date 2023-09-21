@@ -26,6 +26,8 @@ module m_fe_exec
    public :: PQgetlength
    public :: PQnparams
    public :: PQparamtype
+   
+   public :: PQresultErrorField
 
 
 contains
@@ -186,7 +188,31 @@ contains
    end function PQresultVerboseErrorMessage
 
 
-   ! function PQresultErrorField
+   function PQresultErrorField(pgresult, fieldcode) result(res)
+      use :: character_pointer_wrapper
+      use, intrinsic :: iso_c_binding
+      use, intrinsic :: iso_fortran_env
+      implicit none
+      type(c_ptr), intent(in) :: pgresult
+      integer(int32),intent(in) :: fieldcode
+      character(:, kind=c_char), pointer :: res
+
+      interface
+         ! Interface to PQresultErrorField in interface/libpq/fe-exec.c:
+         !
+         ! char *PQresultErrorField(const PGresult *res)
+         !
+         function c_PQ_result_error_field (res, fieldcode) bind(c, name='PQresultErrorField')
+            import c_ptr, c_int
+            implicit none
+            type(c_ptr), intent(in), value :: res
+            integer(c_int), intent(in), value :: fieldcode
+            type(c_ptr) :: c_PQ_result_error_field
+         end function c_PQ_result_error_field
+      end interface
+
+      res => c_to_f_charpointer(c_PQ_result_error_field(pgresult, fieldcode))
+   end function PQresultErrorField
 
 
    !-- Delete a PGresult

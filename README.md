@@ -1,6 +1,6 @@
-# LibPQ-Fortran
+# Libpq-Fortran
 
-LibPQ-Fortran is a Modern Fortran interface to the PostgreSQL `libpq` [C Library](https://www.postgresql.org/docs/current/libpq.html).
+Libpq-Fortran is a Modern Fortran interface to the PostgreSQL `libpq` [C Library](https://www.postgresql.org/docs/current/libpq.html).
 
 This does not contain the `libpq` library; only the wrapper is included.
 
@@ -46,7 +46,7 @@ Other versions of Flang are not tested.
 
 *Note that below does not represent the current state of this package.*
 
-- Libpq-fortran aims to wrap libpq as documented in the PostgreSQL documentation, including all non-deprecated functionallity with its *explicit interfaces*.
+- Libpq-Fortran aims to wrap libpq as documented in the PostgreSQL documentation, including all non-deprecated functionallity with its *explicit interfaces*.
 
 ### Non-Goals
 
@@ -63,7 +63,7 @@ This package depends on following applicaiton and libraries:
 
 - Fortran Package Manager (`fpm`),
 - The PostgreSQL `libpq` library
-- `uint-fortran` (loaded by fpm automatically).
+- [`uint-fortran`](https://github.com/ShinobuAmasaki/uint-fortran) (loaded by `fpm` automatically).
 
 The top two need to be installed by the user themselves.
 
@@ -165,7 +165,7 @@ Note: The order of the following headings and the functions contained within the
 - [x] `PQresStatus`
 - [x] `PQresultErrorMessage`
 - [x] `PQresultVerboseErrorMessage`
-- [ ] `PQresultErrorField`
+- [x] `PQresultErrorField`
 - [x] `PQclear`
  
 #### Retrieving Query Result Information
@@ -258,7 +258,7 @@ Note: The order of the following headings and the functions contained within the
 - [x] `PQfreemem`
 - [x] `PQconninfoFree`
 - [ ] `PQencryptPasswordConn`
-- [ ] `PQenctyptPassword`
+- <s>`PQenctyptPassword`</s>
 - [ ] `PQmakeEmptyPGresult`
 - [ ] `PQfireResultCreateEvents`
 - [ ] `PQcopyResult`
