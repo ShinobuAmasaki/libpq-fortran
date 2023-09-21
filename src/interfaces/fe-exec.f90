@@ -19,10 +19,11 @@ module m_fe_exec
    public :: PQfmod
    public :: PQfsize
    public :: PQftablecol
-
    public :: PQftable
    public :: PQftype
-   public :: PQresStatus 
+   public :: PQresStatus
+
+   public :: PQgetlength
 
 
 
@@ -587,7 +588,30 @@ contains
       end block
 
    end function PQgetisnull
-   ! function PQgetlength
+
+
+   function PQgetlength(pgresult)
+      use, intrinsic :: iso_fortran_env
+      use, intrinsic :: iso_c_binding
+
+      type(c_ptr), intent(in) :: pgresult
+
+      integer(int32) :: PQgetlength
+
+      interface
+         function c_PQ_get_length (pgresult) bind(c, name="PQgetlength")
+            import c_int, c_ptr
+            implicit none
+            type(c_ptr), intent(in), value :: pgresult
+            integer(c_int) :: c_PQ_get_length
+         end function c_PQ_get_length
+      end interface
+
+      PQgetlength = c_PQ_get_length(pgresult)
+
+   end function PQgetlength
+
+      
    ! function PQnparams
    ! function PQparamtype
    ! function PQprint
