@@ -59,8 +59,13 @@ This package will not:
 
 ### Dependencies
 
-- Fortran Package Manager (`fpm`)
+This package depends on following applicaiton and libraries:
+
+- Fortran Package Manager (`fpm`),
 - The PostgreSQL `libpq` library
+- `uint-fortran` (loaded by fpm automatically).
+
+The top two need to be installed by the user themselves.
 
 ## Licenses
 
@@ -157,7 +162,7 @@ Note: The order of the following headings and the functions contained within the
 - [ ] `PQdescribePrepared`
 - [ ] `PQdescribePortal`
 - [x] `PQresultStatus`
-- [ ] `PQresStatus`
+- [x] `PQresStatus`
 - [x] `PQresultErrorMessage`
 - [x] `PQresultVerboseErrorMessage`
 - [ ] `PQresultErrorField`
@@ -168,10 +173,10 @@ Note: The order of the following headings and the functions contained within the
 - [x] `PQnfields`
 - [x] `PQfname`
 - [x] `PQfnumber`
-- [ ] `PQftable`
+- [x] `PQftable`
 - [x] `PQftablecol`
 - [x] `PQfformat`
-- [ ] `PQftype`
+- [x] `PQftype`
 - [x] `PQfmod`
 - [x] `PQfsize`
 - [x] `PQbinaryTuples`

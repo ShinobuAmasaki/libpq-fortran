@@ -22,6 +22,7 @@ module m_fe_exec
 
    public :: PQftable
    public :: PQftype
+   public :: PQresStatus 
 
 
 
@@ -99,7 +100,37 @@ contains
    end function PQresultStatus
 
 
-   ! function PQresStatus
+   function PQresStatus(status) result(res)
+      use :: character_pointer_wrapper
+      use, intrinsic :: iso_c_binding
+      use, intrinsic :: iso_fortran_env
+      implicit none
+
+      ! 入力
+      integer(int32), intent(in) :: status
+      
+      ! 出力：文字列へのポインタ
+      character(:), pointer :: res
+
+      ! C関数の結果を代入するCポインタ型の変数
+      type(c_ptr) :: status_description
+
+      ! C関数へのインターフェース
+      interface
+         function c_PQ_res_status (status) bind(c, name="PQresStatus") result(res)
+            import c_ptr, c_int
+            integer(c_int), intent(in), value :: status
+            type(c_ptr) :: res
+         end function
+      end interface
+
+      ! C関数を呼び出して、結果のポインタをstatus_descriptionに受け取る。
+      status_description = c_PQ_res_status(status)
+
+      ! 結果のCポインタをFortranの文字列ポインタに変換する。
+      res => c_to_f_charpointer(status_description)
+
+   end function PQresStatus
 
 
    function PQresultErrorMessage(pgresult) result(res)
