@@ -182,9 +182,9 @@ Note: The order of the following headings and the functions contained within the
 - [x] `PQbinaryTuples`
 - [x] `PQgetvalue`
 - [x] `PQgetisnull`
-- [ ] `PQgetlength`
-- [ ] `PQnparams`
-- [ ] `PQparamtype`
+- [x] `PQgetlength`
+- [x] `PQnparams`
+- [x] `PQparamtype`
 - <s>`PQprint`</s>
 
 #### Retrieving Other Result Information

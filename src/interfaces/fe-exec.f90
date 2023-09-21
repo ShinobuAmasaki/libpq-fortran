@@ -24,7 +24,8 @@ module m_fe_exec
    public :: PQresStatus
 
    public :: PQgetlength
-
+   public :: PQnparams
+   public :: PQparamtype
 
 
 contains
@@ -612,9 +613,57 @@ contains
    end function PQgetlength
 
       
-   ! function PQnparams
-   ! function PQparamtype
-   ! function PQprint
+   function PQnparams(pgresult)
+      use, intrinsic :: iso_fortran_env
+      use, intrinsic :: iso_c_binding
+      implicit none
+
+      type(c_ptr), intent(in) :: pgresult
+      integer(int32) :: PQnparams
+
+      interface
+         function c_PQ_nparams (pgresult) bind(c, name="PQnparams")
+            import c_int, c_ptr
+            implicit none
+            type(c_ptr), intent(in), value :: pgresult
+            integer(c_int) :: c_PQ_nparams
+         end function 
+      end interface
+
+      PQnparams = c_PQ_nparams(pgresult)
+
+   end function PQnparams
+
+   
+   function PQparamtype(pgresult, param_number) result(res)
+      use, intrinsic :: iso_fortran_env
+      use, intrinsic :: iso_c_binding
+      use :: unsigned
+
+      type(c_ptr), intent(in) :: pgresult
+      integer(int32), intent(in) :: param_number
+
+      integer(int64) :: res
+
+      type(uint32) :: oid
+
+      interface 
+         function c_PQ_parameter_type(pgresult, param_number) bind(c, name="PQparamtype") result(res)
+            import uint32, c_ptr, c_int
+            implicit none
+            type(c_ptr), intent(in), value :: pgresult
+            integer(c_int), intent(in), value :: param_number
+            type(uint32) :: res
+         end function c_PQ_parameter_type
+      end interface
+
+      oid = c_PQ_parameter_type(pgresult, param_number)
+
+      res = int(oid)
+
+   end function PQparamtype
+      
+
    
 
    !== Retrieving Other Result Information

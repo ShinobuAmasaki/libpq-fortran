@@ -16,7 +16,8 @@ module libpq
             PQgetvalue, PQclear, PQresultErrorMessage, PQfname, &
             PQfnumber, PQgetisnull, PQresultVerboseErrorMessage, &
             PQbinaryTuples, PQftablecol, PQfformat, PQfmod, PQfsize, &
-            PQftable, PQftype, PQresStatus, PQgetlength
+            PQftable, PQftype, PQresStatus, PQgetlength, PQnparams, &
+            PQparamtype
 
    use m_fe_misc, only: PQlibVersion
 
