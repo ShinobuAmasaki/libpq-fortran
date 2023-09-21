@@ -1,4 +1,5 @@
 module libpq
+   use, intrinsic :: iso_fortran_env, only: int64
    use m_fe_connect, &
       only: PQconnectdb, PQfinish, PQstatus, PQerrorMessage, &
             PQping, PQdb, PQuser, PQhost, PQhostaddr, PQconnectdbParams, &
@@ -14,7 +15,8 @@ module libpq
       only: PQexec, PQresultStatus, PQntuples, PQnfields, &
             PQgetvalue, PQclear, PQresultErrorMessage, PQfname, &
             PQfnumber, PQgetisnull, PQresultVerboseErrorMessage, &
-            PQbinaryTuples, PQftablecol, PQfformat, PQfmod, PQfsize
+            PQbinaryTuples, PQftablecol, PQfformat, PQfmod, PQfsize, &
+            PQftable, PQftype
 
    use m_fe_misc, only: PQlibVersion
 
@@ -23,6 +25,9 @@ module libpq
    implicit none
    private
 
+!------------------------------------------------------------------!
+!-- Parameters
+   integer(int64), parameter, public :: InvalidOid = 0
 
 !------------------------------------------------------------------!
 !-- PUBLIC Statements
@@ -81,6 +86,8 @@ module libpq
    public :: PQfmod
    public :: PQfsize
    public :: PQftablecol
+   public :: PQftable
+   public :: PQftype
 
 
    ! From module m_fe_misc

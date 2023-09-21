@@ -13,14 +13,16 @@ module m_fe_exec
    public :: PQfnumber
    public :: PQclear
    public :: PQgetisnull
-
    public :: PQfreemem
-
    public :: PQbinaryTuples
    public :: PQfformat
    public :: PQfmod
    public :: PQfsize
    public :: PQftablecol
+
+   public :: PQftable
+   public :: PQftype
+
 
 
 contains
@@ -283,7 +285,39 @@ contains
    end function PQfnumber
 
    
-   ! function PQftable
+   function PQftable (pgresult, column_number) result(res)
+      use, intrinsic :: iso_c_binding
+      use, intrinsic :: iso_fortran_env
+      use :: unsigned
+
+      ! 入力
+      type(c_ptr), intent(in) :: pgresult
+      integer(int32), intent(in) :: column_number
+
+      ! 出力結果
+      integer(int64) :: res
+
+      ! カラムの属するテーブルのOidを格納する変数を宣言する。
+      type(uint32) :: oid
+
+      ! C関数 PQftableへのインターフェースを定義する。
+      interface
+         function c_PQ_field_table(pgresult, column_number) bind(c, name="PQftable")
+            import uint32, c_ptr, c_int
+            implicit none
+            type(c_ptr), intent(in), value :: pgresult          ! PostgreSQLの結果オブジェクト
+            integer(c_int), intent(in), value :: column_number  ! カラム番号
+            type(uint32) :: c_PQ_field_table                    ! 戻り値は符号なし整数型
+         end function 
+      end interface
+
+      ! C関数を呼び出して、Oidを取得する。
+      oid = c_PQ_field_table(pgresult, column_number)
+
+      ! カラムのOidを整数型に変換して結果に格納する。
+      res = int(oid)
+
+   end function PQftable
 
 
    function PQftablecol (pgresult, column_number) result(res)
@@ -336,8 +370,39 @@ contains
    end function PQfformat
 
 
-   ! function PQftype
+   function PQftype(pgresult, column_number) result(res)
+      use, intrinsic :: iso_c_binding
+      use, intrinsic :: iso_fortran_env
+      use :: unsigned
 
+      ! 入力
+      type(c_ptr), intent(in) :: pgresult
+      integer(int32), intent(in) :: column_number
+
+      ! 出力結果
+      integer(int64) :: res
+
+      ! カラムに関連したデータ型を返す。返される整数はその型の内部的なOID番号である。
+      type(uint32) :: oid
+
+      interface
+         function c_PQ_field_type (pgresult, column_number) bind(c, name="PQftype")
+            import uint32, c_ptr, c_int
+            implicit none
+            type(c_ptr), intent(in), value :: pgresult
+            integer(c_int), intent(in), value :: column_number
+            type(uint32) :: c_PQ_field_type
+         end function c_PQ_field_type
+      end interface
+
+      ! C関数を呼び出して、Oidを取得する。
+      oid = c_PQ_field_type(pgresult, column_number)
+
+      ! カラムのOidを64ビット整数型に変換して結果を格納する。
+      res = int(oid)
+
+   end function PQftype
+   
 
    function PQfmod(pgresult, column_number) result(res)
       use, intrinsic :: iso_c_binding

@@ -17,6 +17,9 @@ implicit-typing = false
 implicit-external = false
 source-form = "free"
 
+[dependencies]
+uint-fortran = {git ="https://github.com/ShinobuAmasaki/uint-fortran"}
+
 [[example]]
 name = "demo"
 main = "demo.f90"
