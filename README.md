@@ -46,7 +46,7 @@ Other versions of Flang are not tested.
 
 *Note that below does not represent the current state of this package.*
 
-- Libpq-fortran aims to wrap libpq as documented in the PostgreSQL documentation, including all non-deprecated functionallity with its *explicit* `interface`s.
+- Libpq-fortran aims to wrap libpq as documented in the PostgreSQL documentation, including all non-deprecated functionallity with its *explicit interfaces*.
 
 ### Non-Goals
 
