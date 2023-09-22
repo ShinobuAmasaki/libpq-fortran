@@ -26,20 +26,10 @@ contains
          end function strlen
       end interface
 
-      interface
-         subroutine pq_free(ptr) bind(c)
-            import c_ptr
-            type(c_ptr), intent(in), value :: ptr
-         end subroutine pq_free
-      end interface
-
       length = strlen(cptr)
 
       call  convert_cptr(cptr, length, buf)
       str = buf
-
-      call pq_free(cptr)
-
 
    contains
       ! `convert_cptr` takes a string with type(cptr) and its length as input,
