@@ -22,16 +22,21 @@ module m_fe_exec
    public :: PQftable
    public :: PQftype
    public :: PQresStatus
-
    public :: PQgetlength
    public :: PQnparams
    public :: PQparamtype
-   
    public :: PQresultErrorField
    public :: PQcmdStatus
    public :: PQcmdTuples
    public :: PQoidValue
 
+   public :: PQsendQuery
+   public :: PQgetResult
+   public :: PQconsumeInput
+   public :: PQisBusy
+   public :: PQsetnonblocking
+   public :: PQisnonblocking
+   public :: PQflush
 
 contains
 
@@ -197,7 +202,7 @@ contains
       use, intrinsic :: iso_fortran_env
       implicit none
       type(c_ptr), intent(in) :: pgresult
-      integer(int32),intent(in) :: fieldcode
+      character(1), intent(in) :: fieldcode
       character(:, kind=c_char), pointer :: res
 
       interface
@@ -206,10 +211,10 @@ contains
          ! char *PQresultErrorField(const PGresult *res)
          !
          function c_PQ_result_error_field (res, fieldcode) bind(c, name='PQresultErrorField')
-            import c_ptr, c_int
+            import c_ptr, c_char
             implicit none
             type(c_ptr), intent(in), value :: res
-            integer(c_int), intent(in), value :: fieldcode
+            character(1, kind=c_char), intent(in), value :: fieldcode
             type(c_ptr) :: c_PQ_result_error_field
          end function c_PQ_result_error_field
       end interface
@@ -692,7 +697,6 @@ contains
 
    end function PQparamtype
       
-
    
 
    !== Retrieving Other Result Information
@@ -792,18 +796,183 @@ contains
    !==================================================================!
    ! Asynchronous Command Processing
 
-   ! function PQsendQuery
+   function PQsendQuery (conn, command) result(res)
+      use, intrinsic :: iso_c_binding
+      use, intrinsic :: iso_fortran_env
+      implicit none
+      
+      type(c_ptr), intent(in) :: conn
+      character(*), intent(in) :: command
+
+      integer(int32) :: res
+      character(:), allocatable :: c_command
+
+      interface
+         function c_PQ_send_query (conn, c_command) bind(c, name="PQsendQuery")
+            import c_ptr, c_char, c_int
+            type(c_ptr), intent(in), value :: conn
+            character(1, kind=c_char), intent(in) :: c_command(*)
+            integer(c_int) :: c_PQ_send_query
+         end function c_PQ_send_query
+      end interface
+
+
+      c_command = trim(command)//c_null_char
+
+      res = c_PQ_send_query(conn, c_command)
+
+   end function PQsendQuery
+
+
    ! function PQsendQueryParams
    ! function PQsendPrepare
    ! function PQsendQueryPrepared
    ! function PQsendDescribePrepared
    ! function PQsendDescribePortal
-   ! function PQgetResult
-   ! function PQconsumeInput
-   ! function PQisBusy
-   ! function PQsetnonblocking
-   ! funciton PQisnonblocking
-   ! function PQflush
+
+   function PQgetResult (conn) result(res)
+      use, intrinsic :: iso_c_binding
+      use, intrinsic :: iso_fortran_env
+      implicit none
+      
+      type(c_ptr), intent(in) :: conn
+      type(c_ptr) :: res
+
+      interface
+         function c_PQ_get_result(conn) bind(c, name="PQgetResult")
+            import c_ptr
+            type(c_ptr), intent(in), value :: conn
+            type(c_ptr) :: c_PQ_get_result
+         end function c_PQ_get_result
+      end interface
+
+      res = c_PQ_get_result(conn)
+   end function PQgetResult
+   
+   
+   function PQconsumeInput (conn) result(res)
+      use, intrinsic :: iso_c_binding
+      use, intrinsic :: iso_fortran_env
+      implicit none
+      
+      type(c_ptr), intent(in) :: conn
+      integer(int32) :: res
+
+      Interface
+         function c_PQ_consume_input (conn) bind(c, name="PQconsumeInput")
+            import c_ptr, c_int
+            type(c_ptr), intent(in), value :: conn
+            integer(c_int) :: c_PQ_consume_input
+         end function c_PQ_consume_input
+      end interface
+
+      res = c_PQ_consume_input(conn)
+
+   end function PQconsumeInput
+      
+
+   function PQisBusy(conn) result(isBusy)
+      use, intrinsic :: iso_c_binding
+      use, intrinsic :: iso_fortran_env
+
+      type(c_ptr), intent(in) :: conn
+      integer(int32) :: res
+      logical :: isBusy
+
+      interface 
+         function c_PQ_is_busy (conn) bind(c, name="PQisBusy")
+            import c_ptr, c_int
+            type(c_ptr), intent(in), value :: conn
+            integer(c_int) :: c_PQ_is_busy
+         end function c_PQ_is_busy
+      end interface
+
+      isBusy = .false.
+
+      res = c_PQ_is_busy(conn)
+
+      if (res == 1) then
+         isBusy = .true.
+      else if (res == 0) then
+         isBusy = .false.
+      end if
+
+   end function PQisBusy
+
+
+   
+   function PQsetnonblocking (conn, arg) result(res)
+      use, intrinsic :: iso_c_binding
+      use, intrinsic :: iso_fortran_env
+      implicit none
+      
+      type(c_ptr), intent(in) :: conn
+      integer(int32), intent(in) :: arg
+
+      integer(int32) :: res
+
+      interface
+         function c_PQ_set_nonblocking (conn, arg) bind(c, name="PQsetnonblocking")
+            import c_ptr, c_int
+            type(c_ptr), intent(in), value :: conn
+            integer(c_int), intent(in), value :: arg
+            integer(c_int) :: c_PQ_set_nonblocking
+         end function c_PQ_set_nonblocking
+      end interface
+
+      res = c_PQ_set_nonblocking(conn, arg)
+
+   end function PQsetnonblocking
+
+
+   function PQisnonblocking (conn) result(isNonblocking)
+      use, intrinsic :: iso_c_binding
+      use, intrinsic :: iso_fortran_env
+      implicit none
+      
+      type(c_ptr), intent(in) :: conn
+      integer(int32) :: res
+      logical :: isNonblocking
+
+      interface
+         function c_PQ_is_nonblocking(conn) bind(c, name="PQisnonblocking")
+            import c_ptr, c_int
+            type(c_ptr), intent(in), value :: conn
+            integer(c_int) :: c_PQ_is_nonblocking
+         end function c_PQ_is_nonblocking
+      end interface
+
+      res = c_PQ_is_nonblocking(conn)
+
+      if (res == 1) then 
+         isNonblocking = .true.
+      else if (res == 0) then
+         isNonblocking = .false. 
+      end if 
+
+   end function PQisnonblocking
+
+
+   function PQflush (conn)
+      use, intrinsic :: iso_c_binding
+      use, intrinsic :: iso_fortran_env
+      implicit none
+      
+      type(c_ptr), intent(in) :: conn
+      integer(int32) :: PQflush
+
+      interface
+         function c_PQ_flush(conn) bind(c, name="PQflush")
+            import c_ptr, c_int
+            type(c_ptr), intent(in), value :: conn
+            integer(c_int) :: c_PQ_flush
+         end function c_PQ_flush
+      end interface
+
+      PQflush = c_PQ_flush(conn)
+
+   end function PQflush
+
 
 
    !=================================================================!

@@ -19,7 +19,9 @@ module libpq
             PQbinaryTuples, PQftablecol, PQfformat, PQfmod, PQfsize, &
             PQftable, PQftype, PQresStatus, PQgetlength, PQnparams, &
             PQparamtype, PQresultErrorField, PQcmdStatus, PQcmdTuples, &
-            PQoidValue
+            PQoidValue, &
+            PQsendQuery, PQgetResult, PQconsumeInput, PQisBusy, &
+            PQsetnonblocking, PQisnonblocking, PQflush
 
    use :: m_fe_misc, only: PQlibVersion
 
@@ -97,6 +99,14 @@ module libpq
    public :: PQcmdStatus
    public :: PQcmdTuples
    public :: PQoidValue
+
+   public :: PQsendQuery
+   public :: PQgetResult
+   public :: PQconsumeInput
+   public :: PQisBusy
+   public :: PQsetnonblocking
+   public :: PQisnonblocking
+   public :: PQflush
 
    ! From module m_fe_misc
    public :: PQlibVersion
