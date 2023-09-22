@@ -1,6 +1,7 @@
 module libpq
    use, intrinsic :: iso_fortran_env, only: int64
-   use m_fe_connect, &
+   use :: error_message_fields
+   use :: m_fe_connect, &
       only: PQconnectdb, PQfinish, PQstatus, PQerrorMessage, &
             PQping, PQdb, PQuser, PQhost, PQhostaddr, PQconnectdbParams, &
             PQoptions, PQtransactionStatus, PQsetdbLogin, PQpingParams, &
@@ -11,17 +12,18 @@ module libpq
             PQconnectionUsedPassword, PQconninfo, PQconninfoParse
 
    
-   use m_fe_exec, &
+   use :: m_fe_exec, &
       only: PQexec, PQresultStatus, PQntuples, PQnfields, &
             PQgetvalue, PQclear, PQresultErrorMessage, PQfname, &
             PQfnumber, PQgetisnull, PQresultVerboseErrorMessage, &
             PQbinaryTuples, PQftablecol, PQfformat, PQfmod, PQfsize, &
             PQftable, PQftype, PQresStatus, PQgetlength, PQnparams, &
-            PQparamtype, PQresultErrorField
+            PQparamtype, PQresultErrorField, PQcmdStatus, PQcmdTuples, &
+            PQoidValue
 
-   use m_fe_misc, only: PQlibVersion
+   use :: m_fe_misc, only: PQlibVersion
 
-   use t_PQconninfoOption, only: PQconninfoOption
+   use :: t_PQconninfoOption, only: PQconninfoOption
 
    implicit none
    private
@@ -92,7 +94,9 @@ module libpq
    public :: PQresStatus
    public :: PQgetlength
    public :: PQresultErrorField
-
+   public :: PQcmdStatus
+   public :: PQcmdTuples
+   public :: PQoidValue
 
    ! From module m_fe_misc
    public :: PQlibVersion

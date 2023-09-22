@@ -28,6 +28,9 @@ module m_fe_exec
    public :: PQparamtype
    
    public :: PQresultErrorField
+   public :: PQcmdStatus
+   public :: PQcmdTuples
+   public :: PQoidValue
 
 
 contains
@@ -694,10 +697,87 @@ contains
 
    !== Retrieving Other Result Information
 
-   ! function PQcmdStatus
-   ! function PQcmdTuples
-   ! function PQoidValue
-   ! function PQoidStatus
+   function PQcmdStatus(pgresult) result(res)
+      use :: character_pointer_wrapper
+      use, intrinsic :: iso_c_binding
+      use, intrinsic :: iso_fortran_env
+      implicit none
+
+      type(c_ptr), intent(in) :: pgresult
+      character(:), allocatable, target, save :: str
+      character(:), pointer :: res
+
+      interface
+         function c_PQ_command_status(pgresult) bind(c, name="PQcmdStatus")
+            import c_ptr
+            implicit none
+            type(c_ptr), intent(in), value :: pgresult
+            type(c_ptr) :: c_PQ_command_status
+         end function c_PQ_command_status
+      end interface
+
+      call c_char_to_f_string(c_PQ_command_status(pgresult), str)
+
+      res => str
+      
+   end function PQcmdStatus
+
+
+   function PQcmdTuples (pgresult) result(res)
+      use :: character_pointer_wrapper
+      use, intrinsic :: iso_c_binding
+      use, intrinsic :: iso_fortran_env
+      implicit none
+      
+      ! Input parameters
+      type(c_ptr), intent(in) :: pgresult
+
+      ! Output parameters
+      character(:), pointer :: res
+
+      ! ローカル変数の宣言
+      character(:), allocatable, target, save :: str
+      type(c_ptr), save :: cptr
+      
+
+      interface
+         function c_PQ_command_tuples(pgresult) bind(c, name="PQcmdTuples")
+            import c_ptr
+            implicit none
+            type(c_ptr), intent(in), value :: pgresult
+            type(c_ptr) :: c_PQ_command_tuples
+         end function c_PQ_command_tuples
+      end interface
+
+      cptr = c_PQ_command_tuples(pgresult)
+
+      call c_char_to_f_string(cptr, str)
+
+      res => str
+
+   end function PQcmdTuples
+
+
+   function PQoidValue(pgresult) result(res)
+      use, intrinsic :: iso_c_binding
+      use, intrinsic :: iso_fortran_env
+      use :: unsigned
+
+      type(c_ptr), intent(in) :: pgresult
+      integer(int64) :: res
+
+      interface
+         function c_PQ_oid_value(pgresult) bind(c, name="PQoidValue")
+            import c_ptr, uint32
+            implicit none
+            type(c_ptr), intent(in), value :: pgresult
+            type(uint32) :: c_PQ_oid_value
+         end function c_PQ_oid_value
+      end interface
+
+      res = int(c_PQ_oid_value(pgresult))
+
+   end function PQoidValue
    
    
    !== Escaping Strings for Inclusion in SQL Commands
