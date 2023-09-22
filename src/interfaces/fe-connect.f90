@@ -35,6 +35,9 @@ module m_fe_connect
    public :: PQconninfo
    public :: PQconninfoParse
 
+   public :: PQclientEncoding
+
+
    ! PRIVATE functions
    private :: PQconnectdbParams_back
 
@@ -1149,7 +1152,60 @@ contains
    !==================================================================!
    ! Control Functions
 
-   ! function PQclientEncoding
+   function PQclientEncoding(conn) result(res)
+      use character_pointer_wrapper
+      use m_fe_exec, only: PQfreemem
+      use, intrinsic :: iso_c_binding
+      use, intrinsic :: iso_fortran_env
+
+      ! Input parameter
+      type(c_ptr), intent(in) :: conn
+      
+      ! Declare Result pointer
+      character(:), pointer :: res
+
+      ! Declare local variables
+      character(:), allocatable, target, save :: encoding
+      integer(c_int) :: encoding_id
+      type(c_ptr) :: cptr
+
+      ! Define an interface for the C func. that retrieves the clinent encoding id.
+      interface
+         function c_PQ_client_encoding (conn) bind(c, name="PQclientEncoding")
+            import c_ptr, c_int
+            type(c_ptr), intent(in), value :: conn
+            integer(c_int) :: c_PQ_client_encoding
+         end function c_PQ_client_encoding
+      end interface
+
+      ! Define an interface for the C func. that converts encoding-id to a character string.
+      interface
+         function c_pg_encoding_to_char(encoding_id) bind(c, name="pg_encoding_to_char")
+            import c_ptr, c_int
+            integer(c_int), intent(in), value :: encoding_id
+            type(c_ptr) :: c_pg_encoding_to_char
+         end function c_pg_encoding_to_char
+      end interface
+
+      ! Initialize the result pointer to null.
+      nullify(res)
+
+      ! Call the C function to retrieve the client encoding id.
+      encoding_id = c_PQ_client_encoding(conn)
+      
+      ! If the returned value is -1, return without setting the result (indicating an error).
+      if (encoding_id == -1) return
+
+      ! Call the C function to convert the encoding id to a character string (c_ptr)
+      cptr = c_pg_encoding_to_char(encoding_id)
+
+      ! Convert the C string to a Fortran string and assign it to the result.
+      call c_char_to_f_string(cptr, encoding)
+      res => encoding
+
+   end function 
+
+
    ! function PQsetClientEncoding
    ! function PQsetErrorVerbosity
    ! function PQsetErrorContextVisibility
