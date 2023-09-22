@@ -188,13 +188,13 @@ Note: The order of the following headings and the functions contained within the
 - <s>`PQprint`</s>
 
 #### Retrieving Other Result Information
-- [ ] `PQcmdStatus`
-- [ ] `PQcmdTuples`
-- [ ] `PQoidValue`
-- [ ] `PQoidStatus`
+- [x] `PQcmdStatus`
+- [x] `PQcmdTuples`
+- [x] `PQoidValue`
+- <s> `PQoidStatus`</s>
 
 #### Escaping String for Inclusion in SQL Commands
-- [ ] `PQescapeLiteral`
+- [x] `PQescapeLiteral` (plan to test)
 - [ ] `PQescapeIdentifier`
 - [ ] `PQescapeStringConn`
 - [ ] `PQescapeString`
@@ -203,18 +203,18 @@ Note: The order of the following headings and the functions contained within the
 - [ ] `PQunescapeBytea`
 
 ### Asynchronous Command Processing
-- [ ] `PQsendQuery`
+- [x] `PQsendQuery` (plan to test)
 - [ ] `PQsendQueryParams`
 - [ ] `PQsendPrepare`
 - [ ] `PQsendQueryPrepared`
 - [ ] `PQsendDescribePrepared`
 - [ ] `PQsendDescribePortal`
-- [ ] `PQgetResult`
-- [ ] `PQconsumeInput`
-- [ ] `PQisBusy`
-- [ ] `PQsetnonblocking`
-- [ ] `PQisnonblocking`
-- [ ] `PQflush`
+- [x] `PQgetResult` (plan to test)
+- [x] `PQconsumeInput` (plan to test)
+- [x] `PQisBusy` (plan to test)
+- [x] `PQsetnonblocking` (plan to test)
+- [x] `PQisnonblocking` (plan to test)
+- [x] `PQflush` (plan to test)
 
 ### Pipeline Mode
 - [ ] `PQpipelineStatus`
@@ -246,7 +246,7 @@ Note: The order of the following headings and the functions contained within the
 - <s>`PQendcopy`</s>
 
 ### Control Functions
-- [ ] `PQclientEncoding`
+- [x] `PQclientEncoding`
 - [ ] `PQsetclientEncoding`
 - [ ] `PQsetErrorVerbosity`
 - [ ] `PQsetErrorContextVisibility`
@@ -281,6 +281,3 @@ Note: The order of the following headings and the functions contained within the
 
 ### Behavior in Threaded Programs
 - [ ] `PQisthreadsafe`
-
-
-

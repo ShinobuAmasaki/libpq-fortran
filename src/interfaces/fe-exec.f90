@@ -37,6 +37,7 @@ module m_fe_exec
    public :: PQsetnonblocking
    public :: PQisnonblocking
    public :: PQflush
+   public :: PQescapeLiteral
 
 contains
 
@@ -202,7 +203,7 @@ contains
       use, intrinsic :: iso_fortran_env
       implicit none
       type(c_ptr), intent(in) :: pgresult
-      character(1), intent(in) :: fieldcode
+      integer(int32), intent(in) :: fieldcode
       character(:, kind=c_char), pointer :: res
 
       interface
@@ -211,10 +212,10 @@ contains
          ! char *PQresultErrorField(const PGresult *res)
          !
          function c_PQ_result_error_field (res, fieldcode) bind(c, name='PQresultErrorField')
-            import c_ptr, c_char
+            import c_ptr, c_int
             implicit none
             type(c_ptr), intent(in), value :: res
-            character(1, kind=c_char), intent(in), value :: fieldcode
+            integer(c_int), intent(in), value :: fieldcode
             type(c_ptr) :: c_PQ_result_error_field
          end function c_PQ_result_error_field
       end interface
@@ -757,6 +758,8 @@ contains
 
       call c_char_to_f_string(cptr, str)
 
+      call PQfreemem(cptr)
+
       res => str
 
    end function PQcmdTuples
@@ -783,10 +786,85 @@ contains
 
    end function PQoidValue
    
-   
+
    !== Escaping Strings for Inclusion in SQL Commands
 
-   ! function PQescapeLiteral
+   function PQescapeLiteral (conn, str, length, errmsg) result(res)
+      use :: character_pointer_wrapper
+      use, intrinsic :: iso_c_binding
+      use, intrinsic :: iso_fortran_env
+
+      ! Input parameters
+      type(c_ptr), intent(in) :: conn
+      character(*),intent(in) :: str
+      integer(c_size_t), intent(in) :: length
+      character(*), intent(inout), optional :: errmsg
+
+      ! Output variable
+      character(:), pointer :: res
+
+      ! Declare local variables
+      integer(c_size_t) :: len                           ! Actual length of the input string
+      character(:, kind=c_char), allocatable :: c_str    ! C-style string 
+      character(:), allocatable, target :: result_string ! Target for the result string
+      type(c_ptr) :: cptr                                ! Pointer to the result from the C func.
+      
+      ! Define an interface for the C func.
+      interface
+         function c_PQ_escape_literal (conn, str, length) bind(c, name="PQescapeLiteral")
+            import c_ptr, c_size_t, c_char 
+            implicit none
+            type(c_ptr), intent(in), value :: conn
+            character(1, kind=c_char), intent(in) :: str
+            integer(c_size_t), intent(in), value :: length
+            type(c_ptr) :: c_PQ_escape_literal
+         end function c_PQ_escape_literal
+      end interface
+
+      ! Initialize the result pointer variable
+      res => null()
+
+      ! Remove trailing spaces from the input string and assign it to c_str.
+      ! Zero-type termination in not required for PQescapeLiteral.
+      ! 引数の末尾の空白を除去して、c_strに代入する。PQescapeLiteralに限ってはゼロバイト終端は不要である。
+      c_str = trim(str)
+
+      ! Get the actual length of the string
+      ! 実際の文字列の長さをローカル変数に取得する。
+      len = len_trim(str)
+
+      ! If the given length 'length' is too small, write a warging to 'errmsg'.
+      ! 与えられた長さlengthが小さすぎる場合、errmsgに警告を書き込む。
+      if (length < len) then
+         if (present(errmsg)) then
+            write(errmsg, *) "Warning: the length is too small for the string."
+         end if
+      end if 
+
+      ! Call the C func. and assign the result's char ponter to 'cptr'
+      ! C関数を呼び出し、結果のcharポインタをcptrに代入する。
+      cptr = c_PQ_escape_literal(conn, c_str, length)
+
+      ! if 'cptr' is a Null pointer, return to the caller. 
+      ! In this case, the C func. leaves a message in 'conn' object.
+      ! cptrがNullポインタの場合、呼び出し元に戻る。このときconnオブジェクトにメッセージを残す。
+      if (.not. c_associated(cptr)) return 
+
+      ! Store the result of the C func. in 'result_string'
+      ! C関数の結果を文字列result_stringに格納する。
+      call c_char_to_f_string(cptr, result_string)
+
+      ! Associate the return value pointer.
+      ! 戻り値のポインタを関連付ける。
+      res => result_string
+
+      ! Free the memory allocated in C.
+      ! Cで割り付けられたメモリを解放する。
+      call PQfreemem(cptr)
+
+   end function PQescapeLiteral
+
+
    ! function PQescapeIdentifier
    ! function PQescapeStringConn
    ! function PQescapeByteConn
