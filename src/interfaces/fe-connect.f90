@@ -36,6 +36,7 @@ module m_fe_connect
    public :: PQconninfoParse
 
    public :: PQclientEncoding
+   public :: PQsetClientEncoding
 
 
    ! PRIVATE functions
@@ -1206,7 +1207,34 @@ contains
    end function 
 
 
-   ! function PQsetClientEncoding
+   function PQsetClientEncoding (conn, encoding) result(res)
+      use, intrinsic :: iso_c_binding
+      use, intrinsic :: iso_fortran_env
+
+      type(c_ptr), intent(in) :: conn
+      character(*), intent(in) :: encoding
+
+      integer(int32) :: res
+
+      character(:, kind=c_char), allocatable :: c_encoding
+
+      interface
+         function c_PQ_set_client_encoding(conn, encoding) bind(c, name="PQsetClientEncoding")
+            import c_ptr, c_char, c_int
+            type(c_ptr), intent(in), value :: conn
+            character(1, kind=c_char), intent(in) :: encoding(*)
+            integer(c_int) :: c_PQ_set_client_encoding
+         end function c_PQ_set_client_encoding
+      end interface
+
+      c_encoding = trim(encoding)//c_null_char
+
+      res = c_PQ_set_client_encoding(conn, c_encoding)
+
+
+   end function PQsetClientEncoding
+
+
    ! function PQsetErrorVerbosity
    ! function PQsetErrorContextVisibility
    

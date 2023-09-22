@@ -10,7 +10,7 @@ module libpq
             PQconnectPoll, PQbackendPID, PQsocket, PQresetStart, &
             PQresetPoll, PQparameterStatus, PQconnectionNeedsPassword, &
             PQconnectionUsedPassword, PQconninfo, PQconninfoParse, &
-            PQclientEncoding
+            PQclientEncoding, PQsetClientEncoding
 
    
    use :: m_fe_exec, &
@@ -22,7 +22,7 @@ module libpq
             PQparamtype, PQresultErrorField, PQcmdStatus, PQcmdTuples, &
             PQoidValue, &
             PQsendQuery, PQgetResult, PQconsumeInput, PQisBusy, &
-            PQsetnonblocking, PQisnonblocking, PQflush
+            PQsetnonblocking, PQisnonblocking, PQflush, PQescapeLiteral
 
    use :: m_fe_misc, only: PQlibVersion
 
@@ -77,6 +77,7 @@ module libpq
 
    ! Misc.
    public :: PQclientEncoding
+   public :: PQsetClientEncoding
 
 !-From module m_fe_exec:
    public :: PQexec
@@ -111,6 +112,7 @@ module libpq
    public :: PQsetnonblocking
    public :: PQisnonblocking
    public :: PQflush
+   public :: PQescapeLiteral
 
    ! From module m_fe_misc
    public :: PQlibVersion
