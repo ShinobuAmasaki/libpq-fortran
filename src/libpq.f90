@@ -23,7 +23,7 @@ module libpq
             PQoidValue, &
             PQsendQuery, PQgetResult, PQconsumeInput, PQisBusy, &
             PQsetnonblocking, PQisnonblocking, PQflush, PQescapeLiteral, &
-            PQescapeIdentifier, PQexecParams
+            PQescapeIdentifier, PQexecParams, PQprepare, PQexecPrepared
 
    use :: m_fe_misc, only: PQlibVersion
 
@@ -84,6 +84,8 @@ module libpq
 !-From module m_fe_exec:
    public :: PQexec
    public :: PQexecParams
+   public :: PQprepare
+   public :: PQexecPrepared
 
    public :: PQresultStatus
    public :: PQresultErrorMessage

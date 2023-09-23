@@ -46,6 +46,15 @@ module m_fe_exec
       module procedure :: PQexecParams_int64
    end interface
 
+   public :: PQprepare
+   interface PQprepare
+      module procedure :: PQprepare_int32
+      module procedure :: PQprepare_int64
+   end interface
+
+   public :: PQexecPrepared
+
+
 contains
 
 
@@ -148,7 +157,7 @@ contains
       integer :: max_len_val
       integer :: i
 
-      ! For nParam >= 1
+      ! For nParams >= 1
       interface
          function c_PQ_exec_parameters(conn, command, nParams, paramTypes, paramValues, &
                                        paramLengths, paramFormats, resultFormat) &
@@ -167,7 +176,7 @@ contains
          end function c_PQ_exec_parameters
       end interface
 
-      ! For nParam == 0
+      ! For nParams == 0
       interface
          function c_PQ_exec_parameters_zero(conn, command, nParams, paramTypes, paramValues, &
                                        paramLengths, paramFormats, resultFormat) &
@@ -222,7 +231,7 @@ contains
          end block 
          deallocate(c_paramtypes)
       ! for nParams == 0 
-      else
+      else if (nParams == 0) then
          block
             type(c_ptr) :: null_paramTypes = c_null_ptr
             type(c_ptr) :: null_paramValues = c_null_ptr
@@ -241,8 +250,207 @@ contains
 
    end function PQexecParams_int64
 
-   ! function PQprepare
-   ! function PQexecPrepared
+   ! --- PQprepare frontend
+   function PQprepare_int32 (conn, stmtName, query, nParams, paramTypes) result(res)
+      use, intrinsic :: iso_fortran_env
+      use, intrinsic :: iso_c_binding
+      use :: unsigned
+      implicit none
+
+      type(c_ptr), intent(in) :: conn
+      character(*), intent(in) :: stmtName
+      character(*), intent(in) :: query
+      integer(int32), intent(in) :: nParams
+      integer(int32), intent(in) :: paramTypes(:)
+
+      type(c_ptr) :: res
+
+      type(uint32), allocatable :: u_paramTypes(:)
+      integer :: i, siz
+
+      siz = size(paramTypes, dim=1)
+      allocate(u_paramTypes(siz))
+   
+      do i = 1, siz
+         u_paramTypes(i) = paramTypes(i)
+      end do
+
+      res = PQprepare_back(conn, stmtName, query, nParams, u_paramTypes)
+   end function PQprepare_int32
+
+
+   function PQprepare_int64 (conn, stmtName, query, nParams, paramTypes) result(res)
+      use, intrinsic :: iso_fortran_env
+      use, intrinsic :: iso_c_binding
+      use :: unsigned
+      implicit none
+
+      type(c_ptr), intent(in) :: conn
+      character(*), intent(in) :: stmtName
+      character(*), intent(in) :: query
+      integer(int32), intent(in) :: nParams
+      integer(int64), intent(in) :: paramTypes(:)
+
+      type(c_ptr) :: res
+
+      type(uint32), allocatable :: u_paramTypes(:)
+      integer :: i, siz
+
+      siz = size(paramTypes, dim=1)
+      allocate(u_paramTypes(siz))
+   
+      do i = 1, siz
+         u_paramTypes(i) = paramTypes(i)
+      end do
+
+      res = PQprepare_back(conn, stmtName, query, nParams, u_paramTypes)
+   end function PQprepare_int64
+
+   ! --- PQprepare backend
+   function PQprepare_back (conn, stmtName, query, nParams, paramTypes) result(res)
+      use, intrinsic :: iso_fortran_env
+      use, intrinsic :: iso_c_binding
+      use :: unsigned
+      use :: character_operations
+      implicit none
+
+      type(c_ptr), intent(in) :: conn
+      character(*), intent(in) :: stmtName
+      character(*), intent(in) :: query
+      integer(int32), intent(in) :: nParams
+      type(uint32), intent(in) :: paramTypes(:)
+
+      type(c_ptr) :: res
+
+      character(:, kind=c_char), allocatable :: c_stmtName
+      character(:, kind=c_char), allocatable :: c_query
+      type(uint32), allocatable, target :: c_paramTypes(:)
+      integer :: siz
+
+      interface
+         function c_PQ_prepare (conn, stmtName, query, nParams, paramTypes) bind(c, name="PQprepare")
+            import c_ptr, uint32, c_char, c_int
+            implicit none
+            type(c_ptr), intent(in), value :: conn
+            character(1, kind=c_char), intent(in) :: stmtName(*)
+            character(1, kind=c_char), intent(in) :: query(*)
+            integer(c_int), intent(in), value :: nParams
+            type(c_ptr), intent(in), value :: paramTypes
+            type(c_ptr) :: c_PQ_prepare
+         end function c_PQ_prepare
+      end interface
+
+      ! paramTypes(:)をc_paramTypesに複製してその先頭アドレスをc_PQ_prepareに渡すことを目的とする。
+      siz = size(paramTypes, dim=1)
+      allocate(c_paramTypes(siz))
+      c_paramTypes(:) = paramTypes(:)
+
+      ! Null終端の文字列を用意する
+      c_stmtName = trim(adjustl(stmtName))//c_null_char
+      c_query = trim(query)//c_null_char
+
+      ! c_paramTypesのアドレスを渡す。
+      res = c_PQ_prepare(conn, c_stmtName, c_query, nParams, c_loc(c_paramTypes))
+
+   end function PQprepare_back
+
+
+   function PQexecPrepared (conn, stmtName, nParams, paramValues) result(res)
+      use, intrinsic :: iso_fortran_env
+      use, intrinsic :: iso_c_binding
+      use :: character_operations
+      implicit none
+      
+      ! Input paramters
+      type(c_ptr), intent(in) :: conn
+      character(*), intent(in) :: stmtName   ! statement name
+      integer(int32), intent(in) :: nParams
+      character(*), intent(in) :: paramValues(:)
+
+      ! Output pointer
+      type(c_ptr) :: res
+
+      ! Local variables
+      integer(int32) :: resultFormat, max_len_val
+      character(:, kind=c_char), allocatable :: c_stmtName
+      type(c_ptr) :: null_paramLengths = c_null_ptr
+      type(c_ptr) :: null_paramFormats = c_null_ptr
+      
+
+      interface
+         function c_PQ_exec_prepared (conn, stmtName, nParams, paramValues, paramLengths, paramFormats, resultFormat) &
+            bind(c, name="PQexecPrepared")
+            import c_ptr, c_int, c_char
+            implicit none
+            type(c_ptr), intent(in), value :: conn
+            character(1, kind=c_char), intent(in) :: stmtName(*)
+            integer(c_int), intent(in), value     :: nParams
+            type(c_ptr), intent(in)               :: paramValues
+            type(c_ptr), intent(in), value        :: paramLengths
+            type(c_ptr), intent(in), value        :: paramFormats
+            integer(c_int), intent(in), value     :: resultFormat
+            type(c_ptr) :: c_PQ_exec_prepared
+         end function c_PQ_exec_prepared
+      end interface
+      
+
+      interface
+         function c_PQ_exec_prepared_zero (conn, stmtName, nParams, paramValues, paramLengths, paramFormats, resultFormat) &
+            bind(c, name="PQexecPrepared")
+            import c_ptr, c_int, c_char
+            implicit none
+            type(c_ptr),    intent(in), value     :: conn
+            character(1, kind=c_char), intent(in) :: stmtName(*)
+            integer(c_int), intent(in), value     :: nParams
+            type(c_ptr),    intent(in), value     :: paramValues
+            type(c_ptr),    intent(in), value     :: paramLengths
+            type(c_ptr),    intent(in), value     :: paramFormats
+            integer(c_int), intent(in), value     :: resultFormat
+            type(c_ptr) :: c_PQ_exec_prepared_zero
+         end function c_PQ_exec_prepared_zero
+      end interface
+
+      resultFormat = 0
+
+      c_stmtName = trim(adjustl(stmtName))//c_null_char
+
+      if (nParams >= 1) then
+         max_len_val = max_length_char_array(paramValues)
+
+         block
+            character(max_len_val+1, kind=c_char), allocatable, target :: c_values(:)
+            type(c_ptr), allocatable :: ptr_values(:)
+
+            call cchar_array_from_strings_no_null(paramValues, c_values, max_len_val)
+            call cptr_array_from_cchar_no_null(c_values, ptr_values)
+
+            res = c_PQ_exec_prepared( &
+                        conn, c_stmtName, nParams, &
+                        ptr_values, &
+                        null_paramLengths, &
+                        null_paramLengths, &
+                        resultFormat &
+                  )
+         end block
+
+      else if (nParams == 0) then
+         block
+            type(c_ptr) :: null_paramValues = c_null_ptr
+
+            res = c_PQ_exec_prepared_zero( &
+                        conn, c_stmtName, nParams, &
+                        null_paramValues, &
+                        null_paramLengths, &
+                        null_paramFormats, &
+                        resultFormat &
+                  )
+         end block
+      end if 
+      
+   end function PQexecPrepared
+
+
+
    ! function PQdescribePrepared
    ! function PQdescribePortal
 

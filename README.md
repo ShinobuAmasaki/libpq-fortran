@@ -146,7 +146,7 @@ Note: The order of the following headings and the functions contained within the
 - [x] `PQbackendPID`
 - [x] `PQconnectionNeedsPassword`
 - [x] `PQconnectionUsedPassword`
-- [ ] `PQsslInUse`
+- [x] `PQsslInUse`
 - [ ] `PQsslAttribute`
 - [ ] `PQsslAttributeNames`
 - [ ] `PQsslStruct`
@@ -156,9 +156,9 @@ Note: The order of the following headings and the functions contained within the
 
 #### Main Functions
 - [x] `PQexec`
-- [ ] `PQexecParams`
-- [ ] `PQprepare`
-- [ ] `PQexecPrepared`
+- [x] `PQexecParams` (text format only.)
+- [x] `PQprepare`
+- [x] `PQexecPrepared`
 - [ ] `PQdescribePrepared`
 - [ ] `PQdescribePortal`
 - [x] `PQresultStatus`
@@ -168,7 +168,7 @@ Note: The order of the following headings and the functions contained within the
 - [x] `PQresultErrorField`
 - [x] `PQclear`
  
-#### Retrieving Query Result Information
+#### Retrieving Query Result Inform  ation
 - [x] `PQntuples`
 - [x] `PQnfields`
 - [x] `PQfname`
