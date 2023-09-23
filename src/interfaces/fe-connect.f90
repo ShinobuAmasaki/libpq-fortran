@@ -37,6 +37,7 @@ module m_fe_connect
 
    public :: PQclientEncoding
    public :: PQsetClientEncoding
+   public :: PQsslInUse
 
 
    ! PRIVATE functions
@@ -1135,7 +1136,34 @@ contains
 
 
    != for SSL connection
-   ! function PQsslInUse
+   function PQsslInUse (conn)
+      use, intrinsic :: iso_c_binding
+      use, intrinsic :: iso_fortran_env
+      implicit none
+      
+      type(c_ptr), intent(in) :: conn
+      logical :: PQsslInUse
+
+      integer(int32) :: res
+
+      interface
+         function c_PQ_ssl_in_use (conn) bind(c, name="PQsslInUse")
+            import c_ptr, c_int
+            type(c_ptr), intent(in), value :: conn
+            integer(c_int) :: c_PQ_ssl_in_use 
+         end function c_PQ_ssl_in_use
+      end interface
+
+      res = c_PQ_ssl_in_use(conn)
+
+      if (res == 1) then
+         PQsslInUse = .true.
+      else if (res == 0) then
+         PQsslInUse = .false.
+      end if
+
+   end function PQsslInUse
+      
    ! function PQsslAttribute
    ! function PQsslAttributeNames
    ! function PQsslStruct
