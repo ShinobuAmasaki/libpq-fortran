@@ -23,7 +23,7 @@ module libpq
             PQoidValue, &
             PQsendQuery, PQgetResult, PQconsumeInput, PQisBusy, &
             PQsetnonblocking, PQisnonblocking, PQflush, PQescapeLiteral, &
-            PQescapeIdentifier
+            PQescapeIdentifier, PQexecParams
 
    use :: m_fe_misc, only: PQlibVersion
 
@@ -83,6 +83,8 @@ module libpq
 
 !-From module m_fe_exec:
    public :: PQexec
+   public :: PQexecParams
+
    public :: PQresultStatus
    public :: PQresultErrorMessage
    public :: PQresultVerboseErrorMessage
@@ -148,6 +150,11 @@ module libpq
    public :: PQERRORS_TERSE, PQERRORS_DEFAULT, PQERRORS_VERBOSE, PQERRORS_SQLSTATE
 
    public :: PQSHOW_CONTEXT_NEVER, PQSHOW_CONTEXT_ERRORS, PQSHOW_ALWAYS
+
+   public :: PGRES_EMPTY_QUERY, PGRES_COMMAND_OK, PGRES_TUPLES_OK, &
+             PGRES_COPY_OUT, PGRES_COPY_IN, PGRES_BAD_RESPONSE, PGRES_NONFATAL_ERROR,  &
+             PGRES_FATAL_ERROR, PGRES_COPY_BOTH, PGRES_SINGLE_TUPLE, PGRES_PIPELINE_SYNC, &
+             PGRES_PIPELINE_ABORTED
 
    !------------------------------------------------------------------!
    !-- ENUMERATOR declarations

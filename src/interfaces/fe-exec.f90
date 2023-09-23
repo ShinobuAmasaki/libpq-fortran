@@ -40,6 +40,12 @@ module m_fe_exec
    public :: PQescapeLiteral
    public :: PQescapeIdentifier
 
+   public :: PQexecParams
+   interface PQexecParams
+      module procedure :: PQexecParams_int32
+      module procedure :: PQexecParams_int64
+   end interface
+
 contains
 
 
@@ -81,8 +87,160 @@ contains
 
    end function PQexec
 
-   
-   ! function PQexecParams
+   ! Only TEXT format for now 
+   ! a version of int32 for paramTypes
+   function PQexecParams_int32 (conn, command, nParams, paramTypes, paramValues) result(res)
+      use, intrinsic :: iso_fortran_env
+      use, intrinsic :: iso_c_binding
+      use :: unsigned
+      use :: character_operations
+      implicit none
+      
+      ! Input parameters
+      type(c_ptr),    intent(in) :: conn
+      character(*),   intent(in) :: command
+      integer(int32), intent(in) :: nParams
+
+      integer(int32), intent(in) :: paramTypes(:)
+      character(*),   intent(in) :: paramValues(:)    ! paramValues(nParams)
+      
+      ! Output pgresult 
+      type(c_ptr) :: res
+
+      ! Local variables
+      integer :: i
+      integer(int64), allocatable :: paramTypes_i64(:)
+      
+      allocate(paramTypes_i64(size(paramTypes, dim=1)))
+
+      do i = 1, size(paramTypes, dim=1)
+         paramTypes_i64(i) = int(paramTypes(i), int64)
+      end do
+
+      res = PQexecParams(conn, command, nParams, paramTypes_i64, paramValues)
+
+   end function PQexecParams_int32
+
+   ! Only TEXT format for now 
+   ! a version of int64 for paramTypes 
+   function PQexecParams_int64 (conn, command, nParams, paramTypes, paramValues) result(res)
+      use, intrinsic :: iso_fortran_env
+      use, intrinsic :: iso_c_binding
+      use :: unsigned
+      use :: character_operations
+      implicit none
+      
+      ! Input parameters
+      type(c_ptr),    intent(in) :: conn
+      character(*),   intent(in) :: command
+      integer(int32), intent(in) :: nParams
+
+      integer(int64), intent(in) :: paramTypes(:)
+      character(*),   intent(in) :: paramValues(:)    ! paramValues(nParams)
+
+      ! Output pgresult 
+      type(c_ptr) :: res
+
+      ! Local variables
+      character(:, kind=c_char), allocatable :: c_command
+      type(uint32), allocatable, target :: c_paramtypes(:)      
+      integer :: resultFormat
+      integer :: max_len_val
+      integer :: i
+
+      ! For nParam >= 1
+      interface
+         function c_PQ_exec_parameters(conn, command, nParams, paramTypes, paramValues, &
+                                       paramLengths, paramFormats, resultFormat) &
+                     bind(c, name="PQexecParams")
+            import c_ptr, c_int, uint32, c_char
+            implicit none
+            type(c_ptr), intent(in), value :: conn
+            character(1, kind=c_char), intent(in) :: command(*)      ! String
+            integer(c_int), intent(in), value     :: nParams         ! Int scalar
+            type(c_ptr), intent(in), value        :: paramTypes
+            type(c_ptr), intent(in)               :: paramValues     ! String array 
+            type(c_ptr), intent(in), value        :: paramLengths    ! Int array
+            type(c_ptr), intent(in), value        :: paramFormats    ! Int array
+            integer(c_int), intent(in), value     :: resultFormat    ! Int scalar
+            type(c_ptr) :: c_PQ_exec_parameters
+         end function c_PQ_exec_parameters
+      end interface
+
+      ! For nParam == 0
+      interface
+         function c_PQ_exec_parameters_zero(conn, command, nParams, paramTypes, paramValues, &
+                                       paramLengths, paramFormats, resultFormat) &
+                     bind(c, name="PQexecParams")
+            import c_ptr, c_int, uint32, c_char
+            implicit none
+            type(c_ptr), intent(in), value :: conn
+            character(1, kind=c_char), intent(in) :: command(*)      
+            integer(c_int), intent(in), value     :: nParams 
+            type(c_ptr),    intent(in), value     :: paramTypes
+            type(c_ptr),    intent(in), value     :: paramValues 
+            type(c_ptr),    intent(in), value     :: paramLengths
+            type(c_ptr),    intent(in), value     :: paramFormats
+            integer(c_int), intent(in), value     :: resultFormat
+            type(c_ptr) :: c_PQ_exec_parameters_zero
+         end function c_PQ_exec_parameters_zero 
+      end interface
+
+
+      resultFormat = 0 ! text format only for now.
+
+      c_command =  trim(command)//c_null_char
+
+      if (nParams >= 1) then
+
+         max_len_val = max_length_char_array(paramValues)
+
+         allocate(c_paramtypes(nParams))
+         
+         do i = 1, nParams
+            c_paramtypes(i) = paramTypes(i)
+         end do
+
+         block
+            character(max_len_val+1, kind=c_char), allocatable, target :: c_values(:)
+            type(c_ptr), allocatable :: ptr_values(:)
+
+            call cchar_array_from_strings_no_null(paramValues, c_values, max_len_val)
+            call cptr_array_from_cchar_no_null(c_values, ptr_values)
+
+            
+            res = c_PQ_exec_parameters(&
+                  conn, command, nParams, c_loc(c_paramTypes), &
+                  ptr_values, c_null_ptr, c_null_ptr, resultFormat)
+
+            ! for BINARY format
+            ! res = c_PQ_exec_parameters(&
+                  ! conn, command, nParams, c_paramTypes, &
+                  ! ptr_values, paramLengths, paramFormats, resultFormat)
+
+
+         end block 
+         deallocate(c_paramtypes)
+      ! for nParams == 0 
+      else
+         block
+            type(c_ptr) :: null_paramTypes = c_null_ptr
+            type(c_ptr) :: null_paramValues = c_null_ptr
+            type(c_ptr) :: null_paramLength = c_null_ptr
+            type(c_ptr) :: null_paramFormats = c_null_ptr
+         
+         res = c_PQ_exec_parameters_zero(&
+                        conn, command, nParams, &
+                        null_paramTypes,   &
+                        null_paramValues,  &
+                        null_paramLength,  &
+                        null_paramFormats, &
+                        resultFormat)
+         end block
+      end if
+
+   end function PQexecParams_int64
+
    ! function PQprepare
    ! function PQexecPrepared
    ! function PQdescribePrepared
