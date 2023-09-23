@@ -195,9 +195,9 @@ Note: The order of the following headings and the functions contained within the
 
 #### Escaping String for Inclusion in SQL Commands
 - [x] `PQescapeLiteral` (plan to test)
-- [ ] `PQescapeIdentifier`
+- [x] `PQescapeIdentifier`
 - [ ] `PQescapeStringConn`
-- [ ] `PQescapeString`
+- <s> `PQescapeString`</s>
 - [ ] `PQescapeByteaConn`
 - [ ] `PQescapeBytea`
 - [ ] `PQunescapeBytea`

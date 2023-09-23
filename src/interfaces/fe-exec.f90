@@ -38,6 +38,7 @@ module m_fe_exec
    public :: PQisnonblocking
    public :: PQflush
    public :: PQescapeLiteral
+   public :: PQescapeIdentifier
 
 contains
 
@@ -758,8 +759,6 @@ contains
 
       call c_char_to_f_string(cptr, str)
 
-      call PQfreemem(cptr)
-
       res => str
 
    end function PQcmdTuples
@@ -815,7 +814,7 @@ contains
             import c_ptr, c_size_t, c_char 
             implicit none
             type(c_ptr), intent(in), value :: conn
-            character(1, kind=c_char), intent(in) :: str
+            character(1, kind=c_char), intent(in) :: str(*)
             integer(c_size_t), intent(in), value :: length
             type(c_ptr) :: c_PQ_escape_literal
          end function c_PQ_escape_literal
@@ -865,8 +864,67 @@ contains
    end function PQescapeLiteral
 
 
-   ! function PQescapeIdentifier
+   ! この関数の構造は上のPQescapeLiteralとほとんど同じなので、それに含まれるコメントも参照されたい
+   ! The structure of this function closely resembles that of the `PQescapeLiteral`,
+   ! and the comments included in it should also be referenced.
+   function PQescapeIdentifier (conn, str, length, errmsg) result(res)
+      use :: character_pointer_wrapper
+      use, intrinsic :: iso_c_binding
+      use, intrinsic :: iso_fortran_env
+
+      ! Input parameters
+      type(c_ptr), intent(in) :: conn
+      character(*), intent(in) :: str
+      integer(c_size_t), intent(in) :: length
+      character(*), intent(inout), optional :: errmsg
+
+      ! Output variable
+      character(:), pointer :: res
+
+      ! Declare local variable
+      integer(c_size_t) :: len
+      character(:, kind=c_char), allocatable :: c_str
+      character(:), allocatable, target, save :: result_string
+      type(c_ptr) :: cptr
+
+      ! Define an interface for the C func.
+      interface
+         function c_PQ_escape_identifier(conn, str, length) bind(c, name="PQescapeIdentifier")
+            import c_ptr, c_size_t, c_char
+            implicit none
+            type(c_ptr), intent(in), value :: conn
+            character(1, kind=c_char), intent(in) :: str(*)
+            integer(c_size_t), intent(in), value :: length
+            type(c_ptr) :: c_PQ_escape_identifier
+         end function c_PQ_escape_identifier
+      end interface
+
+      res => null()
+
+      c_str = trim(str)
+
+      len = len_trim(str)
+
+      if (length < len) then
+         if (present(errmsg)) then
+            write(errmsg, *) "Warning: the length is too small for the string."
+         end if
+      end if
+
+      cptr = c_PQ_escape_identifier(conn, c_str, length)
+
+      if (.not. c_associated(cptr)) return
+
+      call c_char_to_f_string(cptr, result_string)
+
+      res => result_string 
+      
+      call PQfreemem(cptr)
+
+   end function PQescapeIdentifier
+
    ! function PQescapeStringConn
+
    ! function PQescapeByteConn
    ! function PQunescapeBytea
 
