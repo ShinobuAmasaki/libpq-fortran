@@ -483,7 +483,36 @@ contains
    end function PQdescribePrepared
 
 
-   !function PQdescribePortal (conn, portalName)
+   function PQdescribePortal (conn, portalName) result(res)
+      use, intrinsic :: iso_c_binding
+      use, intrinsic :: iso_fortran_env
+      implicit none
+      
+      ! Input parameters
+      type(c_ptr), intent(in) :: conn
+      character(*), intent(in) :: portalName
+
+      ! Output parameter
+      type(c_ptr) :: res
+
+      ! Local variables
+      character(:, kind=c_char), allocatable :: c_portalName
+
+      interface
+         function c_PQ_describe_portal(conn, portalName) bind(c, name="PQdescribePortal")
+            import c_ptr, c_char
+            implicit none
+            type(c_ptr), intent(in), value :: conn
+            character(1, kind=c_char), intent(in) :: portalName(*)
+            type(c_ptr) :: c_PQ_describe_portal
+         end function c_PQ_describe_portal
+      end interface
+
+      c_portalName = trim(adjustl(portalName))//c_null_char
+
+      res = c_PQ_describe_portal(conn, c_portalName)
+
+   end function PQdescribePortal
 
 
    function PQresultStatus(pgresult) result(res)
