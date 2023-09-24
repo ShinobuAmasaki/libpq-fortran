@@ -471,7 +471,7 @@ contains
             import c_ptr, c_char
             implicit none
             type(c_ptr), intent(in), value :: conn
-            character(1, kind=c_char), intent(in) :: stmtName
+            character(1, kind=c_char), intent(in) :: stmtName(*)
             type(c_ptr) :: c_PQ_describe_prepared
          end function c_PQ_describe_prepared
       end interface
