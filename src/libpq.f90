@@ -23,7 +23,8 @@ module libpq
             PQoidValue, &
             PQsendQuery, PQgetResult, PQconsumeInput, PQisBusy, &
             PQsetnonblocking, PQisnonblocking, PQflush, PQescapeLiteral, &
-            PQescapeIdentifier, PQexecParams, PQprepare, PQexecPrepared
+            PQescapeIdentifier, PQexecParams, PQprepare, PQexecPrepared, &
+            PQdescribePrepared, PQdescribePortal, PQnparams, PQparamtype
 
    use :: m_fe_misc, only: PQlibVersion
 
@@ -86,7 +87,8 @@ module libpq
    public :: PQexecParams
    public :: PQprepare
    public :: PQexecPrepared
-
+   public :: PQdescribePrepared
+   public :: PQdescribePortal
    public :: PQresultStatus
    public :: PQresultErrorMessage
    public :: PQresultVerboseErrorMessage
@@ -96,6 +98,8 @@ module libpq
    public :: PQfnumber
    public :: PQgetvalue
    public :: PQgetisnull
+   public :: PQnparams
+   public :: PQparamtype
    public :: PQclear
    public :: PQbinaryTuples
    public :: PQfformat

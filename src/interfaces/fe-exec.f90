@@ -53,6 +53,8 @@ module m_fe_exec
    end interface
 
    public :: PQexecPrepared
+   public :: PQdescribePrepared
+   public :: PQdescribePortal
 
 
 contains
