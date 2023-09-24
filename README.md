@@ -103,7 +103,9 @@ The creation of this package was inspired by a discussion in the [Fortran-jp](ht
 
 ## Appendix: Implemented Interface Functions List
 
-Note: The order of the following headings and the functions contained within them follows [the PostgreSQL documentation](https://www.postgresql.org/docs/current/libpq.html).
+Note:
+ - The order of the following headings and the functions contained within them follows [the PostgreSQL documentation](https://www.postgresql.org/docs/current/libpq.html).
+ - The function with a strikethrough is not planned to be implemented.
 
 ### Database Connection Control Functions
 
@@ -156,7 +158,7 @@ Note: The order of the following headings and the functions contained within the
 
 #### Main Functions
 - [x] `PQexec`
-- [x] `PQexecParams` (text format only.)
+- [x] `PQexecParams` (only in text format)
 - [x] `PQprepare`
 - [x] `PQexecPrepared`
 - [x] `PQdescribePrepared`
@@ -205,10 +207,10 @@ Note: The order of the following headings and the functions contained within the
 ### Asynchronous Command Processing
 - [x] `PQsendQuery` (plan to test)
 - [ ] `PQsendQueryParams`
-- [x] `PQsendPrepare` (plan to test)
+- [x] `PQsendPrepare` (only in text format; plan to test)
 - [x] `PQsendQueryPrepared` (plan to test)
-- [ ] `PQsendDescribePrepared`
-- [ ] `PQsendDescribePortal`
+- [x] `PQsendDescribePrepared` (plan to test)
+- [x] `PQsendDescribePortal` (plan to test)
 - [x] `PQgetResult` (plan to test)
 - [x] `PQconsumeInput` (plan to test)
 - [x] `PQisBusy` (plan to test)

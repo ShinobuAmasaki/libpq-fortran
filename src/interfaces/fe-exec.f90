@@ -67,7 +67,8 @@ module m_fe_exec
       module procedure :: PQsendQueryPrepared_text
    end interface
 
-   
+   public :: PQsendDescribePrepared
+   public :: PQsendDescribePortal
 
 contains
 
@@ -1612,8 +1613,79 @@ contains
    end function PQsendQueryPrepared_text
 
 
-   ! function PQsendDescribePrepared
-   ! function PQsendDescribePortal
+   function PQsendDescribePrepared (conn, stmtName) result(res)
+      use, intrinsic :: iso_c_binding
+      use, intrinsic :: iso_fortran_env
+      implicit none
+      
+      ! Input paramters
+      type(c_ptr), intent(in) :: conn
+      character(*), intent(in) :: stmtName
+
+      ! Output integer
+      integer(int32) :: res
+
+      ! Local variable
+      character(:, kind=c_char), allocatable :: c_stmtName
+
+      interface
+         function c_PQ_send_describe_prepared (conn, stmtName) bind(c, name="PQsendDescribePrepared")
+            import c_ptr, c_char, c_int
+            implicit none
+            type(c_ptr), intent(in), value :: conn
+            character(1, kind=c_char) :: stmtName(*)
+            integer(c_int) :: c_PQ_send_describe_prepared
+         end function c_PQ_send_describe_prepared
+      end interface
+
+      ! Initialize the result variable
+      res = 1
+
+      ! Trim and left-align 'stmtName', then append a null termination character.
+      c_stmtName = trim(adjustl(stmtName))//c_null_char
+
+       ! Call the C function 'PQsendDescribePrepared' with the converted stmtName.
+      res = c_PQ_send_describe_prepared(conn, c_stmtName)
+
+   end function PQsendDescribePrepared
+
+
+   function PQsendDescribePortal (conn, portalName) result(res)
+      use, intrinsic :: iso_c_binding
+      use, intrinsic :: iso_fortran_env
+      implicit none
+      
+      ! Input paramters
+      type(c_ptr), intent(in) :: conn
+      character(*), intent(in) :: portalName
+
+      ! Output integer
+      integer(int32) :: res
+
+      ! Local variable
+      character(:, kind=c_char), allocatable :: c_portalName
+
+      interface
+         function c_PQ_send_describe_portal (conn, portalName) bind(c, name="PQsendDescribePortal")
+            import c_ptr, c_char, c_int
+            implicit none
+            type(c_ptr), intent(in), value :: conn
+            character(1, kind=c_char) :: portalName(*)
+            integer(c_int) :: c_PQ_send_describe_portal
+         end function c_PQ_send_describe_portal
+      end interface
+
+      ! Initialize the result variable
+      res = 1
+
+      ! Trim and left-align 'portalName', then append a null termination character.
+      c_portalName = trim(adjustl(portalName))//c_null_char
+
+      ! Call the C function 'PQsendDescribePortral' with the converted portralName.
+      res = c_PQ_send_describe_portal(conn, c_portalName)
+
+   end function PQsendDescribePortal
+
 
    function PQgetResult (conn) result(res)
       use, intrinsic :: iso_c_binding
