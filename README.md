@@ -219,11 +219,11 @@ Note:
 - [x] `PQflush` (plan to test)
 
 ### Pipeline Mode
-- [ ] `PQpipelineStatus`
-- [ ] `PQenterPipelineMode`
-- [ ] `PQexitPipelineMode`
-- [ ] `PQpipelineSync`
-- [ ] `PQsendFlushRequest`
+- [x] `PQpipelineStatus`
+- [x] `PQenterPipelineMode`
+- [x] `PQexitPipelineMode`
+- [x] `PQpipelineSync`
+- [x] `PQsendFlushRequest`
 
 ### Retrieving Query Result Row-by-Row
 - [ ] `PQsetSingleRowMode`

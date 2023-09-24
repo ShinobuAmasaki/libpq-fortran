@@ -69,14 +69,19 @@ module m_fe_exec
 
    public :: PQsendDescribePrepared
    public :: PQsendDescribePortal
+   public :: PQpipelineStatus
+   public :: PQenterPipelineMode
+   public :: PQexitPipelineMode
+   public :: PQpipelineSync
+   public :: PQsendFlushRequest
 
 contains
 
 
-   !==================================================================!
-   ! Command Execution Functions
+!==================================================================!
+!== Command Execution Functions
 
-   !== Main Functions
+!== Main Functions
 
    function PQexec(conn, query) result(res)
       use, intrinsic :: iso_c_binding
@@ -1370,8 +1375,8 @@ contains
    ! function PQunescapeBytea
 
 
-   !==================================================================!
-   ! Asynchronous Command Processing
+!==================================================================!
+!==Asynchronous Command Processing
 
    function PQsendQuery (conn, command) result(res)
       use, intrinsic :: iso_c_binding
@@ -1832,18 +1837,116 @@ contains
 
 
 
-   !=================================================================!
-   ! Pipeline Mode
+!=================================================================!
+!==Pipeline Mode
    
-   ! function PQpipelineStatus
-   ! function PQenterPipelineMode
-   ! funciton PQexitPipelineMode
-   ! function PQpipelineSync
-   ! function PQsendFlushRequest
+   function PQpipelineStatus (conn) result(res)
+      use, intrinsic :: iso_c_binding
+      use, intrinsic :: iso_fortran_env
+      implicit none
+
+      type(c_ptr), intent(in) :: conn
+      integer(int32) :: res
+
+      interface
+         function c_PQ_pipeline_status (conn) bind(c, name="PQpipelineStatus")
+            import c_ptr, c_int
+            implicit none
+            type(c_ptr), intent(in), value :: conn
+            integer(c_int) :: c_PQ_pipeline_status
+         end function c_PQ_pipeline_status
+      end interface
+      
+      res = c_PQ_pipeline_status(conn)
+   end function PQpipelineStatus
+
+
+   function PQenterPipelineMode (conn) result(res)
+      use, intrinsic :: iso_c_binding
+      use, intrinsic :: iso_fortran_env
+      implicit none
+      
+      type(c_ptr), intent(in) :: conn
+      integer(int32) :: res
+
+      interface
+         function c_PQ_enter_pipeline_mode (conn) bind(c, name="PQenterPipelineMode")
+            import c_ptr, c_int
+            implicit none
+            type(c_ptr), intent(in), value :: conn
+            integer(c_int) :: c_PQ_enter_pipeline_mode
+         end function c_PQ_enter_pipeline_mode
+      end interface 
+
+      res = c_PQ_enter_pipeline_mode(conn)
+   end function PQenterPipelineMode
+
+
+   function PQexitPipelineMode (conn) result(res)
+      use, intrinsic :: iso_c_binding
+      use, intrinsic :: iso_fortran_env
+      implicit none
+      
+      type(c_ptr), intent(in) :: conn
+      integer(int32) :: res
+
+      interface
+         function c_PQ_exit_pipeline_mode (conn) bind(c, name="PQexitPipelineMode")
+            import c_ptr, c_int
+            implicit none
+            type(c_ptr), intent(in), value :: conn
+            integer(c_int) :: c_PQ_exit_pipeline_mode
+         end function c_PQ_exit_pipeline_mode
+      end interface 
+
+      res = c_PQ_exit_pipeline_mode(conn)
+   end function PQexitPipelineMode
+
+
+   function PQpipelineSync (conn) result(res)
+      use, intrinsic :: iso_c_binding
+      use, intrinsic :: iso_fortran_env
+      implicit none
+      
+      type(c_ptr), intent(in) :: conn
+      integer(int32) :: res
+
+      interface
+         function c_PQ_pipeline_sync (conn) bind(c, name="PQpipelineSync")
+            import c_ptr, c_int
+            implicit none
+            type(c_ptr), intent(in), value :: conn
+            integer(c_int) :: c_PQ_pipeline_sync
+         end function c_PQ_pipeline_sync
+      end interface 
+
+      res = c_PQ_pipeline_sync(conn)
+   end function PQpipelineSync
+
+
+   function PQsendFlushRequest (conn) result(res)
+      use, intrinsic :: iso_c_binding
+      use, intrinsic :: iso_fortran_env
+      implicit none
+      
+      type(c_ptr), intent(in) :: conn
+      integer(int32) :: res
+
+      interface
+         function c_PQ_send_flush_request (conn) bind(c, name="PQsendFlushRequest")
+            import c_ptr, c_int
+            implicit none
+            type(c_ptr), intent(in), value :: conn
+            integer(c_int) :: c_PQ_send_flush_request
+         end function c_PQ_send_flush_request
+      end interface 
+
+      res = c_PQ_send_flush_request(conn)
+   end function PQsendFlushRequest
    
 
-   !=================================================================!
-   ! Functions Associated with the COPY Command
+!=================================================================!
+!==Functions Associated with the COPY Command
    
    ! function PQputCopyData
    ! function PQputCopyEnd

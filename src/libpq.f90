@@ -26,7 +26,9 @@ module libpq
             PQescapeIdentifier, PQexecParams, PQprepare, PQexecPrepared, &
             PQdescribePrepared, PQdescribePortal, PQnparams, PQparamtype, &
             PQsendPrepare, PQsendQueryPrepared, PQsendDescribePrepared, &
-            PQsendDescribePortal
+            PQsendDescribePortal, &
+            PQpipelineStatus, PQenterPipelineMode, PQexitPipelineMode, &
+            PQpipelineSync, PQsendFlushRequest
 
    use :: m_fe_auth, only: PQencryptPasswordConn
 
@@ -130,6 +132,11 @@ module libpq
    public :: PQsetnonblocking
    public :: PQisnonblocking
    public :: PQflush
+   public :: PQpipelineStatus
+   public :: PQenterPipelineMode
+   public :: PQexitPipelineMode
+   public :: PQpipelineSync
+   public :: PQsendFlushRequest
    public :: PQescapeLiteral
    public :: PQescapeIdentifier
 
@@ -163,6 +170,8 @@ module libpq
    public :: PGRES_POLLING_FAILED, PGRES_POLLING_READING, &
              PGRES_POLLING_WRITING, PGRES_POLLING_OK, &
              PGRES_POLLING_ACTIVE
+
+   public :: PQ_PIPELINE_OFF, PQ_PIPELINE_ON, PQ_PIPELINE_ABORTED
 
    public :: PQERRORS_TERSE, PQERRORS_DEFAULT, PQERRORS_VERBOSE, PQERRORS_SQLSTATE
 
@@ -213,6 +222,12 @@ module libpq
       enumerator :: PQPING_NO_RESPONSE
       enumerator :: PQPING_NO_ATTEMPT
    end enum 
+
+   enum, bind(c) ! PGpipelineStatus
+      enumerator :: PQ_PIPELINE_OFF = 0
+      enumerator :: PQ_PIPELINE_ON
+      enumerator :: PQ_PIPELINE_ABORTED
+   end enum
 
    enum, bind(c) ! PGTransactionStatusType
       enumerator :: PQTRANS_IDLE = 0
