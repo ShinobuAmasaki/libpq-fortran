@@ -62,6 +62,12 @@ module m_fe_exec
       module procedure :: PQsendPrepare_int64
    end interface 
 
+   public :: PQsendQueryPrepared
+   interface PQsendQueryPrepared
+      module procedure :: PQsendQueryPrepared_text
+   end interface
+
+   
 
 contains
 
@@ -436,7 +442,7 @@ contains
                         conn, c_stmtName, nParams, &
                         ptr_values, &
                         null_paramLengths, &
-                        null_paramLengths, &
+                        null_paramFormats, &
                         resultFormat &
                   )
          end block
@@ -1515,7 +1521,97 @@ contains
    end function PQsendPrepare_int64
 
 
-   ! function PQsendQueryPrepared
+   function PQsendQueryPrepared_text (conn, stmtName, nParams, paramValues) result(res)
+      use, intrinsic :: iso_fortran_env
+      use, intrinsic :: iso_c_binding
+      use :: character_operations
+
+      ! Input paramters
+      type(c_ptr), intent(in) :: conn
+      character(*), intent(in) :: stmtName
+      integer(int32), intent(in) :: nParams
+      character(*), intent(in) :: paramValues(:)
+
+      ! Output integer
+      integer(int32) :: res
+
+      ! Local variales
+      integer(int32) :: resultFormat, max_len_val
+      character(:, kind=c_char), allocatable :: c_stmtName
+      type(c_ptr) :: null_paramLengths = c_null_ptr
+      type(c_ptr) :: null_paramFormats = c_null_ptr
+
+      interface
+         function c_PQ_send_query_prepared (conn, stmtName, nParams, paramValues, paramLengths, paramFormats, resultFormat) &
+                     bind(c, name="PQsendQueryPrepared")
+            import c_ptr, c_int, c_char
+            type(c_ptr), intent(in), value :: conn
+            character(1, kind=c_char), intent(in) :: stmtName(*)
+            integer(c_int), intent(in), value     :: nParams
+            type(c_ptr), intent(in)               :: paramValues
+            type(c_ptr), intent(in), value        :: paramLengths
+            type(c_ptr), intent(in), value        :: paramFormats
+            integer(c_int), intent(in), value     :: resultFormat
+            integer(c_int) :: c_PQ_send_query_prepared
+         end function c_PQ_send_query_prepared
+      end interface
+
+      interface
+         function c_PQ_send_query_prepared_zero (conn, stmtName, nParams, paramValues, paramLengths, paramFormats, resultFormat) &
+                     bind(c, name="PQsendQueryPrepared")
+            import c_ptr, c_int, c_char
+            type(c_ptr), intent(in), value :: conn
+            character(1, kind=c_char), intent(in) :: stmtName(*)
+            integer(c_int), intent(in), value     :: nParams
+            type(c_ptr), intent(in), value        :: paramValues
+            type(c_ptr), intent(in), value        :: paramLengths
+            type(c_ptr), intent(in), value        :: paramFormats
+            integer(c_int), intent(in), value     :: resultFormat
+            integer(c_int) :: c_PQ_send_query_prepared_zero
+         end function c_PQ_send_query_prepared_zero
+      end interface
+         
+      resultFormat = 0
+      res = 0
+
+      c_stmtName = trim(adjustl(stmtName))//c_null_char
+
+      if (nParams >= 1) then
+         max_len_val = max_length_char_array(paramValues)
+
+         block
+            character(max_len_val+1, kind=c_char), allocatable, target :: c_values(:)
+            type(c_ptr), allocatable :: ptr_values(:)
+
+            call cchar_array_from_strings_no_null(paramValues, c_values, max_len_val)
+            call cptr_array_from_cchar_no_null(c_values, ptr_values)
+
+            res = c_PQ_send_query_prepared( &
+                     conn, c_stmtName, nParams, &
+                     ptr_values, &
+                     null_paramLengths, &
+                     null_paramFormats, &
+                     resultFormat &
+                  )
+         end block
+
+      else if (nParams == 0 ) then
+         block
+            type(c_ptr) :: null_paramValues = c_null_ptr
+
+            res = c_PQ_send_query_prepared_zero( &
+                     conn, c_stmtName, nParams, &
+                     null_paramValues,  &
+                     null_paramLengths, &
+                     null_paramFormats, &
+                     resultFormat &
+                  )
+         end block
+      end if 
+
+   end function PQsendQueryPrepared_text
+
+
    ! function PQsendDescribePrepared
    ! function PQsendDescribePortal
 

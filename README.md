@@ -206,9 +206,9 @@ Note: The order of the following headings and the functions contained within the
 - [x] `PQsendQuery` (plan to test)
 - [ ] `PQsendQueryParams`
 - [x] `PQsendPrepare` (plan to test)
-- [ ] `PQsendQueryPrepared`
+- [x] `PQsendQueryPrepared` (plan to test)
 - [ ] `PQsendDescribePrepared`
-- [ ] `PQse ndDescribePortal`
+- [ ] `PQsendDescribePortal`
 - [x] `PQgetResult` (plan to test)
 - [x] `PQconsumeInput` (plan to test)
 - [x] `PQisBusy` (plan to test)
