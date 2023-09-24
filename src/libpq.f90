@@ -24,7 +24,8 @@ module libpq
             PQsendQuery, PQgetResult, PQconsumeInput, PQisBusy, &
             PQsetnonblocking, PQisnonblocking, PQflush, PQescapeLiteral, &
             PQescapeIdentifier, PQexecParams, PQprepare, PQexecPrepared, &
-            PQdescribePrepared, PQdescribePortal, PQnparams, PQparamtype
+            PQdescribePrepared, PQdescribePortal, PQnparams, PQparamtype, &
+            PQsendPrepare
 
    use :: m_fe_auth, only: PQencryptPasswordConn
 
@@ -118,6 +119,7 @@ module libpq
    public :: PQoidValue
 
    public :: PQsendQuery
+   public :: PQsendPrepare
    public :: PQgetResult
    public :: PQconsumeInput
    public :: PQisBusy

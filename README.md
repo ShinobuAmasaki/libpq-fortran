@@ -205,10 +205,10 @@ Note: The order of the following headings and the functions contained within the
 ### Asynchronous Command Processing
 - [x] `PQsendQuery` (plan to test)
 - [ ] `PQsendQueryParams`
-- [ ] `PQsendPrepare`
+- [x] `PQsendPrepare` (plan to test)
 - [ ] `PQsendQueryPrepared`
 - [ ] `PQsendDescribePrepared`
-- [ ] `PQsendDescribePortal`
+- [ ] `PQse ndDescribePortal`
 - [x] `PQgetResult` (plan to test)
 - [x] `PQconsumeInput` (plan to test)
 - [x] `PQisBusy` (plan to test)

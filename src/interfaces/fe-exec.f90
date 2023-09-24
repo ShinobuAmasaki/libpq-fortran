@@ -56,6 +56,12 @@ module m_fe_exec
    public :: PQdescribePrepared
    public :: PQdescribePortal
 
+   public :: PQsendPrepare
+   interface PQsendPrepare
+      module procedure :: PQsendPrepare_int32
+      module procedure :: PQsendPrepare_int64
+   end interface 
+
 
 contains
 
@@ -1389,7 +1395,126 @@ contains
 
 
    ! function PQsendQueryParams
-   ! function PQsendPrepare
+
+   ! 戻り値はinteger(4)なのでPQprepareとは別に実装する
+   ! This function sends a prepared SQL query to a PostgreSQL connection asynchronously,
+   ! separate from PQprepare.
+   ! Inputs:
+   !  - conn: PostgreSQL connection pointer
+   !  - stmtName: Name for prepared statement
+   !  - query: SQL query string
+   !  - nParams : Number of parameters in the query
+   !  - paramTypes: Array of parameter types
+   ! Outputs:
+   !  - res: Result code (integer, 1 or 0)
+   !
+   function PQsendPrepare_back (conn, stmtName, query, nParams, paramTypes) result(res)
+      use, intrinsic :: iso_fortran_env
+      use, intrinsic :: iso_c_binding
+      use :: unsigned
+      use :: character_operations
+      implicit none
+
+      ! Input parameters
+      type(c_ptr), intent(in) :: conn
+      character(*),intent(in) :: stmtName
+      character(*), intent(in) :: query
+      integer(int32), intent(in) :: nParams
+      type(uint32), intent(in) :: paramTypes(:)
+
+      ! Output variable
+      integer(int32) :: res      
+
+      character(:, kind=c_char), allocatable :: c_stmtName
+      character(:, kind=c_char), allocatable :: c_query
+      type(uint32), allocatable, target :: c_paramTypes(:)
+      integer :: siz
+
+      interface
+         function c_PQ_send_prepare (conn, stmtName, query, nParams, paramTypes) bind(c, name="PQsendPrepare")
+            import c_ptr, uint32, c_char, c_int
+            type(c_ptr), intent(in), value :: conn
+            character(1, kind=c_char), intent(in) :: stmtName(*)
+            character(1, kind=c_char), intent(in) :: query(*)
+            integer(c_int), intent(in), value :: nParams
+            type(c_ptr), intent(in), value :: paramTypes 
+            integer(c_int) :: c_PQ_send_prepare
+         end function c_PQ_send_prepare
+      end interface
+
+      ! paramTypes(:)をc_paramTypesに複製してその先頭アドレスをc_PQ_send_prepareに渡すことを目的とする。
+      siz = size(paramTypes, dim=1)
+      allocate(c_paramTypes(siz))
+      c_paramTypes(:) = paramTypes(:)
+
+      ! Null終端の文字列を用意する
+      c_stmtName = trim(adjustl(stmtName))//c_null_char
+      c_query = trim(query)//c_null_char
+
+      ! c_paramTypesのアドレスを渡し、戻り値は
+      res = c_PQ_send_prepare(conn, c_stmtName, c_query, nParams, c_loc(c_paramTypes))
+      
+   end function PQsendPrepare_back
+
+
+   function PQsendPrepare_int32(conn, stmtName, query, nParams, paramTypes) result(res)
+      use, intrinsic :: iso_c_binding
+      use, intrinsic :: iso_fortran_env
+      use :: unsigned
+      implicit none
+      
+      type(c_ptr), intent(in) :: conn
+      character(*), intent(in) :: stmtName
+      character(*), intent(in) :: query
+      integer(int32), intent(in) :: nParams
+      integer(int32), intent(in) :: paramTypes(:)
+
+      integer(int32) :: res
+
+      type(uint32), allocatable :: u_paramTypes(:)
+      integer :: i, siz
+
+      siz = size(paramTypes, dim=1)
+      allocate(u_paramTypes(siz))
+
+      do i = 1, siz
+         u_paramTypes(i) = paramTypes(i)
+      end do
+
+      res = PQsendPrepare_back(conn, stmtName, query, nParams, u_paramTypes)
+
+   end function PQsendPrepare_int32
+
+
+   function PQsendPrepare_int64(conn, stmtName, query, nParams, paramTypes) result(res)
+      use, intrinsic :: iso_c_binding
+      use, intrinsic :: iso_fortran_env
+      use :: unsigned
+      implicit none
+      
+      type(c_ptr), intent(in) :: conn
+      character(*), intent(in) :: stmtName
+      character(*), intent(in) :: query
+      integer(int32), intent(in) :: nParams
+      integer(int64), intent(in) :: paramTypes(:)
+
+      integer(int32) :: res
+
+      type(uint32), allocatable :: u_paramTypes(:)
+      integer :: i, siz
+
+      siz = size(paramTypes, dim=1)
+      allocate(u_paramTypes(siz))
+
+      do i = 1, siz
+         u_paramTypes(i) = int(paramTypes(i))
+      end do
+
+      res = PQsendPrepare_back(conn, stmtName, query, nParams, u_paramTypes)
+
+   end function PQsendPrepare_int64
+
+
    ! function PQsendQueryPrepared
    ! function PQsendDescribePrepared
    ! function PQsendDescribePortal
