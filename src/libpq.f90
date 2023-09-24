@@ -26,6 +26,8 @@ module libpq
             PQescapeIdentifier, PQexecParams, PQprepare, PQexecPrepared, &
             PQdescribePrepared, PQdescribePortal, PQnparams, PQparamtype
 
+   use :: m_fe_auth, only: PQencryptPasswordConn
+
    use :: m_fe_misc, only: PQlibVersion
 
    use :: t_PQconninfoOption, only: PQconninfoOption
@@ -127,6 +129,9 @@ module libpq
 
    ! From module m_fe_misc
    public :: PQlibVersion
+
+   ! From module m_fe_auth
+   public :: PQencryptPasswordConn
 
    ! Derived types
    public :: PQconninfoOption

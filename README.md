@@ -159,8 +159,8 @@ Note: The order of the following headings and the functions contained within the
 - [x] `PQexecParams` (text format only.)
 - [x] `PQprepare`
 - [x] `PQexecPrepared`
-- [ ] `PQdescribePrepared`
-- [ ] `PQdescribePortal`
+- [x] `PQdescribePrepared`
+- [x] `PQdescribePortal`
 - [x] `PQresultStatus`
 - [x] `PQresStatus`
 - [x] `PQresultErrorMessage`
@@ -257,7 +257,7 @@ Note: The order of the following headings and the functions contained within the
 ### Miscellaneous Functions
 - [x] `PQfreemem`
 - [x] `PQconninfoFree`
-- [ ] `PQencryptPasswordConn`
+- [x] `PQencryptPasswordConn`
 - <s>`PQenctyptPassword`</s>
 - [ ] `PQmakeEmptyPGresult`
 - [ ] `PQfireResultCreateEvents`
