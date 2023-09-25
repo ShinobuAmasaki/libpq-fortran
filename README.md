@@ -282,4 +282,4 @@ Note:
 - [ ] `PQinitSSL`
 
 ### Behavior in Threaded Programs
-- [ ] `PQisthreadsafe`
+- [x] `PQisthreadsafe`

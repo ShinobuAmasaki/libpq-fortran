@@ -30,7 +30,7 @@ module libpq
             PQsendDescribePortal, &
             PQpipelineStatus, PQenterPipelineMode, PQexitPipelineMode, &
             PQpipelineSync, PQsendFlushRequest, PQsetSingleRowMode, &
-            PQsendQueryParams
+            PQsendQueryParams, PQisthreadsafe
 
    use :: m_fe_auth, only: PQencryptPasswordConn
 
@@ -143,6 +143,8 @@ module libpq
    public :: PQsendFlushRequest
    public :: PQescapeLiteral
    public :: PQescapeIdentifier
+
+   public :: PQisthreadsafe
 
    ! From module m_fe_misc
    public :: PQlibVersion

@@ -81,6 +81,8 @@ module m_fe_exec
       module procedure :: PQsendQueryParams_int32
       module procedure :: PQsendQueryParams_int64
    end interface 
+
+   public :: PQisthreadsafe
       
 
 contains
@@ -2180,7 +2182,33 @@ contains
 
       call c_PQ_free_memory(cptr)
 
-   end subroutine PQfreemem 
+   end subroutine PQfreemem
+
+
+   function PQisthreadsafe()
+      use, intrinsic :: iso_fortran_env
+      implicit none
+      
+      integer :: result
+      logical :: PQisthreadsafe
+
+      interface
+         function c_PQ_is_threadsafe() bind(c, name="PQisthreadsafe")
+            import int32
+            implicit none
+            integer(int32) :: c_PQ_is_threadsafe
+         end function c_PQ_is_threadsafe
+      end interface
+
+      result = c_PQ_is_threadsafe()
+
+      if (result == 1) then
+         PQisthreadsafe = .true.
+      else
+         PQisthreadsafe = .false.
+      end if
+
+   end function PQisthreadsafe
 
 
 end module m_fe_exec
