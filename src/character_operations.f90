@@ -110,13 +110,14 @@ contains
       use :: t_PQconninfoOption
       use, intrinsic :: iso_c_binding
       implicit none
-      type(c_PQconnoptionSizes), intent(in), pointer :: sizes
+      type(c_PQconnoptionSizes), intent(in) :: sizes
       type(c_PQconninfoOption), intent(inout) :: c_option
       type(PQconninfoOption), intent(out) :: option
 
       ! Cの構造体からFortranの派生型に、keywordの値をコピーする。
       block
          character(sizes%keyword), pointer :: keyword
+
          call c_f_pointer(c_option%keyword, keyword)
          option%keyword = trim(keyword)
       end block
