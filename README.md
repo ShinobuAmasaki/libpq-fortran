@@ -149,10 +149,10 @@ Note:
 - [x] `PQconnectionNeedsPassword`
 - [x] `PQconnectionUsedPassword`
 - [x] `PQsslInUse`
-- [ ] `PQsslAttribute`
+- [x] `PQsslAttribute`
 - [ ] `PQsslAttributeNames`
 - [ ] `PQsslStruct`
-- [ ] `PQgetssl`
+- <s> `PQgetssl` </s>
  
 ### Command Execution Functions
 
@@ -201,12 +201,12 @@ Note:
 - [ ] `PQescapeStringConn`
 - <s> `PQescapeString`</s>
 - [ ] `PQescapeByteaConn`
-- [ ] `PQescapeBytea`
+- <s> `PQescapeBytea`</s>
 - [ ] `PQunescapeBytea`
 
 ### Asynchronous Command Processing
 - [x] `PQsendQuery` (plan to test)
-- [ ] `PQsendQueryParams`
+- [x] `PQsendQueryParams` (plan to test)
 - [x] `PQsendPrepare` (only in text format; plan to test)
 - [x] `PQsendQueryPrepared` (plan to test)
 - [x] `PQsendDescribePrepared` (plan to test)
@@ -249,7 +249,7 @@ Note:
 
 ### Control Functions
 - [x] `PQclientEncoding`
-- [ ] `PQsetclientEncoding`
+- [x] `PQsetclientEncoding`
 - [ ] `PQsetErrorVerbosity`
 - [ ] `PQsetErrorContextVisibility`
 - [ ] `PQtrace`

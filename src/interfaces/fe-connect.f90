@@ -38,6 +38,7 @@ module m_fe_connect
    public :: PQclientEncoding
    public :: PQsetClientEncoding
    public :: PQsslInUse
+   public :: PQsslAttribute
 
 
    ! PRIVATE functions
@@ -1164,7 +1165,48 @@ contains
 
    end function PQsslInUse
       
-   ! function PQsslAttribute
+   subroutine PQsslAttribute(conn, attribute_name, resultstr)
+      use, intrinsic :: iso_c_binding
+      use, intrinsic :: iso_fortran_env
+      use :: character_pointer_wrapper
+      implicit none
+
+      ! Input parameters
+      type(c_ptr), intent(in) :: conn
+      character(*), intent(in) :: attribute_name
+
+      ! Output pointer
+      character(:), allocatable :: resultstr
+
+      ! Local variables
+      character(:, kind=c_char), allocatable :: c_attribute_name
+      character(:), allocatable :: buff 
+      type(c_ptr) :: cptr
+
+      interface
+         function c_PQ_ssl_attribute(conn, attribute_name) bind(c, name="PQsslAttribute")
+            import c_ptr, c_char
+            type(c_ptr), intent(in), value :: conn
+            character(1, kind=c_char), intent(in) :: attribute_name
+            type(c_ptr) :: c_PQ_ssl_attribute
+         end function c_PQ_ssl_attribute
+      end interface
+
+      c_attribute_name = trim(adjustl(attribute_name))//c_null_char
+
+      cptr = c_PQ_ssl_attribute(conn, c_attribute_name)
+
+      if (c_associated(cptr)) then
+         call c_char_to_f_string(cptr, buff)
+
+         resultstr = buff
+      else
+         resultstr = ''
+      end if 
+
+   end subroutine PQsslAttribute
+
+
    ! function PQsslAttributeNames
    ! function PQsslStruct
    ! function PQgetssl

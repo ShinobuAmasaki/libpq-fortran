@@ -76,12 +76,18 @@ module m_fe_exec
    public :: PQsendFlushRequest
    public :: PQsetSingleRowMode
 
+   public :: PQsendQueryParams
+   interface PQsendQueryParams 
+      module procedure :: PQsendQueryParams_int32
+      module procedure :: PQsendQueryParams_int64
+   end interface 
+      
+
 contains
 
 
 !==================================================================!
 !== Command Execution Functions
-
 !== Main Functions
 
    function PQexec(conn, query) result(res)
@@ -326,6 +332,7 @@ contains
 
       res = PQprepare_back(conn, stmtName, query, nParams, u_paramTypes)
    end function PQprepare_int64
+
 
    ! --- PQprepare backend
    function PQprepare_back (conn, stmtName, query, nParams, paramTypes) result(res)
@@ -696,7 +703,7 @@ contains
    end subroutine PQclear
 
    
-   !== Retrieving Query Result Information
+!== Retrieving Query Result Information
 
    function PQntuples(pgresult) result(res)
       use, intrinsic :: iso_fortran_env
@@ -1407,9 +1414,186 @@ contains
 
    end function PQsendQuery
 
+   ! 戻り値はinteger(4)なのでPQexecParamsとは別に実装する
+   ! This function sends a prepared SQL query to a PostgreSQL connection asynchronously,
+   ! separate from PQexecParams.
+   function PQsendQueryParams_back (conn, command, nParams, paramTypes, paramValues) result(res)
+      use, intrinsic :: iso_c_binding
+      use, intrinsic :: iso_fortran_env
+      use :: unsigned
+      use :: character_operations
 
-   ! function PQsendQueryParams
+      ! Input parameters
+      type(c_ptr), intent(in) :: conn
+      character(*), intent(in) :: command
+      integer(int32), intent(in) :: nParams
 
+      type(uint32), intent(in) :: paramTypes(:)
+      character(*), intent(in) :: paramValues(:)
+
+      ! Output integer
+      integer(int32) :: res
+
+      ! Local variables
+      character(:, kind=c_char), allocatable :: c_command
+      type(uint32), allocatable, target :: c_paramTypes(:)
+      integer(int32) :: resultFormat
+      integer(int32) :: max_len_val
+      integer :: i
+      type(c_ptr) :: cptr_paramTypes
+      type(c_ptr) :: null_paramLengths = c_null_ptr
+      type(c_ptr) :: null_paramFormats = c_null_ptr
+
+      ! For nParams >= 1
+      interface
+         function c_PQ_send_query_parameters(conn, command, nParams, paramTypes, paramValues, &
+                     paramLengths, paramFormats, resultFormat) &
+                     bind(c, name="PQsendQueryParams")
+            import c_ptr, c_int, uint32, c_char
+            implicit none
+            type(c_ptr),    intent(in), value :: conn
+            character(1, kind=c_char), intent(in) :: command(*)
+            integer(c_int), intent(in), value :: nParams
+            type(c_ptr),    intent(in), value :: paramTypes
+            type(c_ptr),    intent(in)        :: paramValues
+            type(c_ptr),    intent(in), value :: paramLengths
+            type(c_ptr),    intent(in), value :: paramFormats
+            integer(c_int), intent(in), value :: resultFormat
+            integer(c_int) :: c_PQ_send_query_parameters
+         end function c_PQ_send_query_parameters
+      end interface 
+
+      ! For nParams == 0
+      interface
+         function c_PQ_send_query_parameters_zero(conn, command, nParams, paramTypes, paramValues,&
+                     paramLengths, paramFormats, resultFormat) &
+                     bind(c, name="PQsendQueryParams")
+            import c_ptr, c_int, uint32, c_char
+            implicit none
+            type(c_ptr),    intent(in), value :: conn
+            character(1, kind=c_char), intent(in) :: command(*)
+            integer(c_int), intent(in), value :: nParams
+            type(c_ptr),    intent(in), value :: paramTypes
+            type(c_ptr),    intent(in), value :: paramValues
+            type(c_ptr),    intent(in), value :: paramLengths
+            type(c_ptr),    intent(in), value :: paramFormats
+            integer(c_int), intent(in), value :: resultFormat
+            integer(c_int) :: c_PQ_send_query_parameters_zero
+         end function c_PQ_send_query_parameters_zero
+      end interface 
+
+      resultFormat = 0 ! text format only for now.
+
+      c_command =  trim(command)//c_null_char
+
+      if (nParams >= 1) then
+
+         max_len_val = max_length_char_array(paramValues)
+
+         allocate(c_paramTypes(nParams))
+
+         c_paramTypes(:) = paramTypes(:)
+
+         cptr_paramTypes = c_loc(c_paramTypes)
+
+         block
+            character(max_len_val+1, kind=c_char), allocatable, target :: c_values(:)
+            type(c_ptr), allocatable :: ptr_values(:)
+            
+
+            call cchar_array_from_strings_no_null(paramValues, c_values, max_len_val)
+            call cptr_array_from_cchar_no_null(c_values, ptr_values)
+
+            res = c_PQ_send_query_parameters(&
+                     conn, c_command, nParams, &
+                     cptr_paramTypes, &
+                     ptr_values, &
+                     null_paramLengths, &
+                     null_paramFormats, &
+                     resultFormat &
+                     )
+         end block
+      
+      else if (nParams == 0) then
+         block
+            type(c_ptr) :: null_paramTypes = c_null_ptr
+            type(c_ptr) :: null_paramValues = c_null_ptr
+            
+            res = c_PQ_send_query_parameters_zero( &
+                     conn, c_command, nParams, &
+                     null_paramTypes, &
+                     null_paramValues, &
+                     null_paramLengths, &
+                     null_paramFormats, &
+                     resultFormat &
+                  )
+
+         end block
+      end if
+
+   end function PQsendQueryParams_back
+
+
+   function PQsendQueryParams_int32 (conn, command, nParams, paramTypes, paramValues) result(res)
+      use, intrinsic :: iso_fortran_env
+      use, intrinsic :: iso_c_binding
+      use :: unsigned
+
+      type(c_ptr), intent(in) :: conn
+      character(*), intent(in) :: command
+      integer(int32), intent(in) :: nParams
+
+      integer(int32), intent(in) :: paramTypes(:)
+      character(*), intent(in) :: paramValues(:)
+
+      integer(int32) :: res
+
+      integer :: i, siz
+      type(uint32), allocatable :: u_paramTypes(:)
+      
+      siz = size(paramTypes, dim=1)
+
+      allocate(u_paramTypes(siz))
+
+      do i = 1, siz
+         u_paramTypes(i) = paramTypes(i)
+      end do
+
+      res = PQsendQueryParams_back(conn, command, nParams, u_paramTypes, paramValues)
+
+   end function PQsendQueryParams_int32
+
+
+   function PQsendQueryParams_int64 (conn, command, nParams, paramTypes, paramValues) result(res)
+      use, intrinsic :: iso_fortran_env
+      use, intrinsic :: iso_c_binding
+      use :: unsigned
+
+      type(c_ptr), intent(in) :: conn
+      character(*), intent(in) :: command
+      integer(int32), intent(in) :: nParams
+
+      integer(int64), intent(in) :: paramTypes(:)
+      character(*), intent(in) :: paramValues(:)
+
+      integer(int32) :: res
+
+      integer :: i, siz
+      type(uint32), allocatable :: u_paramTypes(:)
+      
+      siz = size(paramTypes, dim=1)
+
+      allocate(u_paramTypes(siz))
+
+      do i = 1, siz
+         u_paramTypes(i) = paramTypes(i)
+      end do
+
+      res = PQsendQueryParams_back(conn, command, nParams, u_paramTypes, paramValues)
+
+   end function PQsendQueryParams_int64
+
+      
    ! 戻り値はinteger(4)なのでPQprepareとは別に実装する
    ! This function sends a prepared SQL query to a PostgreSQL connection asynchronously,
    ! separate from PQprepare.

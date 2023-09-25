@@ -10,7 +10,8 @@ module libpq
             PQconnectPoll, PQbackendPID, PQsocket, PQresetStart, &
             PQresetPoll, PQparameterStatus, PQconnectionNeedsPassword, &
             PQconnectionUsedPassword, PQconninfo, PQconninfoParse, &
-            PQclientEncoding, PQsetClientEncoding, PQsslInUse
+            PQclientEncoding, PQsetClientEncoding, PQsslInUse, &
+            PQsslAttribute
 
    
    use :: m_fe_exec, &
@@ -28,7 +29,8 @@ module libpq
             PQsendPrepare, PQsendQueryPrepared, PQsendDescribePrepared, &
             PQsendDescribePortal, &
             PQpipelineStatus, PQenterPipelineMode, PQexitPipelineMode, &
-            PQpipelineSync, PQsendFlushRequest, PQsetSingleRowMode
+            PQpipelineSync, PQsendFlushRequest, PQsetSingleRowMode, &
+            PQsendQueryParams
 
    use :: m_fe_auth, only: PQencryptPasswordConn
 
@@ -83,6 +85,7 @@ module libpq
    public :: PQconnectionNeedsPassword
    public :: PQconnectionUsedPassword
    public :: PQsslInUse
+   public :: PQsslAttribute
 
    ! Misc.
    public :: PQclientEncoding
@@ -122,6 +125,7 @@ module libpq
    public :: PQoidValue
 
    public :: PQsendQuery
+   public :: PQsendQueryParams
    public :: PQsendPrepare
    public :: PQsendQueryPrepared
    public :: PQsendDescribePrepared
