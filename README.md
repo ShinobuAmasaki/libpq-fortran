@@ -226,13 +226,13 @@ Note:
 - [x] `PQsendFlushRequest`
 
 ### Retrieving Query Result Row-by-Row
-- [ ] `PQsetSingleRowMode`
+- [x] `PQsetSingleRowMode`
 
 ### Canceling Queries in Progress
 - [ ] `PQgetCancel`
 - [ ] `PQfreeCancel`
 - [ ] `PQcancel`
-- [ ] `PQrequestCancel`
+- <s>`PQrequestCancel`</s>
 
 ### Functions Associated with the COPY Command
 - [ ] `PQnfields`

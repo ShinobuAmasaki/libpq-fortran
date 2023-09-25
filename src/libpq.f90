@@ -28,7 +28,7 @@ module libpq
             PQsendPrepare, PQsendQueryPrepared, PQsendDescribePrepared, &
             PQsendDescribePortal, &
             PQpipelineStatus, PQenterPipelineMode, PQexitPipelineMode, &
-            PQpipelineSync, PQsendFlushRequest
+            PQpipelineSync, PQsendFlushRequest, PQsetSingleRowMode
 
    use :: m_fe_auth, only: PQencryptPasswordConn
 

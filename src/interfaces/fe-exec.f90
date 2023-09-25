@@ -74,6 +74,7 @@ module m_fe_exec
    public :: PQexitPipelineMode
    public :: PQpipelineSync
    public :: PQsendFlushRequest
+   public :: PQsetSingleRowMode
 
 contains
 
@@ -745,6 +746,7 @@ contains
       res = c_PQ_n_fields(pgresult)
    end function PQnfields
 
+
    function PQfname(pgresult, field_num) result(res)
       use :: character_pointer_wrapper
       use, intrinsic :: iso_fortran_env, only:int32
@@ -1147,7 +1149,7 @@ contains
       
    
 
-   !== Retrieving Other Result Information
+!== Retrieving Other Result Information
 
    function PQcmdStatus(pgresult) result(res)
       use :: character_pointer_wrapper
@@ -1232,7 +1234,7 @@ contains
    end function PQoidValue
    
 
-   !== Escaping Strings for Inclusion in SQL Commands
+!== Escaping Strings for Inclusion in SQL Commands
 
    function PQescapeLiteral (conn, str, length, errmsg) result(res)
       use :: character_pointer_wrapper
@@ -1375,8 +1377,8 @@ contains
    ! function PQunescapeBytea
 
 
-!==================================================================!
-!==Asynchronous Command Processing
+!=================================================================!
+!== Asynchronous Command Processing
 
    function PQsendQuery (conn, command) result(res)
       use, intrinsic :: iso_c_binding
@@ -1838,7 +1840,7 @@ contains
 
 
 !=================================================================!
-!==Pipeline Mode
+!== Pipeline Mode
    
    function PQpipelineStatus (conn) result(res)
       use, intrinsic :: iso_c_binding
@@ -1943,16 +1945,42 @@ contains
 
       res = c_PQ_send_flush_request(conn)
    end function PQsendFlushRequest
-   
+
+
 
 !=================================================================!
-!==Functions Associated with the COPY Command
+!== Retrieving Query Result Row-by-Row
+   function PQsetSingleRowMode(conn) result(res)
+      use, intrinsic :: iso_c_binding
+      use, intrinsic :: iso_fortran_env
+      implicit none
+      
+      type(c_ptr), intent(in) :: conn
+      integer(int32) :: res
+
+      interface
+         function c_PQ_set_single_row_mode (conn) bind(c, name="PQsetSingleRowMode")
+            import c_ptr, c_int
+            implicit none
+            type(c_ptr), intent(in), value :: conn
+            integer(c_int) :: c_PQ_set_single_row_mode
+         end function c_PQ_set_single_row_mode
+      end interface
+
+      res = c_PQ_set_single_row_mode(conn)
+   end function PQsetSingleRowMode
+
+
+
+!=================================================================!
+!== Functions Associated with the COPY Command
    
    ! function PQputCopyData
    ! function PQputCopyEnd
    ! function PQgetCopyData
 
-
+!=================================================================!
+!== Miscellaneous Functions
    subroutine PQfreemem(cptr)
       use, intrinsic :: iso_c_binding
       implicit none
