@@ -4,7 +4,7 @@ program main
 
    type(c_ptr) :: conn
 
-   print '(a)', "=== BEGIN TEST: pqparameterstatus ==="
+   print '(a)', "=== BEGIN TEST: PQparameterStatus ==="
    conn = PQconnectdb("host=localhost user=postgres dbname=postgres")
 !==Add a test below===================================================!
 

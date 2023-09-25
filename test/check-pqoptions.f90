@@ -8,7 +8,7 @@ program main
    integer, parameter :: npairs = 3
    character(256,kind=c_char) :: keywords(npairs), values(npairs)
 
-   print '(a)', "=== BEGIN TEST: check-options ==="
+   print '(a)', "=== BEGIN TEST: PQoptions ==="
 
    keywords(1) = "host"
    values(1) = "localhost"

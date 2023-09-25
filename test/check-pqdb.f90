@@ -6,11 +6,11 @@ program main
 
    character(:, kind=c_char), allocatable :: conninfo, sql
 
-   print '(a)', "=== BEGIN TEST: check-pqdb,      ==="
-   print '(a)', "                      pquser,"
-   print '(a)', "                      pqhost,"
-   print '(a)', "                      pqhostaddr"
-   print '(a)', "                      pqport"
+   print '(a)', "=== BEGIN TEST: check-PQdb,      ==="
+   print '(a)', "                      PQuser,"
+   print '(a)', "                      PQhost,"
+   print '(a)', "                      PQhostaddr"
+   print '(a)', "                      PQport"
 
    conninfo = "host=localhost user=postgres"
 

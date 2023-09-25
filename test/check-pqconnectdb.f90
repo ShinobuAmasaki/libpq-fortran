@@ -6,7 +6,7 @@ program main
 
    character(:, kind=c_char), allocatable :: conninfo, sql
 
-   print '(a)', "=== BEGIN TEST: pqconnectdb ==="
+   print '(a)', "=== BEGIN TEST: PQconnectdb ==="
    
    conninfo = "host=localhost user=postgres dbname=postgres"
 

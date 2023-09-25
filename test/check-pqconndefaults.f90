@@ -15,7 +15,7 @@ program main
    
 
    integer :: i
-   print '(a)', "=== BEGIN TEST: pqconndefaults ==="
+   print '(a)', "=== BEGIN TEST: PQconndefaults ==="
    ! 
    call PQconndefaults(options)
 

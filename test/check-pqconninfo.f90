@@ -6,7 +6,7 @@ program main
    type(PQconninfoOption), allocatable, target :: options(:)
    integer :: i
 
-   print '(a)', "=== BEGIN TEST:  ==="
+   print '(a)', "=== BEGIN TEST: PQconninfo ==="
    conn = PQconnectdb("host=localhost user=postgres dbname=postgres")
 !==Add a test below===================================================!
 

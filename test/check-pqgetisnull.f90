@@ -6,7 +6,7 @@ program main
 
    character(:), allocatable :: sql
 
-   print '(a)', "=== BEGIN TEST: pqgetisnull  ==="
+   print '(a)', "=== BEGIN TEST: PQgetisnull  ==="
    conn = PQconnectdb("host=localhost user=postgres dbname=postgres")
    if (PQstatus(conn) /= 0) then
       print *, PQerrorMessage(conn)

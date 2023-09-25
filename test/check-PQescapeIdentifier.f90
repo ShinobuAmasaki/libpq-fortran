@@ -12,7 +12,7 @@ program main
    character(256) :: errmsg = ''
    character(:), pointer :: res
 
-   print '(a)', "=== BEGIN TEST:  ==="
+   print '(a)', "=== BEGIN TEST: PQescapeIdntifier ==="
    conn = PQconnectdb("host=localhost user=postgres dbname=postgres")
    if (PQstatus(conn) /= 0) then
       print *, PQerrorMessage(conn)

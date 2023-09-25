@@ -4,7 +4,7 @@ program main
    implicit none
    
    type(c_ptr) :: conn
-   print '(a)', "=== BEGIN TEST: pqbackendpid ==="
+   print '(a)', "=== BEGIN TEST: PQbackendPID ==="
    conn = PQconnectdb("host=localhost user=postgres dbname=postgres")
 
    print *, "backend PID:", PQbackendPID(conn)

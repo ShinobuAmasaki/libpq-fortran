@@ -10,7 +10,7 @@ program main
    integer :: i
    type(PQconninfoOption), allocatable, target :: options(:)
 
-   print '(a)', "=== BEGIN TEST:  ==="
+   print '(a)', "=== BEGIN TEST: PQconninfoParse ==="
 !==Add a test below===================================================!
    conninfo = "host=localhost user=postgres dbname=postgres"
 

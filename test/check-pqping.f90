@@ -7,7 +7,7 @@ program main
    integer :: res   
    character(:, kind=c_char), allocatable :: conninfo
    
-   print '(a)', "=== BEGIN TEST: check-pqping ==="
+   print '(a)', "=== BEGIN TEST: PQping ==="
 
    conninfo = 'host=localhost' 
    ! For other parameters, libpq uses environmental variables.

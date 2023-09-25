@@ -10,7 +10,7 @@ program main
    character(256, kind=c_char) :: keywords(npairs), values(npairs)
 
 
-   print '(a)', "=== BEGIN TEST: check-pqconnectdbparams ==="
+   print '(a)', "=== BEGIN TEST: PQconnectdbparams ==="
 
    keywords(1) = "hostaddr"
    values(1)   = "127.0.0.1"

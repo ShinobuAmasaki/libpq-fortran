@@ -12,7 +12,7 @@ program main
    integer :: res
    logical :: isContinue = .true.
 
-   print '(a)', "=== BEGIN TEST: nonblocking ==="
+   print '(a)', "=== BEGIN TEST: nonblocking - PQConnectStartParams ==="
 
    keywords(1) = "host"
    values(1)   = "localhost"

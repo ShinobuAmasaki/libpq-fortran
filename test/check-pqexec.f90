@@ -8,7 +8,7 @@ program main
 
    character(:, kind=c_char), allocatable :: sql, conninfo
 
-   print '(a)', "=== BEGIN TEST: check-pqexec ==="
+   print '(a)', "=== BEGIN TEST: PQexec ==="
 
    !conninfo = '' ! If this is empty, libpq uses only environmental variables for a connection. 
    

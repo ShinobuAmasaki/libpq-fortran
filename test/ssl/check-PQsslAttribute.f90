@@ -6,7 +6,7 @@ program main
    type(c_ptr) :: res
    character(:), allocatable :: str
 
-   print '(a)', "=== BEGIN TEST: check-PQsslAttribute-noconnections  ==="
+   print '(a)', "=== BEGIN TEST: PQsslAttribute-noconnections  ==="
 !==Add a test below===================================================!
 
    call  PQsslAttribute(c_null_ptr, 'library', str)

@@ -10,7 +10,7 @@ program main
    integer :: res
    logical :: isContinue = .true.
 
-   print '(a)', "=== BEGIN TEST: nonblocking-reset ==="
+   print '(a)', "=== BEGIN TEST: nonblocking-PQresetStart ==="
 
    conninfo = "host=localhost user=postgres dbname=postgres"
 

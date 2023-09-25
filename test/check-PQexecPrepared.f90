@@ -7,7 +7,7 @@ program main
    character(:), allocatable :: query, name
    integer :: i 
 
-   print '(a)', "=== BEGIN TEST:  ==="
+   print '(a)', "=== BEGIN TEST: PQexecPrepared ==="
    conn = PQconnectdb("host=localhost user=postgres dbname=postgres")
    if (PQstatus(conn) /= 0) then
       print *, PQerrorMessage(conn)

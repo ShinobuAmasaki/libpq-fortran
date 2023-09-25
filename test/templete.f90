@@ -1,22 +1,21 @@
 program main
    use libpq
    use iso_c_binding
+   implicit none
 
-   type(c_ptr) :: conn
+   type(c_ptr) :: conn, res
+   character(:), allocatable :: sql
+   integer :: i 
 
-   print '(a)', "=== BEGIN TEST: PQconnectionNeeds/UsedPassword  ==="
+   print '(a)', "=== BEGIN TEST:  ==="
    conn = PQconnectdb("host=localhost user=postgres dbname=postgres")
+   if (PQstatus(conn) /= 0) then
+      print *, PQerrorMessage(conn)
+      error stop
+   end if
 !==Add a test below===================================================!
-   block
-      integer :: res
 
-      res = PQconnectionNeedsPassword(conn)
-      print *, "Connection needs password? > ", res
 
-      res = PQconnectionUsedPassword(conn)
-      print *, "Connection used password? > ", res
-
-   end block
    
 
 !==Test should be written above this line=============================!
