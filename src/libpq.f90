@@ -11,7 +11,7 @@ module libpq
             PQresetPoll, PQparameterStatus, PQconnectionNeedsPassword, &
             PQconnectionUsedPassword, PQconninfo, PQconninfoParse, &
             PQclientEncoding, PQsetClientEncoding, PQsslInUse, &
-            PQsslAttribute
+            PQsslAttribute, PQgetCancel, PQfreeCancel, PQcancel
 
    
    use :: m_fe_exec, &
@@ -86,6 +86,11 @@ module libpq
    public :: PQconnectionUsedPassword
    public :: PQsslInUse
    public :: PQsslAttribute
+
+   ! Cancel
+   public :: PQgetCancel
+   public :: PQfreeCancel
+   public :: PQcancel
 
    ! Misc.
    public :: PQclientEncoding

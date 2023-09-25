@@ -39,6 +39,10 @@ module m_fe_connect
    public :: PQsetClientEncoding
    public :: PQsslInUse
    public :: PQsslAttribute
+   
+   public :: PQgetCancel
+   public :: PQfreeCancel
+   public :: PQcancel
 
 
    ! PRIVATE functions
@@ -1212,16 +1216,87 @@ contains
    ! function PQgetssl
 
 
-   !==================================================================!
-   ! Canceling Queries in Progress
+!==================================================================!
+!== Canceling Queries in Progress
 
-   ! funciton PQgetCancel
-   ! function PQfreeCancel
-   ! funciton PQcancel
+   function PQgetCancel (conn)
+      use, intrinsic :: iso_c_binding
+      implicit none
+      
+      type(c_ptr), intent(in) :: conn
+      type(c_ptr) :: PQgetCancel
+
+      interface
+         function c_PQ_get_cancel(conn) bind(c, name="PQgetCancel")
+            import c_ptr
+            implicit none
+            type(c_ptr), intent(in), value :: conn
+            type(c_ptr) :: c_PQ_get_cancel
+         end function c_PQ_get_cancel
+      end interface
+
+      PQgetCancel = c_PQ_get_cancel(conn)
+
+   end function PQgetCancel
+
+   
+   subroutine PQfreeCancel (cancel)
+      use, intrinsic :: iso_c_binding
+      implicit none
+      
+      type(c_ptr), intent(in) :: cancel
+      
+      interface
+         subroutine c_PQ_free_cancel(cancel) bind(c, name="PQfreeCancel")
+            import c_ptr 
+            implicit none
+            type(c_ptr), intent(in), value :: cancel
+         end subroutine
+      end interface
+
+      call c_PQ_free_cancel(cancel)
+   end subroutine PQfreeCancel
 
 
-   !==================================================================!
-   ! Control Functions
+   function PQcancel (cancel, errbuf, errbufsize)
+      use, intrinsic :: iso_c_binding
+      use, intrinsic :: iso_fortran_env
+      implicit none
+      
+      ! Input parameters
+      type(c_ptr), intent(in) :: cancel
+      character(*), intent(inout) :: errbuf
+      integer(int32), intent(in) :: errbufsize
+
+      ! Output integer
+      integer(int32) :: PQcancel
+
+      ! Local variables
+      character(len=256, kind=c_char), target :: c_errbuf 
+
+      interface
+         function c_PQ_cancel (cancel, errbuf, errbufsize) bind(c, name="PQcancel")
+            import c_int, c_ptr, c_char
+            implicit none
+            type(c_ptr), intent(in), value :: cancel
+            type(c_ptr), intent(in), value :: errbuf
+            integer(c_int), intent(in), value :: errbufsize
+            integer(c_int) :: c_PQ_cancel
+         end function c_PQ_cancel
+      end interface
+
+      c_errbuf = ''
+
+      PQcancel = c_PQ_cancel(cancel, c_loc(c_errbuf), 256)
+
+
+      errbuf = c_errbuf(1:errbufsize)
+
+   end function PQcancel
+
+
+!==================================================================!
+!== Control Functions
 
    function PQclientEncoding(conn) result(res)
       use character_pointer_wrapper
