@@ -229,9 +229,9 @@ Note:
 - [x] `PQsetSingleRowMode`
 
 ### Canceling Queries in Progress
-- [ ] `PQgetCancel`
-- [ ] `PQfreeCancel`
-- [ ] `PQcancel`
+- [x] `PQgetCancel`
+- [x] `PQfreeCancel`
+- [x] `PQcancel`
 - <s>`PQrequestCancel`</s>
 
 ### Functions Associated with the COPY Command
