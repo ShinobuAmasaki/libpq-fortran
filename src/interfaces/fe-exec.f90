@@ -197,31 +197,12 @@ contains
             character(1, kind=c_char), intent(in) :: command(*)      ! String
             integer(c_int), intent(in), value     :: nParams         ! Int scalar
             type(c_ptr), intent(in), value        :: paramTypes
-            type(c_ptr), intent(in)               :: paramValues     ! String array 
+            type(c_ptr), intent(in), value        :: paramValues    ! String array 
             type(c_ptr), intent(in), value        :: paramLengths    ! Int array
             type(c_ptr), intent(in), value        :: paramFormats    ! Int array
             integer(c_int), intent(in), value     :: resultFormat    ! Int scalar
             type(c_ptr) :: c_PQ_exec_parameters
          end function c_PQ_exec_parameters
-      end interface
-
-      ! For nParams == 0
-      interface
-         function c_PQ_exec_parameters_zero(conn, command, nParams, paramTypes, paramValues, &
-                                       paramLengths, paramFormats, resultFormat) &
-                     bind(c, name="PQexecParams")
-            import c_ptr, c_int, uint32, c_char
-            implicit none
-            type(c_ptr), intent(in), value :: conn
-            character(1, kind=c_char), intent(in) :: command(*)      
-            integer(c_int), intent(in), value     :: nParams 
-            type(c_ptr),    intent(in), value     :: paramTypes
-            type(c_ptr),    intent(in), value     :: paramValues 
-            type(c_ptr),    intent(in), value     :: paramLengths
-            type(c_ptr),    intent(in), value     :: paramFormats
-            integer(c_int), intent(in), value     :: resultFormat
-            type(c_ptr) :: c_PQ_exec_parameters_zero
-         end function c_PQ_exec_parameters_zero 
       end interface
 
 
@@ -241,7 +222,7 @@ contains
 
          block
             character(max_len_val+1, kind=c_char), allocatable, target :: c_values(:)
-            type(c_ptr), allocatable :: ptr_values(:)
+            type(c_ptr), allocatable, target :: ptr_values(:)
 
             call cchar_array_from_strings_no_null(paramValues, c_values, max_len_val)
             call cptr_array_from_cchar_no_null(c_values, ptr_values)
@@ -249,7 +230,7 @@ contains
             
             res = c_PQ_exec_parameters(&
                   conn, command, nParams, c_loc(c_paramTypes), &
-                  ptr_values, c_null_ptr, c_null_ptr, resultFormat)
+                  c_loc(ptr_values(1)), c_null_ptr, c_null_ptr, resultFormat)
 
             ! for BINARY format
             ! res = c_PQ_exec_parameters(&
@@ -267,7 +248,7 @@ contains
             type(c_ptr) :: null_paramLength = c_null_ptr
             type(c_ptr) :: null_paramFormats = c_null_ptr
          
-         res = c_PQ_exec_parameters_zero(&
+         res = c_PQ_exec_parameters(&
                         conn, command, nParams, &
                         null_paramTypes,   &
                         null_paramValues,  &
@@ -415,7 +396,7 @@ contains
             type(c_ptr), intent(in), value :: conn
             character(1, kind=c_char), intent(in) :: stmtName(*)
             integer(c_int), intent(in), value     :: nParams
-            type(c_ptr), intent(in)               :: paramValues
+            type(c_ptr), intent(in), value        :: paramValues
             type(c_ptr), intent(in), value        :: paramLengths
             type(c_ptr), intent(in), value        :: paramFormats
             integer(c_int), intent(in), value     :: resultFormat
@@ -423,23 +404,6 @@ contains
          end function c_PQ_exec_prepared
       end interface
       
-
-      interface
-         function c_PQ_exec_prepared_zero (conn, stmtName, nParams, paramValues, paramLengths, paramFormats, resultFormat) &
-            bind(c, name="PQexecPrepared")
-            import c_ptr, c_int, c_char
-            implicit none
-            type(c_ptr),    intent(in), value     :: conn
-            character(1, kind=c_char), intent(in) :: stmtName(*)
-            integer(c_int), intent(in), value     :: nParams
-            type(c_ptr),    intent(in), value     :: paramValues
-            type(c_ptr),    intent(in), value     :: paramLengths
-            type(c_ptr),    intent(in), value     :: paramFormats
-            integer(c_int), intent(in), value     :: resultFormat
-            type(c_ptr) :: c_PQ_exec_prepared_zero
-         end function c_PQ_exec_prepared_zero
-      end interface
-
       resultFormat = 0
 
       c_stmtName = trim(adjustl(stmtName))//c_null_char
@@ -449,14 +413,14 @@ contains
 
          block
             character(max_len_val+1, kind=c_char), allocatable, target :: c_values(:)
-            type(c_ptr), allocatable :: ptr_values(:)
+            type(c_ptr), allocatable, target :: ptr_values(:)
 
             call cchar_array_from_strings_no_null(paramValues, c_values, max_len_val)
             call cptr_array_from_cchar_no_null(c_values, ptr_values)
 
             res = c_PQ_exec_prepared( &
                         conn, c_stmtName, nParams, &
-                        ptr_values, &
+                        c_loc(ptr_values(1)), &
                         null_paramLengths, &
                         null_paramFormats, &
                         resultFormat &
@@ -467,7 +431,7 @@ contains
          block
             type(c_ptr) :: null_paramValues = c_null_ptr
 
-            res = c_PQ_exec_prepared_zero( &
+            res = c_PQ_exec_prepared( &
                         conn, c_stmtName, nParams, &
                         null_paramValues, &
                         null_paramLengths, &
@@ -1262,7 +1226,7 @@ contains
       ! Declare local variables
       integer(c_size_t) :: len                           ! Actual length of the input string
       character(:, kind=c_char), allocatable :: c_str    ! C-style string 
-      character(:), allocatable, target :: result_string ! Target for the result string
+      character(:), allocatable, target, save :: result_string ! Target for the result string
       type(c_ptr) :: cptr                                ! Pointer to the result from the C func.
       
       ! Define an interface for the C func.
@@ -1441,7 +1405,6 @@ contains
       type(uint32), allocatable, target :: c_paramTypes(:)
       integer(int32) :: resultFormat
       integer(int32) :: max_len_val
-      integer :: i
       type(c_ptr) :: cptr_paramTypes
       type(c_ptr) :: null_paramLengths = c_null_ptr
       type(c_ptr) :: null_paramFormats = c_null_ptr
@@ -1457,7 +1420,7 @@ contains
             character(1, kind=c_char), intent(in) :: command(*)
             integer(c_int), intent(in), value :: nParams
             type(c_ptr),    intent(in), value :: paramTypes
-            type(c_ptr),    intent(in)        :: paramValues
+            type(c_ptr),    intent(in)        :: paramValues(:)
             type(c_ptr),    intent(in), value :: paramLengths
             type(c_ptr),    intent(in), value :: paramFormats
             integer(c_int), intent(in), value :: resultFormat
@@ -1742,7 +1705,7 @@ contains
             type(c_ptr), intent(in), value :: conn
             character(1, kind=c_char), intent(in) :: stmtName(*)
             integer(c_int), intent(in), value     :: nParams
-            type(c_ptr), intent(in)               :: paramValues
+            type(c_ptr), intent(in)               :: paramValues(:)
             type(c_ptr), intent(in), value        :: paramLengths
             type(c_ptr), intent(in), value        :: paramFormats
             integer(c_int), intent(in), value     :: resultFormat
@@ -2186,7 +2149,7 @@ contains
 
 
    function PQisthreadsafe()
-      use, intrinsic :: iso_fortran_env
+      use, intrinsic :: iso_c_binding
       implicit none
       
       integer :: result
@@ -2194,9 +2157,9 @@ contains
 
       interface
          function c_PQ_is_threadsafe() bind(c, name="PQisthreadsafe")
-            import int32
+            import c_int
             implicit none
-            integer(int32) :: c_PQ_is_threadsafe
+            integer(c_int) :: c_PQ_is_threadsafe
          end function c_PQ_is_threadsafe
       end interface
 

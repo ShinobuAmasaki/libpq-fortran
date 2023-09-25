@@ -10,8 +10,10 @@ contains
       use, intrinsic :: iso_c_binding
       
       interface
-         integer function c_PQ_lib_version() bind(c, name="PQlibVersion")
+         function c_PQ_lib_version() bind(c, name="PQlibVersion")
+            import c_int
             implicit none
+            integer(c_int) :: c_PQ_lib_version
          end function c_PQ_lib_version
       end interface
 

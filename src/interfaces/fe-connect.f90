@@ -94,7 +94,7 @@ contains
    function PQconnectdbParams_back (keywords, values, expand_dbname, isNonblocking) result(conn)
       use :: character_operations
       use, intrinsic :: iso_c_binding, only: c_ptr, c_int, c_char,&
-                                             c_null_char, c_null_ptr, c_loc
+                                             c_null_char, c_null_ptr, c_loc, c_associated
       implicit none
 
       ! NULL終端ではない配列を受け取る
@@ -114,8 +114,8 @@ contains
             import c_ptr, c_int
             implicit none
             ! ポインタの配列を渡すのでvalue属性は付けない。
-            type(c_ptr), intent(in) :: keywords ! an array of pointers
-            type(c_ptr), intent(in) :: values   ! an array of pointers
+            type(c_ptr), intent(in), value :: keywords! an array of pointers
+            type(c_ptr), intent(in), value :: values  ! an array of pointers
             integer(c_int), intent(in) :: expand_dbname
             type(c_ptr) :: conn
          end function c_PQ_connectdb_params
@@ -126,8 +126,8 @@ contains
                                              bind(c, name="PQconnectStartParams") result(conn)
             import c_ptr, c_int
             implicit none
-            type(c_ptr), intent(in) :: keywords
-            type(c_ptr), intent(in) :: values
+            type(c_ptr), intent(in), value :: keywords
+            type(c_ptr), intent(in), value :: values
             integer(c_int), intent(in) :: expand_dbname
             type(c_ptr) :: conn
          end function c_PQ_connect_start_params
@@ -143,8 +143,8 @@ contains
          character(max_len_val+1, kind=c_char), allocatable, target ::  c_values(:)
 
          ! ポインタの配列を宣言する。
-         type(c_ptr), allocatable :: ptr_keys(:)
-         type(c_ptr), allocatable :: ptr_values(:)
+         type(c_ptr), allocatable, target :: ptr_keys(:)
+         type(c_ptr), allocatable, target :: ptr_values(:)
 
          ! c_int型整数を宣言する。
          integer(c_int) :: c_expand_dbname
@@ -163,9 +163,9 @@ contains
 
          ! ノンブロッキング接続かどうかで分岐する。
          if (isNonblocking) then
-            conn = c_PQ_connect_start_params(ptr_keys, ptr_values, c_expand_dbname)
+            conn = c_PQ_connect_start_params(c_loc(ptr_keys(1)), c_loc(ptr_values(1)), c_expand_dbname)
          else
-            conn = c_PQ_connectdb_params(ptr_keys, ptr_values, c_expand_dbname)
+            conn = c_PQ_connectdb_params(c_loc(ptr_keys(1)), c_loc(ptr_values(1)), c_expand_dbname)
          end if
 
       end block
@@ -287,11 +287,11 @@ contains
       type(PQconninfoOption), dimension(:), allocatable, target, intent(out) :: options
 
       interface
-         function c_PQ_conndefaults_prepare (optionsizes) bind(c, name="PQconndefaultsPrepare") result(res)
-            import c_ptr
+         function c_PQ_conndefaults_prepare (optionsizes) bind(c, name="PQconndefaultsPrepare")
+            import c_ptr, c_int
             implicit none
             type(c_ptr), intent(out) :: optionsizes
-            integer :: res
+            integer(c_int) :: c_PQ_conndefaults_prepare
          end function c_PQ_conndefaults_prepare
       end interface
 
@@ -340,7 +340,7 @@ contains
             use :: t_PQconninfoOption
             use, intrinsic :: iso_c_binding
             implicit none
-            type(c_PQconnoptionSizes), intent(in), pointer :: sizes
+            type(c_PQconnoptionSizes), intent(in) :: sizes
             type(c_PQconninfoOption), intent(inout) :: c_option
             type(PQconninfoOption), intent(out) :: option
 
@@ -421,11 +421,11 @@ contains
 
       interface
          function c_PQ_conninfo_prepare (conn, optionsizes) bind(c, name="PQconninfoPrepare") result(res)
-            import c_ptr
+            import c_ptr, c_int
             implicit none
             type(c_ptr), intent(in), value :: conn
             type(c_ptr), intent(out) :: optionsizes
-            integer :: res
+            integer(c_int) :: res
          end function c_PQ_conninfo_prepare
       end interface
 
@@ -491,14 +491,14 @@ contains
 
       interface
          function c_PQ_conninfo_parse_prepare (info, errmsg, errlen, optionsizes)  &
-                                    bind(c, name="PQconninfoParsePrepare") result(res)
+                                    bind(c, name="PQconninfoParsePrepare")
             import c_ptr, c_char, c_int
             implicit none
             character(1, kind=c_char), intent(in) :: info(*)
             type(c_ptr), intent(inout) :: errmsg
             integer(c_int), intent(out) :: errlen
             type(c_ptr), intent(out) :: optionsizes
-            integer(c_int) :: res
+            integer(c_int) :: c_PQ_conninfo_parse_prepare
          end function c_PQ_conninfo_parse_prepare
       end interface
 
@@ -689,8 +689,8 @@ contains
                                        bind(c, name="PQpingParams")
             import c_ptr, c_int
             implicit none
-            type(c_ptr), intent(in) :: keywords
-            type(c_ptr), intent(in) :: values
+            type(c_ptr), intent(in), value :: keywords
+            type(c_ptr), intent(in), value :: values
             integer(c_int), intent(in) :: expand_dbname
             integer(c_int) :: c_PQ_ping_params
          end function c_PQ_ping_params
@@ -703,8 +703,8 @@ contains
          character(max_len_key+1, kind=c_char), allocatable, target :: c_keys(:)
          character(max_len_val+1, kind=c_char), allocatable, target :: c_values(:)
 
-         type(c_ptr), allocatable :: ptr_keys(:)
-         type(c_ptr), allocatable :: ptr_values(:)
+         type(c_ptr), allocatable, target :: ptr_keys(:)
+         type(c_ptr), allocatable, target :: ptr_values(:)
 
          integer(c_int) :: c_expand_dbname
 
@@ -716,7 +716,7 @@ contains
 
          c_expand_dbname = expand_dbname
 
-         res = c_PQ_ping_params(ptr_keys, ptr_values, c_expand_dbname)
+         res = c_PQ_ping_params(c_loc(ptr_keys(1)), c_loc(ptr_values(1)), c_expand_dbname)
       end block
 
    end function PQpingParams

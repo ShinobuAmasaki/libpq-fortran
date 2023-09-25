@@ -16,9 +16,8 @@ program main
    end if
 !==Add a test below===================================================!
 
-   print *, 'test:'
-
    sql = "select $1::bigint + $2::bigint;"
+   print *, 'test: ', '"', sql, '"'
 
    values(1) = "300"
    values(2) = "500"
