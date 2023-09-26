@@ -24,19 +24,19 @@ This package needs [Fortran Package Manager (`fpm`)](https://fpm.fortran-lang.or
    ```
 
 Tested on
-   - FreeBSD
+   - FreeBSD 
+      - Release 13.2 (gfortran v13.1.0)
    - Linux
-      - Gentoo Linux
-      - Ubuntu 22.04 LTS
+      - Gentoo Linux (gfortran v12.3.1, ifort 2021.9.0, ifx 2023.1.0)
+      - Ubuntu 22.04 LTS (gfortran v11.4.0)
+   - Windows
+      - Microsoft Windows 10
 
 ### Current
 
 - Supported Compilers
    - GNU Compiler Collection: `gfortran`,
-   - Intel oneAPI HPC toolkit: `ifort`/`ifx`,
-   - LLVM Flang (version 15): `flang`/`flang15`.
-
-Other versions of Flang are not tested.
+   - Intel Fortran Compiler, Fortran Compiler Classic `ifx`/`ifort`,
 
 - Supported PostgreSQL version
    - PostgreSQL v15.4 (libpq v5.15)
