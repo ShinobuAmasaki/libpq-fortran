@@ -8,11 +8,26 @@ The source of this package is available on [GitHub](https://github.com/ShinobuAm
 
 ## Features
 
+### Current
+
+- Supported Compilers
+   - GNU Compiler Collection: `gfortran`,
+   - Intel Fortran Compiler, Fortran Compiler Classic `ifx`/`ifort`,
+
+- Supported PostgreSQL version
+   - PostgreSQL v15.4 (libpq v5.15)
+
+- Connection
+   - Connection via DSN (data source name)
+   - Connection via PostgreSQL connection string
+   - UTF-8 client encoding
+
 ### Build
 
 This package needs [Fortran Package Manager (`fpm`)](https://fpm.fortran-lang.org/index.html).
 
-- `libpq` is required
+- `libpq` is required.
+   - Add the path to the directory containing "libpq-fe.h" to the environment variable `FPM_CFLAGS`.
    - For Ubuntu, exec `sudo apt isntall libpq-dev`
 
 - Add to your `fpm.toml`
@@ -25,22 +40,12 @@ This package needs [Fortran Package Manager (`fpm`)](https://fpm.fortran-lang.or
 
 Tested on
    - FreeBSD 
-      - Release 13.2 (gfortran v13.1.0)
+      - Release 13.2 (`gfortran` v13.1.0)
    - Linux
-      - Gentoo Linux (gfortran v12.3.1, ifort 2021.9.0, ifx 2023.1.0)
-      - Ubuntu 22.04 LTS (gfortran v11.4.0)
+      - Gentoo Linux (`gfortran` v12.3.1, `ifort` 2021.9.0, `ifx` 2023.1.0)
+      - Ubuntu 22.04 LTS (`gfortran` v11.4.0)
    - Windows
-      - Microsoft Windows 10
-
-### Current
-
-- Supported Compilers
-   - GNU Compiler Collection: `gfortran`,
-   - Intel Fortran Compiler, Fortran Compiler Classic `ifx`/`ifort`,
-
-- Supported PostgreSQL version
-   - PostgreSQL v15.4 (libpq v5.15)
-
+      - Microsoft Windows 10 (`gfortran` MinGW-W64 13.1.0)
 
 ### Goals
 
