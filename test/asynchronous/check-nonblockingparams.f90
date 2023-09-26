@@ -6,7 +6,7 @@ program main
 
    type(c_ptr) :: conn
 
-   integer, parameter :: npairs = 4
+   integer, parameter :: npairs = 3
    character(256, kind=c_char) :: keywords(npairs), values(npairs)
 
    integer :: res

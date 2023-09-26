@@ -5,7 +5,7 @@ program main
    
    type(c_ptr) :: conn
 
-   integer, parameter :: npairs = 3
+   integer, parameter :: npairs = 4
    character(256,kind=c_char) :: keywords(npairs), values(npairs)
 
    print '(a)', "=== BEGIN TEST: PQoptions ==="
@@ -14,10 +14,13 @@ program main
    values(1) = "localhost"
 
    keywords(2) = "dbname"
-   values(2) = "sandbox"
+   values(2) = "postgres"
 
    keywords(3) = "options"
    values(3) = "-c geqo=off"
+
+   keywords(4) = "user"
+   values(4) = "postgres"
 
    conn = PQconnectdbParams(keywords, values, 0)
 
