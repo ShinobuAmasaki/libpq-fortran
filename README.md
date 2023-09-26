@@ -266,9 +266,9 @@ Note:
 - [x] `PQconninfoFree`
 - [x] `PQencryptPasswordConn`
 - <s>`PQenctyptPassword`</s>
-- [ ] `PQmakeEmptyPGresult`
+- [x] `PQmakeEmptyPGresult`
 - [ ] `PQfireResultCreateEvents`
-- [ ] `PQcopyResult`
+- [x] `PQcopyResult`
 - [ ] `PQsetResultAttrs`
 - [ ] `PQsetvalue`
 - [ ] `PQresultAlloc`

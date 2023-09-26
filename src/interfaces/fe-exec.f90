@@ -83,6 +83,9 @@ module m_fe_exec
    end interface 
 
    public :: PQisthreadsafe
+
+   public :: PQmakeEmptyPGresult
+   public :: PQcopyResult
       
 
 contains
@@ -2146,6 +2149,61 @@ contains
       call c_PQ_free_memory(cptr)
 
    end subroutine PQfreemem
+
+
+   function PQmakeEmptyPGresult (conn, status) result(res)
+      use :: enumerators_t
+      use, intrinsic :: iso_c_binding
+      use, intrinsic :: iso_fortran_env
+      implicit none
+      
+      type(c_ptr), intent(in) :: conn
+      integer(int32), intent(in) :: status
+
+      type(c_ptr) :: res
+
+      interface
+         function c_PQ_make_empty_PGresult (conn, status) bind(c, name="PQmakeEmptyPGresult")
+            import c_ptr, c_int
+            implicit none
+            type(c_ptr), intent(in), value :: conn
+            integer(c_int), intent(in), value :: status
+            type(c_ptr) :: c_PQ_make_empty_PGresult
+         end function
+      end interface
+
+      if ( 0 <= status .and. status <= PGRES_PIPELINE_ABORTED) then
+         res = c_PQ_make_empty_PGresult(conn, status)
+      else
+         res = c_null_ptr
+      end if
+
+   end function PQmakeEmptyPGresult
+
+
+   function PQcopyResult(conn, res)
+      use, intrinsic :: iso_c_binding
+      use, intrinsic :: iso_fortran_env
+      implicit none
+      
+      type(c_ptr), intent(in) :: conn
+      type(c_ptr), intent(in) :: res
+
+      type(c_ptr) :: PQcopyResult
+
+      interface
+         function c_PQ_copy_result(conn, res) bind(c, name="PQcopyResult")
+            import c_ptr, c_int
+            implicit none
+            type(c_ptr), intent(in), value :: conn
+            type(c_ptr), intent(in), value :: res
+            type(c_ptr) :: c_PQ_copy_result
+         end function c_PQ_copy_result
+      end interface
+
+      PQcopyResult = c_PQ_copy_result(conn, res)
+
+   end function PQcopyResult
 
 
    function PQisthreadsafe()
