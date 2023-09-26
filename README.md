@@ -150,7 +150,7 @@ Note:
 - [x] `PQconnectionUsedPassword`
 - [x] `PQsslInUse`
 - [x] `PQsslAttribute`
-- [ ] `PQsslAttributeNames`
+- [x] `PQsslAttributeNames`
 - [ ] `PQsslStruct`
 - <s> `PQgetssl` </s>
  
@@ -250,7 +250,7 @@ Note:
 ### Control Functions
 - [x] `PQclientEncoding`
 - [x] `PQsetclientEncoding`
-- [ ] `PQsetErrorVerbosity`
+- [x] `PQsetErrorVerbosity`
 - [ ] `PQsetErrorContextVisibility`
 - [ ] `PQtrace`
 - [ ] `PQsettraceFlags`
@@ -271,7 +271,6 @@ Note:
 - [x] `PQlibVersion`
 
 ### Event System
-- [ ] `PGEventProc`
 - [ ] `PQregisterEventProc`
 - [ ] `PQsetInstanceData`
 - [ ] `PQresultSetInstanceData`

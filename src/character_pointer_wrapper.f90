@@ -3,6 +3,7 @@ module character_pointer_wrapper
    private
    public :: c_to_f_charpointer
    public :: c_char_to_f_string
+   public :: c_to_f_charpointer_with_length
 
 contains
 
@@ -75,27 +76,35 @@ contains
       ! Associate the pointer variable `res` with the result of the function `convert_cptr`.
       res => convert_cptr(char_cptr, strlen(char_cptr))
 
-   contains
-
-      ! `convert_cptr` takes a string with type(cptr) and its length as input,
-      ! and returns a corresponding Fortran pointer of character-type.
-      function convert_cptr(cptr, length) result(fptr)
-         use, intrinsic :: iso_c_binding, only: c_ptr, c_size_t, c_f_pointer, c_char
-         implicit none
-         type(c_ptr), intent(in) :: cptr
-         integer(c_size_t), intent(in) :: length
-
-         ! Declare a character-type pointer variable `fptr` with a length `length` and
-         ! a kind parameter `c_char`.
-         character(len=length, kind=c_char), pointer :: fptr
-
-         call c_f_pointer(cptr, fptr)
-
-      end function convert_cptr
-
    end function c_to_f_charpointer
       
+   function c_to_f_charpointer_with_length(char_cptr, length) result(res)
+      use, intrinsic :: iso_c_binding, only: c_ptr, c_char
+      use, intrinsic :: iso_fortran_env
+      implicit none
+      type(c_ptr), intent(in) :: char_cptr
 
+      integer(int32) :: length
+      character(length, kind=c_char), pointer :: res
+
+      res => convert_cptr(char_cptr, int(length, int64))
+   end function 
+
+         ! `convert_cptr` takes a string with type(cptr) and its length as input,
+      ! and returns a corresponding Fortran pointer of character-type.
+   function convert_cptr(cptr, length) result(fptr)
+      use, intrinsic :: iso_c_binding, only: c_ptr, c_size_t, c_f_pointer, c_char
+      implicit none
+      type(c_ptr), intent(in) :: cptr
+      integer(c_size_t), intent(in) :: length
+
+      ! Declare a character-type pointer variable `fptr` with a length `length` and
+      ! a kind parameter `c_char`.
+      character(len=length, kind=c_char), pointer :: fptr
+
+      call c_f_pointer(cptr, fptr)
+
+   end function convert_cptr
 
 
 end module character_pointer_wrapper

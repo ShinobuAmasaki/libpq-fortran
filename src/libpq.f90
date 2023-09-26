@@ -11,7 +11,8 @@ module libpq
             PQresetPoll, PQparameterStatus, PQconnectionNeedsPassword, &
             PQconnectionUsedPassword, PQconninfo, PQconninfoParse, &
             PQclientEncoding, PQsetClientEncoding, PQsslInUse, &
-            PQsslAttribute, PQgetCancel, PQfreeCancel, PQcancel
+            PQsslAttribute, PQgetCancel, PQfreeCancel, PQcancel, &
+            PQsslAttributeNames, PQsetErrorVerbosity
 
    
    use :: m_fe_exec, &
@@ -86,6 +87,7 @@ module libpq
    public :: PQconnectionUsedPassword
    public :: PQsslInUse
    public :: PQsslAttribute
+   public :: PQsslAttributeNames
 
    ! Cancel
    public :: PQgetCancel
@@ -95,6 +97,7 @@ module libpq
    ! Misc.
    public :: PQclientEncoding
    public :: PQsetClientEncoding
+   public :: PQsetErrorVerbosity
 
 !-From module m_fe_exec:
    public :: PQexec
@@ -268,5 +271,6 @@ module libpq
       enumerator :: PQSHOW_CONTEXT_ERRORS
       enumerator :: PQSHOW_ALWAYS
    end enum
+
 
 end module libpq

@@ -39,10 +39,13 @@ module m_fe_connect
    public :: PQsetClientEncoding
    public :: PQsslInUse
    public :: PQsslAttribute
+   public :: PQsslAttributeNames
    
    public :: PQgetCancel
    public :: PQfreeCancel
    public :: PQcancel
+
+   public :: PQsetErrorVerbosity
 
 
    ! PRIVATE functions
@@ -595,7 +598,7 @@ contains
       use, intrinsic :: iso_c_binding
       implicit none
       
-      type(c_ptr), intent(in) :: conn
+      type(c_ptr), intent(inout) :: conn
 
       interface
          ! Interface ot PQfinish in interfaces/libpq/fe-connect.c:
@@ -1211,9 +1214,106 @@ contains
    end subroutine PQsslAttribute
 
 
-   ! function PQsslAttributeNames
+   ! Subroutine for retrieving SSL attribute names from a PostgreSQL 
+   ! database connection and populating an array.
+   ! Input:
+   !  - 'conn' is the connection pointer,
+   !  - 'len' is the length of the element of the output string array.
+   ! Output:
+   !  - 'strings' must be a one-dimensional array of uninitialized
+   !    strings that will be allocated in this subroutine.
+   subroutine PQsslAttributeNames (conn, strings, len)
+      use, intrinsic :: iso_c_binding
+      use, intrinsic :: iso_fortran_env
+      use :: character_pointer_wrapper
+      implicit none
+
+      ! Input Parameters
+      type(c_ptr), intent(in) :: conn
+      integer(int32), intent(in) :: len
+      character(len), allocatable :: strings(:)
+
+      ! Interfaces to functions in src/wraps/PQsslAttributeNamesWrap.c
+      interface
+         function c_PQ_ssl_Attribute_Names_Prepare_Size(conn) &
+               bind(c, name="PQsslAttributeNamesPrepareSize")
+            import c_ptr, c_int
+            implicit none
+            type(c_ptr), intent(in), value :: conn
+            integer(c_int) :: c_PQ_ssl_Attribute_Names_Prepare_Size
+         end function c_PQ_ssl_Attribute_Names_Prepare_Size
+      end interface 
+
+      interface
+         subroutine c_PQ_ssl_Attribute_Names_Prepare_Lengths (conn, array) &
+               bind(c, name="PQsslAttributeNamesPrepareLengths")
+            import c_ptr, c_int
+            implicit none
+            type(c_ptr), intent(in), value :: conn
+            integer(c_int) :: array(:)
+         end subroutine c_PQ_ssl_Attribute_Names_Prepare_Lengths
+      end interface
+      
+      ! Interface to libpq function PQsslAttriubteNames
+      interface
+         function c_PQ_ssl_Attribute_Names_Wraped (conn) bind(c, name="PQsslAttributeNames")
+            import c_ptr
+            implicit none
+            type(c_ptr), intent(in), value :: conn
+            type(c_ptr) :: c_PQ_ssl_Attribute_Names_Wraped
+         end function c_PQ_ssl_Attribute_Names_Wraped
+      end interface
+
+      ! Local variables
+      integer(int32) :: siz                     ! Size of the attribute names array
+      integer(int32), allocatable :: lengths(:) ! Array to store lengths
+      type(c_ptr) :: ptr                        ! Pointer to the attribute names array
+
+      ! Get the size of the attribute names array using C funciton.
+      siz = c_PQ_ssl_Attribute_Names_Prepare_Size(conn)
+
+      ! Allocate memory for the lengths array and the strings array.
+      allocate(lengths(siz))
+      allocate(strings(siz))
+
+      ! Get the lengths of attribute name strings using C funciton.
+      call c_PQ_ssl_Attribute_Names_Prepare_Lengths(conn, lengths)
+
+      ! Get a pointer to the attribute names array using PostgreSQL function.
+      ptr = c_PQ_ssl_Attribute_Names_Wraped(conn)
+
+      ! If the pointer is not associated, exit.
+      if (.not. c_associated(ptr)) then
+         deallocate(lengths)
+         return
+      end if
+
+      ! Process strings within a block
+      block
+         character(:), pointer :: strptr                 ! Temporary string pointer
+         type(c_ptr), dimension(:), pointer :: ptr_array ! Array of pointers
+         integer(int32) :: i
+
+         ! Associate the poninter with a Fortran array
+         call c_f_pointer(ptr, ptr_array, shape=[siz])
+
+         do i = 1, siz
+
+            ! Convert the pointer to a Fortran character pointer with its length.
+            strptr => c_to_f_charpointer_with_length(ptr_array(i), lengths(i))
+
+            ! Store the string in the strings array.
+            strings(i) = strptr(:)
+         end do
+
+      end block 
+
+      deallocate(lengths)
+
+   end subroutine PQsslAttributeNames
+
+
    ! function PQsslStruct
-   ! function PQgetssl
 
 
 !==================================================================!
@@ -1380,7 +1480,29 @@ contains
    end function PQsetClientEncoding
 
 
-   ! function PQsetErrorVerbosity
+   function PQsetErrorVerbosity (conn, verbosity) result(res)
+      use, intrinsic :: iso_c_binding
+      use, intrinsic :: iso_fortran_env
+
+      type(c_ptr), intent(in) :: conn
+      integer(int32), intent(in) :: verbosity
+
+      integer(int32) :: res
+
+      interface
+         function c_PQ_set_Error_Verbosity(conn, verbosity) bind(c, name="PQsetErrorVerbosity")
+            import c_ptr, c_int
+            implicit none
+            type(c_ptr), intent(in), value :: conn
+            integer(c_int), intent(in), value :: verbosity
+            integer(c_int) :: c_PQ_set_error_verbosity
+         end function c_PQ_set_error_verbosity
+      end interface 
+
+      res = c_PQ_set_Error_Verbosity(conn, verbosity)
+
+   end function PQsetErrorVerbosity
+
    ! function PQsetErrorContextVisibility
    
 

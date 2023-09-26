@@ -16,8 +16,9 @@ typedef struct
    int siz_dispchar;
 } PQFconninfoSize ;
 
-
 extern int getStrLen(const char*str);
+
+extern int max(int a, int b);
 
 #ifdef __cplusplus
 }
