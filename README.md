@@ -251,7 +251,7 @@ Note:
 - [x] `PQclientEncoding`
 - [x] `PQsetclientEncoding`
 - [x] `PQsetErrorVerbosity`
-- [ ] `PQsetErrorContextVisibility`
+- [x] `PQsetErrorContextVisibility`
 - [ ] `PQtrace`
 - [ ] `PQsettraceFlags`
 - [ ] `PQuntrace`

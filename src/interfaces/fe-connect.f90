@@ -46,7 +46,7 @@ module m_fe_connect
    public :: PQcancel
 
    public :: PQsetErrorVerbosity
-
+   public :: PQsetErrorContextVisibility
 
    ! PRIVATE functions
    private :: PQconnectdbParams_back
@@ -1483,7 +1483,9 @@ contains
    function PQsetErrorVerbosity (conn, verbosity) result(res)
       use, intrinsic :: iso_c_binding
       use, intrinsic :: iso_fortran_env
-
+      use :: enumerators
+      implicit none
+      
       type(c_ptr), intent(in) :: conn
       integer(int32), intent(in) :: verbosity
 
@@ -1499,11 +1501,57 @@ contains
          end function c_PQ_set_error_verbosity
       end interface 
 
-      res = c_PQ_set_Error_Verbosity(conn, verbosity)
+      select case (verbosity)
+      case (PQERRORS_TERSE)
+         res = c_PQ_set_Error_Verbosity(conn, PQERRORS_TERSE)
+      case (PQERRORS_DEFAULT)
+         res = c_PQ_set_Error_Verbosity(conn, PQERRORS_DEFAULT)
+      case (PQERRORS_VERBOSE)
+         res = c_PQ_set_Error_Verbosity(conn, PQERRORS_VERBOSE)
+      case (PQERRORS_SQLSTATE)
+         res = c_PQ_set_Error_Verbosity(conn, PQERRORS_SQLSTATE)
+      case default 
+         res = -1
+      end select
 
    end function PQsetErrorVerbosity
 
-   ! function PQsetErrorContextVisibility
+
+
+   function PQsetErrorContextVisibility (conn, show_context) result(res)
+      use, intrinsic :: iso_c_binding
+      use, intrinsic :: iso_fortran_env
+      use :: enumerators
+      implicit none
+      
+      type(c_ptr), intent(in) :: conn
+      integer(int32), intent(in) :: show_context
+
+      integer (int32) :: res
+
+      interface
+         function c_PQ_set_error_context_visibility(conn, show_context) &
+               bind(c, name="PQsetErrorContextVisibility")
+            import c_ptr, c_int
+            implicit none
+            type(c_ptr), intent(in), value :: conn
+            integer(c_int), intent(in), value :: show_context
+            integer(c_int) :: c_PQ_set_error_context_visibility
+         end function
+      end interface
+
+      select case (show_context)
+      case (PQSHOW_CONTEXT_NEVER)
+         res = c_PQ_set_error_context_visibility(conn, PQSHOW_CONTEXT_NEVER)
+      case (PQSHOW_CONTEXT_ERRORS)
+         res = c_PQ_set_error_context_visibility(conn, PQSHOW_CONTEXT_ERRORS)
+      case (PQSHOW_CONTEXT_ALWAYS)
+         res = c_PQ_set_error_context_visibility(conn, PQSHOW_CONTEXT_ALWAYS)
+      case default
+         res = -1
+      end select
+
+   end function PQsetErrorContextVisibility
    
 
 end module m_fe_connect
