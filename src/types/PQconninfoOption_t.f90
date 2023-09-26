@@ -1,4 +1,4 @@
-module t_PQconninfoOption
+module PQconninfoOption_t
    use, intrinsic :: iso_fortran_env
    use, intrinsic :: iso_c_binding
    implicit none
@@ -66,4 +66,4 @@ module t_PQconninfoOption
 
 
 
-end module t_PQconninfoOption
+end module PQconninfoOption_t

@@ -107,7 +107,7 @@ contains
    end subroutine cptr_array_from_cchar_no_null
    
    subroutine read_option(sizes, c_option, option)
-      use :: t_PQconninfoOption
+      use :: PQconninfoOption_t
       use, intrinsic :: iso_c_binding
       implicit none
       type(c_PQconnoptionSizes), intent(in) :: sizes

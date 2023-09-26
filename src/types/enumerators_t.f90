@@ -1,4 +1,4 @@
-module enumerators
+module enumerators_t
    implicit none
    
    !------------------------------------------------------------------!
@@ -77,4 +77,4 @@ module enumerators
       enumerator :: PQSHOW_CONTEXT_ALWAYS
    end enum
 
-end module enumerators
+end module enumerators_t

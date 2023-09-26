@@ -28,7 +28,7 @@ This package needs [Fortran Package Manager (`fpm`)](https://fpm.fortran-lang.or
 
 - `libpq` is required.
    - Add the path to the directory containing "libpq-fe.h" to the environment variable `FPM_CFLAGS`.
-   - For Ubuntu, exec `sudo apt isntall libpq-dev`
+   - For Ubuntu, exec `sudo apt install libpq-dev`
 
 - Add to your `fpm.toml`
    ```toml

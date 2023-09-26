@@ -287,7 +287,7 @@ contains
 
 
    subroutine PQconndefaults (options)
-      use :: t_PQconninfoOption
+      use :: PQconninfoOption_t
       use, intrinsic :: iso_c_binding
       implicit none
 
@@ -344,7 +344,7 @@ contains
       contains
 
          subroutine read_option(sizes, c_option, option)
-            use :: t_PQconninfoOption
+            use :: PQconninfoOption_t
             use, intrinsic :: iso_c_binding
             implicit none
             type(c_PQconnoptionSizes), intent(in) :: sizes
@@ -419,7 +419,7 @@ contains
 
    subroutine PQconninfo (conn, options)
       use :: character_operations
-      use :: t_PQconninfoOption
+      use :: PQconninfoOption_t
       use, intrinsic :: iso_c_binding
       implicit none
 
@@ -480,7 +480,7 @@ contains
             
 
    subroutine PQconninfoParse(conninfo, options, errmsg, errflag)
-      use :: t_PQconninfoOption
+      use :: PQconninfoOption_t
       use :: character_operations
       use, intrinsic :: iso_c_binding
       implicit none
@@ -1222,6 +1222,8 @@ contains
    ! Output:
    !  - 'strings' must be a one-dimensional array of uninitialized
    !    strings that will be allocated in this subroutine.
+   !
+   ! This doesn't work in the GCC 11.4.0 environment. 
    subroutine PQsslAttributeNames (conn, strings, len)
       use, intrinsic :: iso_c_binding
       use, intrinsic :: iso_fortran_env
@@ -1483,7 +1485,7 @@ contains
    function PQsetErrorVerbosity (conn, verbosity) result(res)
       use, intrinsic :: iso_c_binding
       use, intrinsic :: iso_fortran_env
-      use :: enumerators
+      use :: enumerators_t
       implicit none
       
       type(c_ptr), intent(in) :: conn
@@ -1521,7 +1523,7 @@ contains
    function PQsetErrorContextVisibility (conn, show_context) result(res)
       use, intrinsic :: iso_c_binding
       use, intrinsic :: iso_fortran_env
-      use :: enumerators
+      use :: enumerators_t
       implicit none
       
       type(c_ptr), intent(in) :: conn

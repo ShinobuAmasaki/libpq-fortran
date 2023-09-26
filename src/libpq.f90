@@ -37,9 +37,9 @@ module libpq
 
    use :: m_fe_misc, only: PQlibVersion
 
-   use :: t_PQconninfoOption, only: PQconninfoOption
+   use :: PQconninfoOption_t, only: PQconninfoOption
 
-   use :: enumerators
+   use :: enumerators_t
 
    implicit none
    private
@@ -166,7 +166,7 @@ module libpq
    ! Derived types
    public :: PQconninfoOption
 
-   ! Enumerators
+   ! enumerators_t
    public :: CONNECTION_OK, CONNECTION_BAD, &
              CONNECTION_MADE, &
              CONNECTION_AWAITING_RESPONSE, &
