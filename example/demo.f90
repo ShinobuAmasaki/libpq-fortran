@@ -12,24 +12,25 @@ program main
    integer :: port
 
    print *, '=== INPUT Database Information ==='
+   print *, '=== type "q" for quit          ==='
    write (stdout, '(a)', advance='no') "Hostname: "
    read  (stdin, *) host
 
-   write (stdout, '(a)', advance='no') "Port: "
-   read  (stdin, *) port
-   if (port < 1 .or. 65535 < port) then
-      print *, "Error: Invalid port number."
-      error stop
-   end if
+   if (host == 'q') stop
+
+   port = 5432
 
    write (stdout, '(a)', advance='no') "dbname: "
    read  (stdin, *) dbname
+   if (dbname == 'q') stop
 
    write (stdout, '(a)', advance='no') "user: "
    read  (stdin, *) user
+   if (user == 'q') stop
 
    write (stdout, '(a)', advance='no') "password: "
    read  (stdin, *) password
+   if (password == 'q') stop
    print *, "=== END INPUT ==="
 
    write(str, '(a, i0, a)') &
@@ -45,7 +46,7 @@ program main
    if (PQstatus(conn) /= 0) then
       print *, PQerrorMessage(conn)
       error stop
-   end if 
+   end if
 
    ! データベースクラスタ内のデータベース名を取得するクエリ
    sql = "select datname from pg_database;"
@@ -55,8 +56,10 @@ program main
       print *, PQerrorMessage(conn)
    end if
 
+   print *, "=== Query Result==="
    print '(a, i0, 2x, i0)', 'tuples, fields: ', PQntuples(res), PQnfields(res) 
 
+   print *, "=== Available database names ==="
    do i = 0, PQntuples(res)-1
       print *, PQgetvalue(res, i, 0)
    end do
