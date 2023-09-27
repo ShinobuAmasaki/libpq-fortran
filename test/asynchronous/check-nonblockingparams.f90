@@ -1,7 +1,6 @@
 program main
    use, intrinsic :: iso_c_binding
    use libpq
-   use m_fe_connect
 
 
    type(c_ptr) :: conn
