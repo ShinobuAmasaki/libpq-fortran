@@ -1,4 +1,4 @@
-module m_fe_exec
+module fe_exec_m
    implicit none
    private
 
@@ -134,7 +134,7 @@ contains
       use, intrinsic :: iso_fortran_env
       use, intrinsic :: iso_c_binding
       use :: unsigned
-      use :: character_operations
+      use :: character_operations_m
       implicit none
       
       ! Input parameters
@@ -168,7 +168,7 @@ contains
       use, intrinsic :: iso_fortran_env
       use, intrinsic :: iso_c_binding
       use :: unsigned
-      use :: character_operations
+      use :: character_operations_m
       implicit none
       
       ! Input parameters
@@ -325,7 +325,7 @@ contains
       use, intrinsic :: iso_fortran_env
       use, intrinsic :: iso_c_binding
       use :: unsigned
-      use :: character_operations
+      use :: character_operations_m
       implicit none
 
       type(c_ptr), intent(in) :: conn
@@ -372,7 +372,7 @@ contains
    function PQexecPrepared (conn, stmtName, nParams, paramValues) result(res)
       use, intrinsic :: iso_fortran_env
       use, intrinsic :: iso_c_binding
-      use :: character_operations
+      use :: character_operations_m
       implicit none
       
       ! Input paramters
@@ -538,7 +538,7 @@ contains
 
 
    function PQresStatus(status) result(res)
-      use :: character_pointer_wrapper
+      use :: character_operations_m
       use, intrinsic :: iso_c_binding
       use, intrinsic :: iso_fortran_env
       implicit none
@@ -571,7 +571,7 @@ contains
 
 
    function PQresultErrorMessage(pgresult) result(res)
-      use :: character_pointer_wrapper
+      use :: character_operations_m
       use, intrinsic :: iso_c_binding
       implicit none
       type(c_ptr), intent(in) :: pgresult
@@ -596,7 +596,7 @@ contains
 
 
    function PQresultVerboseErrorMessage(pgresult, verbosity, show_context) result(res)
-      use :: character_pointer_wrapper
+      use :: character_operations_m
       use, intrinsic :: iso_fortran_env
       use, intrinsic :: iso_c_binding
       implicit none
@@ -622,7 +622,7 @@ contains
 
 
    function PQresultErrorField(pgresult, fieldcode) result(res)
-      use :: character_pointer_wrapper
+      use :: character_operations_m
       use, intrinsic :: iso_c_binding
       use, intrinsic :: iso_fortran_env
       implicit none
@@ -724,7 +724,7 @@ contains
 
 
    function PQfname(pgresult, field_num) result(res)
-      use :: character_pointer_wrapper
+      use :: character_operations_m
       use, intrinsic :: iso_fortran_env, only:int32
       use, intrinsic :: iso_c_binding, only: c_ptr, c_int, c_char
       implicit none
@@ -751,7 +751,7 @@ contains
 
    
    function PQfnumber (pgresult, column_name)
-      use :: character_pointer_wrapper
+      use :: character_operations_m
       use, intrinsic :: iso_c_binding
       implicit none
       
@@ -981,7 +981,7 @@ contains
   
 
    function PQgetvalue (pgresult, tuple_num, field_num)
-      use :: character_pointer_wrapper
+      use :: character_operations_m
       use, intrinsic :: iso_c_binding
       implicit none
 
@@ -1128,7 +1128,7 @@ contains
 !== Retrieving Other Result Information
 
    function PQcmdStatus(pgresult) result(res)
-      use :: character_pointer_wrapper
+      use :: character_operations_m
       use, intrinsic :: iso_c_binding
       use, intrinsic :: iso_fortran_env
       implicit none
@@ -1154,7 +1154,7 @@ contains
 
 
    function PQcmdTuples (pgresult) result(res)
-      use :: character_pointer_wrapper
+      use :: character_operations_m
       use, intrinsic :: iso_c_binding
       use, intrinsic :: iso_fortran_env
       implicit none
@@ -1213,7 +1213,7 @@ contains
 !== Escaping Strings for Inclusion in SQL Commands
 
    function PQescapeLiteral (conn, str, length, errmsg) result(res)
-      use :: character_pointer_wrapper
+      use :: character_operations_m
       use, intrinsic :: iso_c_binding
       use, intrinsic :: iso_fortran_env
 
@@ -1292,7 +1292,7 @@ contains
    ! The structure of this function closely resembles that of the `PQescapeLiteral`,
    ! and the comments included in it should also be referenced.
    function PQescapeIdentifier (conn, str, length, errmsg) result(res)
-      use :: character_pointer_wrapper
+      use :: character_operations_m
       use, intrinsic :: iso_c_binding
       use, intrinsic :: iso_fortran_env
 
@@ -1390,7 +1390,7 @@ contains
       use, intrinsic :: iso_c_binding
       use, intrinsic :: iso_fortran_env
       use :: unsigned
-      use :: character_operations
+      use :: character_operations_m
 
       ! Input parameters
       type(c_ptr), intent(in) :: conn
@@ -1578,7 +1578,7 @@ contains
       use, intrinsic :: iso_fortran_env
       use, intrinsic :: iso_c_binding
       use :: unsigned
-      use :: character_operations
+      use :: character_operations_m
       implicit none
 
       ! Input parameters
@@ -1684,7 +1684,7 @@ contains
    function PQsendQueryPrepared_text (conn, stmtName, nParams, paramValues) result(res)
       use, intrinsic :: iso_fortran_env
       use, intrinsic :: iso_c_binding
-      use :: character_operations
+      use :: character_operations_m
 
       ! Input paramters
       type(c_ptr), intent(in) :: conn
@@ -2232,4 +2232,4 @@ contains
    end function PQisthreadsafe
 
 
-end module m_fe_exec
+end module fe_exec_m

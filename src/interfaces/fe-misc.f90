@@ -1,4 +1,4 @@
-module m_fe_misc
+module fe_misc_m
    implicit none
    private
 
@@ -22,4 +22,4 @@ contains
    end function PQlibVersion
 
 
-end module m_fe_misc
+end module fe_misc_m

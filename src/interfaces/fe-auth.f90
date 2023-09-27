@@ -1,4 +1,4 @@
-module m_fe_auth
+module fe_auth_m
    implicit none
    private
 
@@ -18,8 +18,8 @@ contains
 
    subroutine PQencryptPasswordConn (conn, passwd, user, algorithm, encrypted) 
 
-      use :: character_pointer_wrapper
-      use :: m_fe_exec
+      use :: character_operations_m
+      use :: fe_exec_m
       use, intrinsic :: iso_fortran_env
       use, intrinsic :: iso_c_binding
       implicit none
@@ -73,4 +73,4 @@ contains
    end subroutine PQencryptPasswordConn
 
 
-end module m_fe_auth
+end module fe_auth_m

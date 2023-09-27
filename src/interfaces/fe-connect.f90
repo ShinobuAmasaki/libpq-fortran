@@ -1,4 +1,4 @@
-module m_fe_connect
+module fe_connect_m
    implicit none
    private
 
@@ -99,7 +99,7 @@ contains
       
 
    function PQconnectdbParams_back (keywords, values, expand_dbname, isNonblocking) result(conn)
-      use :: character_operations
+      use :: character_operations_m
       use, intrinsic :: iso_c_binding, only: c_ptr, c_int, c_char,&
                                              c_null_char, c_null_ptr, c_loc, c_associated
       implicit none
@@ -418,7 +418,7 @@ contains
 
 
    subroutine PQconninfo (conn, options)
-      use :: character_operations
+      use :: character_operations_m
       use :: PQconninfoOption_t
       use, intrinsic :: iso_c_binding
       implicit none
@@ -481,7 +481,7 @@ contains
 
    subroutine PQconninfoParse(conninfo, options, errmsg, errflag)
       use :: PQconninfoOption_t
-      use :: character_operations
+      use :: character_operations_m
       use, intrinsic :: iso_c_binding
       implicit none
       
@@ -680,7 +680,7 @@ contains
 
 
    function PQpingParams (keywords, values, expand_dbname) result(res)
-      use :: character_operations
+      use :: character_operations_m
       use, intrinsic :: iso_c_binding
       implicit none
       
@@ -762,7 +762,7 @@ contains
 
 
    function PQdb (conn) result(res)
-      use :: character_pointer_wrapper
+      use :: character_operations_m
       use, intrinsic :: iso_c_binding
       implicit none
       type(c_ptr), intent(in) :: conn
@@ -784,7 +784,7 @@ contains
 
 
    function PQuser (conn) result(res)
-      use :: character_pointer_wrapper
+      use :: character_operations_m
       use, intrinsic :: iso_c_binding
       implicit none
       type(c_ptr), intent(in) :: conn
@@ -806,7 +806,7 @@ contains
 
 
    function PQpass (conn) result(res)
-      use :: character_pointer_wrapper
+      use :: character_operations_m
       use, intrinsic :: iso_c_binding
       implicit none
       type(c_ptr), intent(in) :: conn
@@ -828,7 +828,7 @@ contains
 
 
    function PQhost (conn) result(res)
-      use :: character_pointer_wrapper
+      use :: character_operations_m
       use, intrinsic :: iso_c_binding
       implicit none
       type(c_ptr), intent(in) :: conn
@@ -850,7 +850,7 @@ contains
 
 
    function PQhostaddr (conn) result(res)
-      use :: character_pointer_wrapper
+      use :: character_operations_m
       use, intrinsic :: iso_c_binding
       implicit none
       type(c_ptr), intent(in) :: conn
@@ -872,7 +872,7 @@ contains
 
    
    function PQport(conn) result(res)
-      use :: character_pointer_wrapper
+      use :: character_operations_m
       use, intrinsic :: iso_c_binding
       implicit none
       type(c_ptr), intent(in) :: conn
@@ -893,7 +893,7 @@ contains
 
 
    function PQoptions (conn) result(res)
-      use :: character_pointer_wrapper
+      use :: character_operations_m
       use, intrinsic :: iso_c_binding
       implicit none
       type(c_ptr), intent(in) :: conn
@@ -960,7 +960,7 @@ contains
 
 
    function PQparameterStatus(conn, paramName)
-      use :: character_pointer_wrapper
+      use :: character_operations_m
       use, intrinsic :: iso_c_binding
       implicit none
       
@@ -1033,7 +1033,7 @@ contains
 
 
    function PQerrorMessage(conn)
-      use ::  character_pointer_wrapper
+      use ::  character_operations_m
       use, intrinsic :: iso_c_binding
       implicit none
       
@@ -1175,7 +1175,7 @@ contains
    subroutine PQsslAttribute(conn, attribute_name, resultstr)
       use, intrinsic :: iso_c_binding
       use, intrinsic :: iso_fortran_env
-      use :: character_pointer_wrapper
+      use :: character_operations_m
       implicit none
 
       ! Input parameters
@@ -1227,7 +1227,7 @@ contains
    subroutine PQsslAttributeNames (conn, strings, len)
       use, intrinsic :: iso_c_binding
       use, intrinsic :: iso_fortran_env
-      use :: character_pointer_wrapper
+      use :: character_operations_m
       implicit none
 
       ! Input Parameters
@@ -1401,8 +1401,8 @@ contains
 !== Control Functions
 
    function PQclientEncoding(conn) result(res)
-      use character_pointer_wrapper
-      use m_fe_exec, only: PQfreemem
+      use character_operations_m
+      use fe_exec_m, only: PQfreemem
       use, intrinsic :: iso_c_binding
       use, intrinsic :: iso_fortran_env
 
@@ -1556,4 +1556,4 @@ contains
    end function PQsetErrorContextVisibility
    
 
-end module m_fe_connect
+end module fe_connect_m

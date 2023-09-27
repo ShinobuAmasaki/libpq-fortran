@@ -1,4 +1,4 @@
-module error_message_fields
+module error_message_fields_m
    use, intrinsic :: iso_fortran_env
    implicit none
    private
@@ -22,4 +22,4 @@ module error_message_fields
    integer(int32), parameter, public :: PG_DIAG_SOURCE_LINE = ichar('L')
    integer(int32), parameter, public :: PG_DIAG_SOURCE_FUNCTION = ichar('R')
 
-end module error_message_fields
+end module error_message_fields_m

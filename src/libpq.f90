@@ -1,7 +1,7 @@
 module libpq
    use, intrinsic :: iso_fortran_env, only: int64
-   use :: error_message_fields
-   use :: m_fe_connect, &
+   use :: error_message_fields_m
+   use :: fe_connect_m, &
       only: PQconnectdb, PQfinish, PQstatus, PQerrorMessage, &
             PQping, PQdb, PQuser, PQhost, PQhostaddr, PQconnectdbParams, &
             PQoptions, PQtransactionStatus, PQsetdbLogin, PQpingParams, &
@@ -15,7 +15,7 @@ module libpq
             PQsslAttributeNames, PQsetErrorVerbosity, PQsetErrorContextVisibility
 
    
-   use :: m_fe_exec, &
+   use :: fe_exec_m, &
       only: PQexec, PQresultStatus, PQntuples, PQnfields, &
             PQgetvalue, PQclear, PQresultErrorMessage, PQfname, &
             PQfnumber, PQgetisnull, PQresultVerboseErrorMessage, &
@@ -34,9 +34,9 @@ module libpq
             PQsendQueryParams, PQisthreadsafe, PQmakeEmptyPGresult, &
             PQcopyResult
 
-   use :: m_fe_auth, only: PQencryptPasswordConn
+   use :: fe_auth_m, only: PQencryptPasswordConn
 
-   use :: m_fe_misc, only: PQlibVersion
+   use :: fe_misc_m, only: PQlibVersion
 
    use :: PQconninfoOption_t, only: PQconninfoOption
 

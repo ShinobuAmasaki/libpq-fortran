@@ -1,5 +1,5 @@
 program main
-   use t_PQconninfoOption
+   use PQconninfoOption_t
    use libpq, only: PQconndefaults
 
    ! PQconninfoOption派生型の配列の宣言
