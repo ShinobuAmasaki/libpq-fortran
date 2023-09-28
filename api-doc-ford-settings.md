@@ -12,4 +12,4 @@ css: doc-src/ford/common.css
 graph: false
 license: MIT
 
-{!doc/ford/api-doc-index.md!}
+{!doc-src/ford/api-doc-index.md!}

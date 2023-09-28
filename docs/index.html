@@ -93,7 +93,75 @@
       <div class="row" id='text'>
         <div class="col-md-8">
           <h1>Libpq-Fortran</h1>
-          
+          <p>Access PostgreSQL via Fortran.</p>
+<p>Libpq-Fortran is a Modern Fortran interface to the PostgreSQL <code>libpq</code> <a href="https://www.postgresql.org/docs/current/libpq.html">C Library</a></p>
+<p></p><div class="alert alert-info" role="alert"><h4>Note</h4><p>Work in progress
+</p></div>
+<p>
+<h2>Feature</h2>
+<h3>Current</h3>
+<p>Supported compilers are following:</p>
+<ul>
+<li>GNU Compiler Collection <code>gfortran</code>,</li>
+<li>Intel Fortran Compiler <code>ifx</code>, Fortran Compiler Classic <code>ifort</code>.</li>
+</ul>
+<p>Supported PostgreSQL version is</p>
+<ul>
+<li>PostgreSQL v15.4 (libpq v5.15)</li>
+</ul>
+<h3>Build</h3>
+<p>This package needs,</p>
+<ul>
+<li><a href="https://fpm.fortran-lang.org/index.html">Fortran Package Manager</a> <code>fpm</code>, and</li>
+<li><a href="https://www.postgresql.org/docs/current/libpq.html">the PostgreSQL C Library</a> <code>libpq</code> (for Ubuntu, exec <code>sudo apt install libpq-dev</code>).</li>
+</ul>
+<p>Add the path to the directory containing <code>libpq-fe.h</code> to the environment variable <code>FPM_CFLAGS</code>.</p>
+<p>Next, add below to your <code>fpm.toml</code>:</p>
+<div class="codehilite"><pre><span></span><code><span class="k">[build]</span><span class="w"></span>
+<span class="n">link</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s">&quot;pq&quot;</span><span class="p">]</span><span class="w"></span>
+<span class="k">[dependencies]</span><span class="w"></span>
+<span class="n">libpq-fortran</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="n">git</span><span class="w"> </span><span class="o">=</span><span class="s">&quot;https://github.com/shinobuamasaki/libpq-fortran&quot;</span><span class="p">}</span><span class="w"></span>
+</code></pre></div>
+
+<p>And then, do <code>fpm build</code> to build your project.</p>
+<h4>Tests</h4>
+<p>This package is tested on:</p>
+<ul>
+<li>FreeBSD Release 13.2 (<code>gfortran</code> v13.1.0)</li>
+<li>Gentoo Linux (<code>gfortran</code> v12.3.1, <code>ifort</code> 2021.9.0, <code>ifx</code> 2023.1.0)</li>
+<li>Ubuntu 22.04 LTS (<code>gfortran</code> v11.4.0)</li>
+<li>Microsoft Windows 10 (<code>MinGW-W64 gfortran</code>, v13.1.0)</li>
+</ul>
+<h4>Dependencies</h4>
+<p>This package depends on following applicaiton and libraries:</p>
+<ul>
+<li>Fortran Package Manager (<code>fpm</code>),</li>
+<li>The PostgreSQL <code>libpq</code> library</li>
+<li><a href="https://github.com/ShinobuAmasaki/uint-fortran"><code>uint-fortran</code></a> (loaded by <code>fpm</code> automatically).</li>
+</ul>
+<p>The top two need to be installed by the user themselves.</p>
+<h3>Licenses</h3>
+<h4><code>libpq</code> Source and PostgreSQL Documentation</h4>
+<blockquote>
+<p>Portions Copyright © 1996-2023, The PostgreSQL Global Development Group</p>
+<p>Portions Copyright © 1994, The Regents of the University of California</p>
+<p>Permission to use, copy, modify, and distribute this software and its
+documentation for any purpose, without fee, and without a written agreement is
+hereby granted, provided that the above copyright notice and this
+paragraph and the following two paragraphs appear in all copies.</p>
+<p>IN NO EVENT SHALL THE UNIVERSITY OF CALIFORNIA BE LIABLE TO ANY PARTY FOR
+DIRECT, INDIRECT, SPECIAL, INCIDENTAL, OR CONSEQUENTIAL DAMAGES, INCLUDING
+LOST PROFITS, ARISING OUT OF THE USE OF THIS SOFTWARE AND ITS
+DOCUMENTATION, EVEN IF THE UNIVERSITY OF CALIFORNIA HAS BEEN ADVISED OF THE
+POSSIBILITY OF SUCH DAMAGE.</p>
+<p>THE UNIVERSITY OF CALIFORNIA SPECIFICALLY DISCLAIMS ANY WARRANTIES,
+INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+AND FITNESS FOR A PARTICULAR PURPOSE.  THE SOFTWARE PROVIDED HEREUNDER IS
+ON AN "AS IS" BASIS, AND THE UNIVERSITY OF CALIFORNIA HAS NO OBLIGATIONS TO
+PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, OR MODIFICATIONS.</p>
+</blockquote>
+<h4>Everything Else</h4>
+<p>The license for the remainder of this package appears in <a href="https://github.com/ShinobuAmasaki/libpq-fortran/blob/main/LICENSE">LICENSE</a>.</p>
         </div>
         <div class="col-md-4">
 	  <div class="well">
