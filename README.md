@@ -35,7 +35,7 @@ This package needs [Fortran Package Manager (`fpm`)](https://fpm.fortran-lang.or
    [build]
    link = ["pq"]
    [dependencies]
-   libpq-fortran = "https://github.com/shinobuamasaki/libpq-fortran"
+   libpq-fortran = {git = "https://github.com/shinobuamasaki/libpq-fortran"}
    ```
 
 Tested on
