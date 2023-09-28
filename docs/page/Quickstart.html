@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+      <meta name="description" content="Access PostgreSQL via Modern Fortran.">
+    <meta name="author" content="Amasaki Shinobu" >
+    <link rel="icon" href="../favicon.png">
+
+    <title>Quickstart &ndash; Libpq-Fortran</title>
+
+    <link href="../css/bootstrap.min.css" rel="stylesheet">
+    <link href="../css/pygments.css" rel="stylesheet">
+    <link href="../css/font-awesome.min.css" rel="stylesheet">
+    <link href="../css/local.css" rel="stylesheet">
+      <link  href="../tipuesearch/tipuesearch.css" rel="stylesheet">
+      <link href="../css/user.css" rel="stylesheet">
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+        <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+        <![endif]-->
+
+         <script src="../js/jquery-2.1.3.min.js"></script>
+         <script src="../js/svg-pan-zoom.min.js"></script>
+
+  </head>
+
+  <body>
+
+    <!-- Fixed navbar -->
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="../index.html">Libpq-Fortran </a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+              <li><a href='../page/index.html'>Readme</a></li>
+            <li class="dropdown hidden-xs visible-sm visible-md hidden-lg">
+              <a href="#" class="dropdown-toggle"
+                 data-toggle="dropdown" role="button"
+                 aria-haspopup="true"
+                 aria-expanded="false">
+                 Contents <span class="caret"></span>
+              </a>
+              <ul class="dropdown-menu">
+                    <li><a href="../lists/files.html">Source Files</a></li>
+                  <li><a href="../lists/modules.html">Modules</a></li>
+                  <li><a href="../lists/procedures.html">Procedures</a></li>
+                  <li><a href="../lists/types.html">Derived Types</a></li>
+              </ul>
+            </li>
+                <li class="visible-xs hidden-sm visible-lg">
+                  <a href="../lists/files.html">Source Files</a>
+                </li>
+              <li class="visible-xs hidden-sm visible-lg">
+                <a href="../lists/modules.html">Modules</a>
+              </li>
+              <li class="visible-xs hidden-sm visible-lg">
+                <a href="../lists/procedures.html">Procedures</a>
+              </li>
+              <li class="visible-xs hidden-sm visible-lg">
+                <a href="../lists/types.html">Derived Types</a>
+              </li>
+          </ul>
+            <form action="../search.html" class="navbar-form navbar-right" role="search">
+              <div class="form-group">
+                <input type="text" class="form-control" placeholder="Search" name="q" id="tipue_search_input" autocomplete="off" required>
+              </div>
+              <!--
+                  <button type="submit" class="btn btn-default">Submit</button>
+                  -->
+            </form>
+        </div><!--/.nav-collapse -->
+      </div>
+    </nav>
+
+    <div class="container">
+  <div class="row">
+    <h1>Quickstart</h1>
+    <div class="row">
+    <div class="col-lg-12">
+    <div class="well well-sm" style="min-height: 40px;">
+      <ul class="list-inline" style="margin-bottom:0px; display:inline">
+        <li><i class="fa fa-pencil"></i> Amasaki Shinobu</li>
+        <li><i class="fa fa-calendar-o"></i> 2023-09-28</li>
+<!--
+-->
+      </ul>
+        <ol class="breadcrumb in-well">
+         <li><a href='../page/index.html'>Readme</a></li>
+         <li class="active">Quickstart</li>
+      </ol>
+    </div>
+    </div>
+    </div>
+  </div>
+  
+  <div class="row">
+    <div class="col-md-9 col-md-push-3" id='text'>
+      <h1>Quickstart</h1>
+<h2>Contents</h2>
+<ul>
+<li>Introduction</li>
+<li>Dependencies</li>
+<li>Building</li>
+<li>Try it</li>
+<li><code>program demo</code></li>
+<li>Appendix</li>
+</ul>
+<h2>Introduction</h2>
+<p>Libpq-Fortran utilizes the interoperability features of Modern Fortran to provide access to the PostgreSQL official client library, libpq.
+At present, the documentation of this is in progress, so for detailed usage of the functions, please refer to <a href="https://www.postgreSQL.org/docs/current/libpq.html">the PostgreSQL official documentation of libpq</a>.  </p>
+<p>In this article, we will explore the initial usage of this library.</p>
+<h2>Dependencies</h2>
+<p>Here, we will discuss the software required for building Libpq-Fortran.</p>
+<p>First, you will need the <em>libpq</em> installed on your operating system on the local machine. </p>
+<ul>
+<li>On Windows, it comes as an option when you install PostgreSQL using the wizard.</li>
+<li>On Ubuntu Linux, you can simply run the command <code>sudo apt install libpq-dev</code>. </li>
+</ul>
+<p>Next, you will need a Fortran compiler. Currently, the following compilers are supported:</p>
+<ul>
+<li>GNU Compiler Collection: <code>gfortran</code></li>
+<li>Intel oneAPI Fortran Compiler <code>ifx</code>, Fortran Compiler Classic <code>ifort</code></li>
+</ul>
+<p>Furthermore, Libpq-Fortran is managed through the Fortran Package Manager (<code>fpm</code>), so you will need this as well.</p>
+<p>Additionally, it has a dependency on another library developed by the author, <a href="https://github.com/ShinobuAmasaki/uint-fortran"><code>uint-fortran</code></a>, but <code>fpm</code> automatically handles this dependency.</p>
+<p>Finally, you will need a so-called sandbox database server on your localhost or local network. 
+<em>It is advisable to use a setup where data loss is acceptable for testing purposes. Consider this a warning.</em></p>
+<h2>Building</h2>
+<p>To get started with Libpq-Fortran, use the following commands: </p>
+<div class="codehilite"><pre><span></span><code>$ git clone https://github.com/ShinobuAmasaki/libpq-fortran
+$ <span class="nb">cd</span> libpq-fortran
+$ fpm build
+</code></pre></div>
+
+<p>When executing <code>fpm build</code>, you may need to specify the directory containing the <code>"libpq-fe.h"</code> C header  with <code>-I</code> flag in the environment variable <code>FPM_CFLAGS</code> or using <code>--c-flag</code>.</p>
+<p>For example, on Ubuntu system, the location may be <code>/usr/include/postgreslq</code>, and then the command will be the following:</p>
+<div class="codehilite"><pre><span></span><code>$ fpm build --c-flag <span class="s2">&quot;-I/usr/include/postgresql&quot;</span>
+</code></pre></div>
+
+<h2>Try it</h2>
+<p>The 'example' directory in the repository contains a program that interactively accesses a PostgreSQL server to retrieve a list of databases on that server.</p>
+<p>To run this, execute the following command with <code>fpm run</code>:</p>
+<div class="codehilite"><pre><span></span><code>$ fpm run demo --example
+demo.f90                               <span class="k">done</span>.
+demo                                   <span class="k">done</span>.
+<span class="o">[</span><span class="m">100</span>%<span class="o">]</span> Project compiled successfully.
+<span class="o">===</span> INPUT Database <span class="nv">Information</span> <span class="o">===</span>
+<span class="o">===</span> <span class="nb">type</span> <span class="s2">&quot;q&quot;</span> <span class="k">for</span> <span class="nv">quit</span>          <span class="o">===</span>
+Hostname:
+</code></pre></div>
+
+<p>Success is indicated by the appearance of a prompt requesting input for accessing the server.</p>
+<p>Upon entering the information as follows, the connection is established, and the results are returned:</p>
+<div class="codehilite"><pre><span></span><code><span class="o">===</span> INPUT Database <span class="nv">Information</span> <span class="o">===</span>
+<span class="o">===</span> <span class="nb">type</span> <span class="s2">&quot;q&quot;</span> <span class="k">for</span> <span class="nv">quit</span>          <span class="o">===</span>
+Hostname: localhost
+dbname: postgres
+user: shinobu
+password: <span class="nv">xxx</span>
+<span class="o">===</span> END <span class="nv">INPUT</span> <span class="o">===</span>
+<span class="o">===</span> Query <span class="nv">Result</span><span class="o">===</span>
+tuples, fields: <span class="m">4</span>  <span class="nv">1</span>
+<span class="o">===</span> Available database <span class="nv">names</span> <span class="o">===</span>
+postgres
+template1
+template0
+</code></pre></div>
+
+<p>Please modify the hostname, dbname, username, and password to suit your own environment. </p>
+<p>Thus, you were able to access a PostgreSQL database and output results using code written in Fortran. In the next section, we will delve into the details of the main program used. </p>
+<h2><code>program demo</code></h2>
+<h3>Declaration statements</h3>
+<p>In this section, let's take closer look at the main program used in the above demonstration. 
+The entire program can be found in the Appendix of this article or on <a href="https://github.com/ShinobuAmasaki/libpq-fortran/blob/main/example/demo.f90">GitHub</a>.</p>
+<p>The declaration statements are as follows:</p>
+<div class="codehilite"><pre><span></span><code><span class="k">program </span><span class="n">demo</span><span class="w"></span>
+<span class="w">   </span><span class="k">use</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">libpq</span><span class="w"></span>
+<span class="w">   </span><span class="k">use</span><span class="p">,</span><span class="w"> </span><span class="k">intrinsic</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="nb">iso_c_binding</span>
+<span class="nb">   </span><span class="k">use</span><span class="p">,</span><span class="w"> </span><span class="k">intrinsic</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">iso_fortran_env</span><span class="p">,</span><span class="w"> </span><span class="k">only</span><span class="p">:</span><span class="n">stdout</span><span class="o">=&gt;</span><span class="n">output_unit</span><span class="p">,</span><span class="w"> </span><span class="n">stdin</span><span class="o">=&gt;</span><span class="n">input_unit</span><span class="w"></span>
+
+<span class="w">   </span><span class="k">type</span><span class="p">(</span><span class="kt">c_ptr</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">conn</span><span class="p">,</span><span class="w"> </span><span class="n">res</span><span class="w"></span>
+<span class="w">   </span><span class="kt">character</span><span class="p">(:,</span><span class="w"> </span><span class="nb">kind</span><span class="o">=</span><span class="kt">c_char</span><span class="p">),</span><span class="w"> </span><span class="k">allocatable</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">command</span><span class="p">,</span><span class="w"> </span><span class="n">conninfo</span><span class="w"></span>
+<span class="w">   </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="n">port</span><span class="w"></span>
+<span class="w">   </span><span class="kt">character</span><span class="p">(</span><span class="mi">256</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">str</span><span class="p">,</span><span class="w"> </span><span class="n">host</span><span class="p">,</span><span class="w"> </span><span class="n">dbname</span><span class="p">,</span><span class="w"> </span><span class="n">user</span><span class="p">,</span><span class="w"> </span><span class="n">password</span><span class="w"></span>
+</code></pre></div>
+
+<p>Here, we start with the declaration <code>use :: libpq</code>, which plays a central role in this software.</p>
+<p>Additionally, please note the declaration <code>use, intrinsic :: iso_c_binding</code>.</p>
+<p>This is because the software interfaces directly with C libraries, requiring a C-style programming approach, 
+involving passing and relaying pointers to objects as return values from functions.</p>
+<p><code>type(c_ptr) ::conn, res</code> are variables used to store C pointers received when programming in this style.</p>
+<h3>Executable statements</h3>
+<p>Next, let's examine the execution statements. </p>
+<div class="codehilite"><pre><span></span><code><span class="w">   </span><span class="k">print</span><span class="w"> </span><span class="o">*</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;=== INPUT Database Information ===&#39;</span><span class="w"></span>
+<span class="w">   </span><span class="k">print</span><span class="w"> </span><span class="o">*</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;=== type &quot;q&quot; for quit          ===&#39;</span><span class="w"></span>
+<span class="w">   </span><span class="k">write</span><span class="w"> </span><span class="p">(</span><span class="n">stdout</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;(a)&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">advance</span><span class="o">=</span><span class="s1">&#39;no&#39;</span><span class="p">)</span><span class="w"> </span><span class="s2">&quot;Hostname: &quot;</span><span class="w"></span>
+<span class="w">   </span><span class="k">read</span><span class="w">  </span><span class="p">(</span><span class="n">stdin</span><span class="p">,</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="n">host</span><span class="w"></span>
+<span class="w">   </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">host</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s1">&#39;q&#39;</span><span class="p">)</span><span class="w"> </span><span class="k">stop</span>
+
+<span class="k">   </span><span class="n">port</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">5432</span><span class="w"></span>
+
+<span class="w">   </span><span class="k">write</span><span class="w"> </span><span class="p">(</span><span class="n">stdout</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;(a)&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">advance</span><span class="o">=</span><span class="s1">&#39;no&#39;</span><span class="p">)</span><span class="w"> </span><span class="s2">&quot;dbname: &quot;</span><span class="w"></span>
+<span class="w">   </span><span class="k">read</span><span class="w">  </span><span class="p">(</span><span class="n">stdin</span><span class="p">,</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="n">dbname</span><span class="w"></span>
+<span class="w">   </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">dbname</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s1">&#39;q&#39;</span><span class="p">)</span><span class="w"> </span><span class="k">stop</span>
+
+<span class="k">   write</span><span class="w"> </span><span class="p">(</span><span class="n">stdout</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;(a)&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">advance</span><span class="o">=</span><span class="s1">&#39;no&#39;</span><span class="p">)</span><span class="w"> </span><span class="s2">&quot;user: &quot;</span><span class="w"></span>
+<span class="w">   </span><span class="k">read</span><span class="w">  </span><span class="p">(</span><span class="n">stdin</span><span class="p">,</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="n">user</span><span class="w"></span>
+<span class="w">   </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">user</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s1">&#39;q&#39;</span><span class="p">)</span><span class="w"> </span><span class="k">stop</span>
+
+<span class="k">   write</span><span class="w"> </span><span class="p">(</span><span class="n">stdout</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;(a)&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">advance</span><span class="o">=</span><span class="s1">&#39;no&#39;</span><span class="p">)</span><span class="w"> </span><span class="s2">&quot;password: &quot;</span><span class="w"></span>
+<span class="w">   </span><span class="k">read</span><span class="w">  </span><span class="p">(</span><span class="n">stdin</span><span class="p">,</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="n">password</span><span class="w"></span>
+<span class="w">   </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">password</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s1">&#39;q&#39;</span><span class="p">)</span><span class="w"> </span><span class="k">stop</span>
+<span class="k">   print</span><span class="w"> </span><span class="o">*</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;=== END INPUT ===&quot;</span><span class="w"></span>
+
+<span class="w">   </span><span class="k">write</span><span class="p">(</span><span class="n">str</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;(a, i0, a)&#39;</span><span class="p">)</span><span class="w"> </span><span class="p">&amp;</span><span class="w"></span>
+<span class="w">      </span><span class="s2">&quot;host=&quot;</span><span class="o">//</span><span class="nb">trim</span><span class="p">(</span><span class="nb">adjustl</span><span class="p">(</span><span class="n">host</span><span class="p">))</span><span class="o">//</span><span class="w"> </span><span class="p">&amp;</span><span class="w"></span>
+<span class="w">      </span><span class="s2">&quot; port=&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">port</span><span class="p">,</span><span class="w"> </span><span class="p">&amp;</span><span class="w"></span>
+<span class="w">      </span><span class="s2">&quot; dbname=&quot;</span><span class="o">//</span><span class="nb">trim</span><span class="p">(</span><span class="nb">adjustl</span><span class="p">(</span><span class="n">dbname</span><span class="p">))</span><span class="o">//</span><span class="w"> </span><span class="p">&amp;</span><span class="w"></span>
+<span class="w">      </span><span class="s2">&quot; user=&quot;</span><span class="o">//</span><span class="nb">trim</span><span class="p">(</span><span class="nb">adjustl</span><span class="p">(</span><span class="n">user</span><span class="p">))</span><span class="o">//</span><span class="w"> </span><span class="p">&amp;</span><span class="w"></span>
+<span class="w">      </span><span class="s2">&quot; password=&quot;</span><span class="o">//</span><span class="nb">trim</span><span class="p">(</span><span class="nb">adjustl</span><span class="p">(</span><span class="n">password</span><span class="p">))</span><span class="w"></span>
+</code></pre></div>
+
+<p>This section is responsible for receiving input for connection information.</p>
+<p>Here user input is collected into various fixed-length string variables, processed, and finally copied into the connection information string <code>conninfo</code>.</p>
+<p>Furthermore, the next set of statements executes the connection to the database.</p>
+<div class="codehilite"><pre><span></span><code><span class="w">   </span><span class="n">conn</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">PQconnectdb</span><span class="p">(</span><span class="n">conninfo</span><span class="p">)</span><span class="w"></span>
+<span class="w">   </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">PQstatus</span><span class="p">(</span><span class="n">conn</span><span class="p">)</span><span class="w"> </span><span class="o">/=</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="k">then</span>
+<span class="k">      print</span><span class="w"> </span><span class="o">*</span><span class="p">,</span><span class="w"> </span><span class="n">PQerrorMessage</span><span class="p">(</span><span class="n">conn</span><span class="p">)</span><span class="w"></span>
+<span class="w">      </span><span class="k">error stop</span>
+<span class="k">   end if</span><span class="w"></span>
+</code></pre></div>
+
+<p>The function <code>PQconnectdb</code> is called with the argument <code>conninfo</code>, and the result is assigned to the C pointer variable <code>conn</code>.</p>
+<p>This pointer serves as an identifier for the connection and is used by the user  without needing to concerned about its internal structure.
+Following this, the subsequent <code>if</code> block serves as error handling.</p>
+<p>As we move forward, the part where command statements are executed becomes apparent.</p>
+<div class="codehilite"><pre><span></span><code><span class="w">   </span><span class="n">query</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;select datname from pg_database;&quot;</span><span class="w"></span>
+<span class="w">   </span><span class="n">res</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">PQexec</span><span class="p">(</span><span class="n">conn</span><span class="p">,</span><span class="w"> </span><span class="n">query</span><span class="p">)</span><span class="w"></span>
+<span class="w">   </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">PQstatus</span><span class="p">(</span><span class="n">conn</span><span class="p">)</span><span class="w"> </span><span class="o">/=</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="k">then</span>
+<span class="k">      print</span><span class="w"> </span><span class="o">*</span><span class="p">,</span><span class="w"> </span><span class="n">PQerrorMessage</span><span class="p">(</span><span class="n">conn</span><span class="p">)</span><span class="w"></span>
+<span class="w">   </span><span class="k">end if</span><span class="w"></span>
+</code></pre></div>
+
+<p>Here, we first write the query into the string variable <code>query</code>.</p>
+<p>Then, we call the <code>PQexec</code> function to execute the <code>query</code> on the <code>conn</code> connection and assign the result to the C pointer variable <code>res</code>.</p>
+<p>The meaning of <code>select datname from pg_database;</code> is to retrieve a list of (in the sense of collection of tables) databases on the PostgreSQL server.</p>
+<p>Following this, the subsequent <code>if</code> block serves as error handling. </p>
+<p>And finally, there is the process of extracting the actual data from the <code>res</code> pointer. </p>
+<div class="codehilite"><pre><span></span><code><span class="w">    </span><span class="k">print</span><span class="w"> </span><span class="o">*</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;=== Query Result===&quot;</span><span class="w"></span>
+<span class="w">    </span><span class="k">print</span><span class="w"> </span><span class="s1">&#39;(a, i0, 2x, i0)&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;tuples, fields: &#39;</span><span class="p">,</span><span class="w"> </span><span class="n">PQntuples</span><span class="p">(</span><span class="n">res</span><span class="p">),</span><span class="w"> </span><span class="n">PQnfields</span><span class="p">(</span><span class="n">res</span><span class="p">)</span><span class="w"> </span>
+
+<span class="w">    </span><span class="k">print</span><span class="w"> </span><span class="o">*</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;=== Available database names ===&quot;</span><span class="w"></span>
+<span class="w">    </span><span class="k">do </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">PQntuples</span><span class="p">(</span><span class="n">res</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="w"></span>
+<span class="w">       </span><span class="k">print</span><span class="w"> </span><span class="o">*</span><span class="p">,</span><span class="w"> </span><span class="n">PQgetvalue</span><span class="p">(</span><span class="n">res</span><span class="p">,</span><span class="w"> </span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="k">end do</span><span class="w"></span>
+</code></pre></div>
+
+<p>Here, we use the <code>PQntuples</code> and <code>PQnfields</code> functions to display the number of tuples (rows) and fields (columns) held by the <code>res</code> object.</p>
+<p>Then, we iterate through the tuples, extracting the value of the 0th column of the <code>i</code>th row as a string.</p>
+<p>It's worth noting that we are using 0-based indexing, following the conventions of C. </p>
+<p>The program written in this manner returns results such as the following: </p>
+<div class="codehilite"><pre><span></span><code><span class="o">===</span> Query <span class="nv">Result</span><span class="o">===</span>
+tuples, fields: <span class="m">4</span>  <span class="nv">1</span>
+<span class="o">===</span> Available database <span class="nv">names</span> <span class="o">===</span>
+postgres
+template1
+template0
+</code></pre></div>
+
+<p>Success is indicated if it includes at least three of the following: postgres, template1, template0. </p>
+<h2>Appendix</h2>
+<p>The complete code for the program demonstrated above.</p>
+<div class="codehilite"><pre><span></span><code><span class="k">program </span><span class="n">demo</span><span class="w"></span>
+<span class="w">   </span><span class="k">use</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">libpq</span><span class="w"></span>
+<span class="w">   </span><span class="k">use</span><span class="p">,</span><span class="w"> </span><span class="k">intrinsic</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="nb">iso_c_binding</span>
+<span class="nb">   </span><span class="k">use</span><span class="p">,</span><span class="w"> </span><span class="k">intrinsic</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">iso_fortran_env</span><span class="p">,</span><span class="w"> </span><span class="k">only</span><span class="p">:</span><span class="n">stdout</span><span class="o">=&gt;</span><span class="n">output_unit</span><span class="p">,</span><span class="w"> </span><span class="n">stdin</span><span class="o">=&gt;</span><span class="n">input_unit</span><span class="w"></span>
+
+<span class="w">   </span><span class="k">type</span><span class="p">(</span><span class="kt">c_ptr</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">conn</span><span class="p">,</span><span class="w"> </span><span class="n">res</span><span class="w"></span>
+<span class="w">   </span><span class="kt">character</span><span class="p">(:,</span><span class="w"> </span><span class="nb">kind</span><span class="o">=</span><span class="kt">c_char</span><span class="p">),</span><span class="w"> </span><span class="k">allocatable</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">query</span><span class="p">,</span><span class="w"> </span><span class="n">conninfo</span><span class="w"></span>
+<span class="w">   </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="n">port</span><span class="w"></span>
+<span class="w">   </span><span class="kt">character</span><span class="p">(</span><span class="mi">256</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">str</span><span class="p">,</span><span class="w"> </span><span class="n">host</span><span class="p">,</span><span class="w"> </span><span class="n">dbname</span><span class="p">,</span><span class="w"> </span><span class="n">user</span><span class="p">,</span><span class="w"> </span><span class="n">password</span><span class="w"></span>
+
+<span class="w">   </span><span class="k">print</span><span class="w"> </span><span class="o">*</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;=== INPUT Database Information ===&#39;</span><span class="w"></span>
+<span class="w">   </span><span class="k">print</span><span class="w"> </span><span class="o">*</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;=== type &quot;q&quot; for quit          ===&#39;</span><span class="w"></span>
+
+<span class="w">   </span><span class="k">write</span><span class="w"> </span><span class="p">(</span><span class="n">stdout</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;(a)&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">advance</span><span class="o">=</span><span class="s1">&#39;no&#39;</span><span class="p">)</span><span class="w"> </span><span class="s2">&quot;Hostname: &quot;</span><span class="w"></span>
+<span class="w">   </span><span class="k">read</span><span class="w">  </span><span class="p">(</span><span class="n">stdin</span><span class="p">,</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="n">host</span><span class="w"></span>
+<span class="w">   </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">host</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s1">&#39;q&#39;</span><span class="p">)</span><span class="w"> </span><span class="k">stop</span>
+
+<span class="k">   </span><span class="n">port</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">5432</span><span class="w"></span>
+
+<span class="w">   </span><span class="k">write</span><span class="w"> </span><span class="p">(</span><span class="n">stdout</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;(a)&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">advance</span><span class="o">=</span><span class="s1">&#39;no&#39;</span><span class="p">)</span><span class="w"> </span><span class="s2">&quot;dbname: &quot;</span><span class="w"></span>
+<span class="w">   </span><span class="k">read</span><span class="w">  </span><span class="p">(</span><span class="n">stdin</span><span class="p">,</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="n">dbname</span><span class="w"></span>
+<span class="w">   </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">dbname</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s1">&#39;q&#39;</span><span class="p">)</span><span class="w"> </span><span class="k">stop</span>
+
+<span class="k">   write</span><span class="w"> </span><span class="p">(</span><span class="n">stdout</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;(a)&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">advance</span><span class="o">=</span><span class="s1">&#39;no&#39;</span><span class="p">)</span><span class="w"> </span><span class="s2">&quot;user: &quot;</span><span class="w"></span>
+<span class="w">   </span><span class="k">read</span><span class="w">  </span><span class="p">(</span><span class="n">stdin</span><span class="p">,</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="n">user</span><span class="w"></span>
+<span class="w">   </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">user</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s1">&#39;q&#39;</span><span class="p">)</span><span class="w"> </span><span class="k">stop</span>
+
+<span class="k">   write</span><span class="w"> </span><span class="p">(</span><span class="n">stdout</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;(a)&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">advance</span><span class="o">=</span><span class="s1">&#39;no&#39;</span><span class="p">)</span><span class="w"> </span><span class="s2">&quot;password: &quot;</span><span class="w"></span>
+<span class="w">   </span><span class="k">read</span><span class="w">  </span><span class="p">(</span><span class="n">stdin</span><span class="p">,</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="n">password</span><span class="w"></span>
+<span class="w">   </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">password</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s1">&#39;q&#39;</span><span class="p">)</span><span class="w"> </span><span class="k">stop</span>
+<span class="k">   print</span><span class="w"> </span><span class="o">*</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;=== END INPUT ===&quot;</span><span class="w"></span>
+
+<span class="w">   </span><span class="k">write</span><span class="p">(</span><span class="n">str</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;(a, i0, a)&#39;</span><span class="p">)</span><span class="w"> </span><span class="p">&amp;</span><span class="w"></span>
+<span class="w">      </span><span class="s2">&quot;host=&quot;</span><span class="o">//</span><span class="nb">trim</span><span class="p">(</span><span class="nb">adjustl</span><span class="p">(</span><span class="n">host</span><span class="p">))</span><span class="o">//</span><span class="w"> </span><span class="p">&amp;</span><span class="w"></span>
+<span class="w">      </span><span class="s2">&quot; port=&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">port</span><span class="p">,</span><span class="w"> </span><span class="p">&amp;</span><span class="w"></span>
+<span class="w">      </span><span class="s2">&quot; dbname=&quot;</span><span class="o">//</span><span class="nb">trim</span><span class="p">(</span><span class="nb">adjustl</span><span class="p">(</span><span class="n">dbname</span><span class="p">))</span><span class="o">//</span><span class="w"> </span><span class="p">&amp;</span><span class="w"></span>
+<span class="w">      </span><span class="s2">&quot; user=&quot;</span><span class="o">//</span><span class="nb">trim</span><span class="p">(</span><span class="nb">adjustl</span><span class="p">(</span><span class="n">user</span><span class="p">))</span><span class="o">//</span><span class="w"> </span><span class="p">&amp;</span><span class="w"></span>
+<span class="w">      </span><span class="s2">&quot; password=&quot;</span><span class="o">//</span><span class="nb">trim</span><span class="p">(</span><span class="nb">adjustl</span><span class="p">(</span><span class="n">password</span><span class="p">))</span><span class="w"></span>
+
+<span class="w">   </span><span class="n">conninfo</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">str</span><span class="w"></span>
+
+<span class="w">   </span><span class="n">conn</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">PQconnectdb</span><span class="p">(</span><span class="n">conninfo</span><span class="p">)</span><span class="w"></span>
+<span class="w">   </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">PQstatus</span><span class="p">(</span><span class="n">conn</span><span class="p">)</span><span class="w"> </span><span class="o">/=</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="k">then</span>
+<span class="k">      print</span><span class="w"> </span><span class="o">*</span><span class="p">,</span><span class="w"> </span><span class="n">PQerrorMessage</span><span class="p">(</span><span class="n">conn</span><span class="p">)</span><span class="w"></span>
+<span class="w">      </span><span class="k">error stop</span>
+<span class="k">   end if</span><span class="w"></span>
+
+<span class="w">   </span><span class="c">! The query to retrieve the names of databases within a database cluster is: </span>
+<span class="w">   </span><span class="n">query</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;select datname from pg_database;&quot;</span><span class="w"></span>
+<span class="w">   </span><span class="n">res</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">PQexec</span><span class="p">(</span><span class="n">conn</span><span class="p">,</span><span class="w"> </span><span class="n">query</span><span class="p">)</span><span class="w"></span>
+<span class="w">   </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">PQstatus</span><span class="p">(</span><span class="n">conn</span><span class="p">)</span><span class="w"> </span><span class="o">/=</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="k">then</span>
+<span class="k">      print</span><span class="w"> </span><span class="o">*</span><span class="p">,</span><span class="w"> </span><span class="n">PQerrorMessage</span><span class="p">(</span><span class="n">conn</span><span class="p">)</span><span class="w"></span>
+<span class="w">   </span><span class="k">end if</span>
+
+<span class="k">   print</span><span class="w"> </span><span class="o">*</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;=== Query Result===&quot;</span><span class="w"></span>
+<span class="w">   </span><span class="k">print</span><span class="w"> </span><span class="s1">&#39;(a, i0, 2x, i0)&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;tuples, fields: &#39;</span><span class="p">,</span><span class="w"> </span><span class="n">PQntuples</span><span class="p">(</span><span class="n">res</span><span class="p">),</span><span class="w"> </span><span class="n">PQnfields</span><span class="p">(</span><span class="n">res</span><span class="p">)</span><span class="w"> </span>
+
+<span class="w">   </span><span class="k">print</span><span class="w"> </span><span class="o">*</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;=== Available database names ===&quot;</span><span class="w"></span>
+<span class="w">   </span><span class="k">do </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">PQntuples</span><span class="p">(</span><span class="n">res</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="w"></span>
+<span class="w">      </span><span class="k">print</span><span class="w"> </span><span class="o">*</span><span class="p">,</span><span class="w"> </span><span class="n">PQgetvalue</span><span class="p">(</span><span class="n">res</span><span class="p">,</span><span class="w"> </span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"></span>
+<span class="w">   </span><span class="k">end do</span>
+
+<span class="k">   call </span><span class="n">PQclear</span><span class="p">(</span><span class="n">res</span><span class="p">)</span><span class="w"></span>
+<span class="w">   </span><span class="k">call </span><span class="n">PQfinish</span><span class="p">(</span><span class="n">conn</span><span class="p">)</span><span class="w"></span>
+
+
+<span class="k">end program </span><span class="n">demo</span><span class="w"></span>
+</code></pre></div>
+    </div>
+    <div class="col-md-3 col-md-pull-9">
+      <hr class="visible-xs visible-sm">
+        <div class="well toc">
+          <ul class="nav nav-stacked nav-pills">
+            <li role="presentation" class="title"><a href='../page/index.html'>Readme</a></li>
+          </ul>
+          <hr>
+          <ul class="nav nav-stacked nav-pills">
+            <li role="presentation" class="disabled">
+            <a href='../page/./Quickstart.html'>Quickstart</a>
+            </li>
+            <li role="presentation">
+            <a href='../page/./Convention.html'>Coding Conventions</a>
+            </li>
+          </ul>
+        </div>
+    </div>
+  </div>
+      <hr>
+    </div> <!-- /container -->
+    <footer>
+      <div class="container">
+        <div class="row">
+          <div class="col-xs-6 col-md-6"><p>Libpq-Fortran was developed by Amasaki Shinobu<br>&copy; 2023 <a rel="license" href="https://opensource.org/licenses/MIT">MIT</a>
+</p>
+          </div>
+          <div class="col-xs-6 col-md-6">
+            <p class="text-right">
+              Documentation generated by
+              <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
+            </p>
+          </div>
+        </div>
+        <br>
+      </div> <!-- /container -->
+    </footer>
+
+    <!-- Bootstrap core JavaScript
+         ================================================== -->
+         <!-- Placed at the end of the document so the pages load faster -->
+    <!--
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+        -->
+        <script src="../js/bootstrap.min.js"></script>
+        <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+        <script src="../js/ie10-viewport-bug-workaround.js"></script>
+
+        <!-- MathJax JavaScript
+             ================================================== -->
+             <!-- Placed at the end of the document so the pages load faster -->
+        <script type="text/x-mathjax-config">
+          MathJax.Hub.Config({
+          TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'AMS' } },
+          jax: ['input/TeX','input/MathML','output/HTML-CSS'],
+          extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']
+          });
+        </script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+          <script src="../tipuesearch/tipuesearch_content.js"></script>
+          <script src="../tipuesearch/tipuesearch_set.js"></script>
+          <script src="../tipuesearch/tipuesearch.js"></script>
+
+  </body>
+</html>

@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-      <meta name="description" content="A Modern Fortran Interface for libpq">
+      <meta name="description" content="Access PostgreSQL via Modern Fortran.">
     <meta name="author" content="Amasaki Shinobu" >
     <link rel="icon" href="./favicon.png">
 
@@ -44,6 +44,7 @@
         </div>
         <div id="navbar" class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
+              <li><a href='./page/index.html'>Readme</a></li>
             <li class="dropdown hidden-xs visible-sm visible-md hidden-lg">
               <a href="#" class="dropdown-toggle"
                  data-toggle="dropdown" role="button"
@@ -86,62 +87,64 @@
     <div class="container">
       <!-- Main component for a primary marketing message or call to action -->
       <div class="jumbotron">
-        <p>A Modern Fortran Interface for libpq</p>
+        <p>Access PostgreSQL via Modern Fortran.</p>
         </p>
       </div>
 
       <div class="row" id='text'>
         <div class="col-md-8">
           <h1>Libpq-Fortran</h1>
-          <p>Access PostgreSQL via Fortran.</p>
-<p>Libpq-Fortran is a Modern Fortran interface to the PostgreSQL <code>libpq</code> <a href="https://www.postgresql.org/docs/current/libpq.html">C Library</a></p>
-<p></p><div class="alert alert-info" role="alert"><h4>Note</h4><p>Work in progress
-</p></div>
-<p>
-<h2>Feature</h2>
+          <p>Libpq-Fortran is a Modern Fortran interface to the PostgreSQL <code>libpq</code> <a href="https://www.postgresql.org/docs/current/libpq.html">C library</a>.</p>
+<p>This does not contain the <code>libpq</code> library; only the wrapper is included.</p>
+<p>The source of this package is available on <a href="https://github.com/ShinobuAmasaki/libpq-fortran">GitHub - shinobuamasaki/libpq-fortran</a>.</p>
+<h2>Features</h2>
 <h3>Current</h3>
-<p>Supported compilers are following:</p>
+<p>Supported compilers are:</p>
 <ul>
-<li>GNU Compiler Collection <code>gfortran</code>,</li>
-<li>Intel Fortran Compiler <code>ifx</code>, Fortran Compiler Classic <code>ifort</code>.</li>
+<li>GNU Compiler Collection: <code>gfortran</code>,</li>
+<li>Intel oneAPI Fortran Compiler <code>ifx</code>, Fortran Compiler Classic <code>ifort</code>.</li>
 </ul>
-<p>Supported PostgreSQL version is</p>
+<p>Supported PostgreSQL version:</p>
 <ul>
 <li>PostgreSQL v15.4 (libpq v5.15)</li>
 </ul>
-<h3>Build</h3>
-<p>This package needs,</p>
+<p>Connections:</p>
 <ul>
-<li><a href="https://fpm.fortran-lang.org/index.html">Fortran Package Manager</a> <code>fpm</code>, and</li>
-<li><a href="https://www.postgresql.org/docs/current/libpq.html">the PostgreSQL C Library</a> <code>libpq</code> (for Ubuntu, exec <code>sudo apt install libpq-dev</code>).</li>
+<li>Connection via DSN (data source name)</li>
+<li>Connection via PostgreSQL connection string</li>
+<li>UTF-8 client encoding</li>
 </ul>
-<p>Add the path to the directory containing <code>libpq-fe.h</code> to the environment variable <code>FPM_CFLAGS</code>.</p>
-<p>Next, add below to your <code>fpm.toml</code>:</p>
+<h3>Build</h3>
+<p>This package is managed by <a href="https://fpm.fortran-lang.org/index.html">Fortran Package Manager</a> (<code>fpm</code>).</p>
+<p>The <code>libpq</code> is required and you may need to add the path to the directory containing <code>libpq-fe.h</code> to the environment variable <code>FPM_CFLAGS</code>.</p>
+<p>Add to fpm.toml in your project:</p>
 <div class="codehilite"><pre><span></span><code><span class="k">[build]</span><span class="w"></span>
 <span class="n">link</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s">&quot;pq&quot;</span><span class="p">]</span><span class="w"></span>
 <span class="k">[dependencies]</span><span class="w"></span>
-<span class="n">libpq-fortran</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="n">git</span><span class="w"> </span><span class="o">=</span><span class="s">&quot;https://github.com/shinobuamasaki/libpq-fortran&quot;</span><span class="p">}</span><span class="w"></span>
+<span class="n">libpq-fortran</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="n">git</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;https://github.com/shinobuamasaki/libpq-fortran&quot;</span><span class="p">}</span><span class="w"></span>
 </code></pre></div>
 
-<p>And then, do <code>fpm build</code> to build your project.</p>
-<h4>Tests</h4>
-<p>This package is tested on:</p>
+<h3>Test</h3>
+<p>This package is tested on the following environments:</p>
 <ul>
-<li>FreeBSD Release 13.2 (<code>gfortran</code> v13.1.0)</li>
+<li>FreeBSD (Release 13.2, <code>gfortran</code> v13.1.0)</li>
 <li>Gentoo Linux (<code>gfortran</code> v12.3.1, <code>ifort</code> 2021.9.0, <code>ifx</code> 2023.1.0)</li>
 <li>Ubuntu 22.04 LTS (<code>gfortran</code> v11.4.0)</li>
-<li>Microsoft Windows 10 (<code>MinGW-W64 gfortran</code>, v13.1.0)</li>
+<li>Microsoft Windows 10 (<code>gfortran</code> MinGW-W64 v13.1.0)</li>
 </ul>
-<h4>Dependencies</h4>
-<p>This package depends on following applicaiton and libraries:</p>
+<h3>Goals</h3>
+<p><em>Note that below does not represent the current state of this package.</em></p>
+<p>Libpq-Fortran aims to wrap libpq as documented in the PostgreSQL documentation, including all non-deprecated functionallity with its <strong>explicit interfaces</strong>.</p>
+<h3>Non-Goals</h3>
+<p>This package will not:</p>
 <ul>
-<li>Fortran Package Manager (<code>fpm</code>),</li>
-<li>The PostgreSQL <code>libpq</code> library</li>
-<li><a href="https://github.com/ShinobuAmasaki/uint-fortran"><code>uint-fortran</code></a> (loaded by <code>fpm</code> automatically).</li>
+<li>parse SQL,</li>
+<li>emit SQL,</li>
+<li>provide an interface handling transactions or cursors,</li>
+<li>provide abstractions over common SQL patterns.</li>
 </ul>
-<p>The top two need to be installed by the user themselves.</p>
-<h3>Licenses</h3>
-<h4><code>libpq</code> Source and PostgreSQL Documentation</h4>
+<h2>Licenses</h2>
+<h3><code>libpq</code> Source and PostgreSQL Documentation</h3>
 <blockquote>
 <p>Portions Copyright © 1996-2023, The PostgreSQL Global Development Group</p>
 <p>Portions Copyright © 1994, The Regents of the University of California</p>
@@ -160,8 +163,10 @@ AND FITNESS FOR A PARTICULAR PURPOSE.  THE SOFTWARE PROVIDED HEREUNDER IS
 ON AN "AS IS" BASIS, AND THE UNIVERSITY OF CALIFORNIA HAS NO OBLIGATIONS TO
 PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, OR MODIFICATIONS.</p>
 </blockquote>
-<h4>Everything Else</h4>
+<h3>Everything Else</h3>
 <p>The license for the remainder of this package appears in <a href="https://github.com/ShinobuAmasaki/libpq-fortran/blob/main/LICENSE">LICENSE</a>.</p>
+<h2>Acknowledgement</h2>
+<p>The creation of this package was inspired by a discussion in the <a href="https://fortran-jp.org/">Fortran-jp</a> community.</p>
         </div>
         <div class="col-md-4">
 	  <div class="well">

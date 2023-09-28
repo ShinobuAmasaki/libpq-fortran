@@ -72,6 +72,10 @@ This package depends on following applicaiton and libraries:
 
 The top two need to be installed by the user themselves.
 
+## Documentation
+
+The documentation is　available at https://shinobuamasaki.github.io./libpq-fortran
+
 ## Licenses
 
 ### `libpq` Source and PostgreSQL Documentation
@@ -103,7 +107,7 @@ PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 The license for the remainder of this package appears in [LICENSE](https://github.com/ShinobuAmasaki/libpq-fortran/blob/main/LICENSE).
 
 
-## Acknowledgements
+## Acknowledgement
 The creation of this package was inspired by a discussion in the [Fortran-jp](https://fortran-jp.org/) community.
 
 ## Appendix: Implemented Interface Functions List

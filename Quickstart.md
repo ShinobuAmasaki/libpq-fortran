@@ -9,13 +9,13 @@
 - [`program demo`](#program-demo)
    - [Declaration statements](#declaration-statements)
    - [Executable statements](#executable-statements)
-- [Conclusion](#conclusion)
-- [Acknowledgement](#acknowledgement)
 - [Appendix](#appendix)
 
 ## Introduction
 
-Libpq-Fortran utilizes the interoperability features of Modern Fortran to provide access to the PostgreSQL official client library, libpq. At present, the documentation of this is in progress, so for detailed usage of the functions, please refer to [the official documentation of libpq](https://www.postgresql.org/docs/current/libpq.html).  
+Libpq-Fortran utilizes the interoperability features of Modern Fortran to provide access to the PostgreSQL official client library, libpq.
+
+At present, the documentation of this is in progress, so for detailed usage of the functions, please refer to [the official documentation of libpq](https://www.PostgreSQL.org/docs/current/libpq.html).  
 
 In this article, we will explore the initial usage of this library.
 
@@ -33,9 +33,13 @@ Next, you will need a Fortran compiler. Currently, the following compilers are s
 - GNU Compiler Collection: `gfortran`
 - Intel oneAPI Fortran Compiler `ifx`, Fortran Compiler Classic `ifort`
 
-Furthermore, Libpq-Fortran is managed through the Fortran Package Manager (`fpm`), so you will need this as well. Additionally, it has a dependency on another library developed by the author, `uint-fortran`, but `fpm` automatically handles this dependency.
+Furthermore, Libpq-Fortran is managed through the Fortran Package Manager (`fpm`), so you will need this as well.
 
-Finally, you will need a so-called sandbox database server on your localhost or local network. It is advisable to use a setup where data loss is acceptable for testing purposes. Consider this a warning.
+Additionally, it has a dependency on another library developed by the author, [`uint-fortran`](https://github.com/ShinobuAmasaki/uint-fortran), but `fpm` automatically handles this dependency.
+
+Finally, you will need a so-called sandbox database server on your localhost or local network.
+
+*It is advisable to use a setup where data loss is acceptable for testing purposes. Consider this a warning.*
 
 ## Building
 
@@ -47,10 +51,12 @@ $ cd libpq-fortran
 $ fpm build
 ```
 
-When executing `fpm build`, you may need to specify the directory containing the `"libpq-fe.h"` C header  with `-I` flag in the environment variable `FPM_CFLAGS` or using `--c-flag`. For example, on Ubuntu system, the location may be `/usr/include/postgresql`, and then the command will be the following:
+When executing `fpm build`, you may need to specify the directory containing the `"libpq-fe.h"` C header  with `-I` flag in the environment variable `FPM_CFLAGS` or using `--c-flag`.
+
+For example, on Ubuntu system, the location may be `/usr/include/PostgreSQL`, and then the command will be the following:
 
 ```shell
-$ fpm build --c-flag "-I/usr/include/postgresql"
+$ fpm build --c-flag "-I/usr/include/PostgreSQL"
 ```
 
 ## Try it
@@ -91,13 +97,16 @@ template0
 
 Please modify the hostname, dbname, username, and password to suit your own environment. 
 
-Thus, you were able to access a PostgreSQL database and output results using code written in Fortran. In the next section, we will delve into the details of the main program used. 
+Thus, you were able to access a PostgreSQL database and output results using code written in Fortran.
+In the next section, we will delve into the details of the main program used. 
 
 ## `program demo`
 
 ### Declaration statements
 
-In this section, let's take closer look at the main program used in the above demonstration. The entire program can be found in the [Appendix](#appendix) of this article or on [GitHub](https://github.com/ShinobuAmasaki/libpq-fortran/blob/main/example/demo.f90).
+In this section, let's take closer look at the main program used in the above demonstration.
+
+The entire program can be found in the [Appendix](#appendix) of this article or on [GitHub](https://github.com/ShinobuAmasaki/libpq-fortran/blob/main/example/demo.f90).
 
 The declaration statements are as follows:
 
@@ -108,14 +117,18 @@ program demo
    use, intrinsic :: iso_fortran_env, only:stdout=>output_unit, stdin=>input_unit
 
    type(c_ptr) :: conn, res
-   character(:, kind=c_char), allocatable :: sql, conninfo
+   character(:, kind=c_char), allocatable :: query, conninfo
    integer :: i, port
    character(256) :: str, host, dbname, user, password
 ```
 
 Here, we start with the declaration `use :: libpq`, which plays a central role in this software.
 
-Additionally, please note the declaration `use, intrinsic :: iso_c_binding`. This is because the software interfaces directly with C libraries, requiring a C-style programming approach, involving passing and relaying pointers to objects as return values from functions. `type(c_ptr) ::conn, res` are variables used to store C pointers received when programming in this style.
+Additionally, please note the declaration `use, intrinsic :: iso_c_binding`.
+This is because the software interfaces directly with C libraries, requiring a C-style programming approach,
+involving passing and relaying pointers to objects as return values from functions.
+
+`type(c_ptr) ::conn, res` are variables used to store C pointers received when programming in this style.
 
 ### Executable statements
 
@@ -151,7 +164,9 @@ Next, let's examine the execution statements.
       " password="//trim(adjustl(password))
 ```
 
-This section is responsible for receiving input for connection information. Here user input is collected into various fixed-length string variables, processed, and finally copied into the connection information string `conninfo`.
+This section is responsible for receiving input for connection information.
+
+Here user input is collected into various fixed-length string variables, processed, and finally copied into the connection information string `conninfo`.
 
 Furthermore, the next set of statements executes the connection to the database.
 
@@ -163,9 +178,13 @@ Furthermore, the next set of statements executes the connection to the database.
    end if
 ```
 
-The function `PQconnectdb` is called with the argument `conninfo`, and the result is assigned to the C pointer variable `conn`. This pointer serves as an identifier for the connection and is used by the user  without needing to concerned about its internal structure. Following this, the subsequent `if` block serves as error handling.
+The function `PQconnectdb` is called with the argument `conninfo`, and the result is assigned to the C pointer variable `conn`.
 
-As we move forward, the part where SQL statements are executed becomes apparent.
+This pointer serves as an identifier for the connection and is used by the user without needing to concerned about its internal structure.
+
+Following this, the subsequent `if` block serves as error handling.
+
+As we move forward, the part where command statements are executed becomes apparent.
 
 ```fortran
    query = "select datname from pg_database;"
@@ -175,7 +194,13 @@ As we move forward, the part where SQL statements are executed becomes apparent.
    end if
 ```
 
-Here, we first write the query into the string variable `query`. Then, we call the `PQexec` function to execute the `query` on the `conn` connection and assign the result to the C pointer variable `res`. The meaning of `select datname from pg_database;` is to retrieve a list of (in the sense of collection of tables) databases on the PostgreSQL server. Following this, the subsequent `if` block serves as error handling. 
+Here, we first write the query into the string variable `query`.
+
+Then, we call the `PQexec` function to execute the `query` on the `conn` connection and assign the result to the C pointer variable `res`.
+
+The meaning of `select datname from pg_database;` is to retrieve a list of (in the sense of collection of tables) databases on the PostgreSQL server.
+
+Following this, the subsequent `if` block serves as error handling. 
 
 And finally, there is the process of extracting the actual data from the `res` pointer. 
 
@@ -188,7 +213,11 @@ And finally, there is the process of extracting the actual data from the `res` p
        print *, PQgetvalue(res, i, 0)
     end do
 ```
-Here, we use the `PQntuples` and `PQnfields` functions to display the number of tuples (rows) and fields (columns) held by the `res` object. Then, we iterate through the tuples, extracting the value of the 0th column of the `i`th row as a string. It's worth noting that we are using 0-based indexing, following the conventions of C. 
+Here, we use the `PQntuples` and `PQnfields` functions to display the number of tuples (rows) and fields (columns) held by the `res` object.
+
+Then, we iterate through the tuples, extracting the value of the 0th column of the `i`th row as a string.
+
+It's worth noting that we are using 0-based indexing, following the conventions of C. 
 
 The program written in this manner returns results such as the following: 
 
@@ -201,7 +230,7 @@ template1
 template0
 ```
 
- Success is indicated if it includes at least three of the following: postgres, template1, template0. 
+Success is indicated if it includes at least three of the following: postgres, template1, template0. 
 
 ## Appendix
 
@@ -214,7 +243,7 @@ program demo
    use, intrinsic :: iso_fortran_env, only:stdout=>output_unit, stdin=>input_unit
 
    type(c_ptr) :: conn, res
-   character(:, kind=c_char), allocatable :: sql, conninfo
+   character(:, kind=c_char), allocatable :: query, conninfo
    integer :: i, port
    character(256) :: str, host, dbname, user, password
 
@@ -256,8 +285,8 @@ program demo
    end if
 
    ! The query to retrieve the names of databases within a database cluster is: 
-   sql = "select datname from pg_database;"
-   res = PQexec(conn, sql)
+   query = "select datname from pg_database;"
+   res = PQexec(conn, query)
    if (PQstatus(conn) /= 0 ) then
       print *, PQerrorMessage(conn)
    end if

@@ -1,7 +1,8 @@
 src_dir: ./src
 output_dir: ./docs
+page_dir: ./doc-src/pages
 project: Libpq-Fortran
-summary: A Modern Fortran Interface for libpq
+summary: Access PostgreSQL via Modern Fortran.
 author: Amasaki Shinobu
 author_pic: https://shinobuamasaki.github.io/img/shinobu.PNG
 github: https://github.com/ShinobuAmasaki
@@ -12,4 +13,4 @@ css: doc-src/ford/common.css
 graph: false
 license: MIT
 
-{!doc-src/ford/api-doc-index.md!}
+{!doc-src/readme.md!}

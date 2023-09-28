@@ -1,4 +1,4 @@
-program main
+program demo
    use :: libpq
    use, intrinsic :: iso_c_binding
    use, intrinsic :: iso_fortran_env, only:stdout=>output_unit, stdin=>input_unit
@@ -6,7 +6,7 @@ program main
    integer :: i
 
    type(c_ptr) :: conn, res
-   character(:, kind=c_char), allocatable :: sql, conninfo
+   character(:, kind=c_char), allocatable :: command, conninfo
    
    character(256) :: str, host, dbname, user, password
    integer :: port
@@ -48,10 +48,11 @@ program main
       error stop
    end if
 
-   ! データベースクラスタ内のデータベース名を取得するクエリ
-   sql = "select datname from pg_database;"
+   ! データベースクラスタ内のデータベース名を取得する
+   ! The query to retrieve the names of databases within a database cluster
+   command = "select datname from pg_database;"
 
-   res = PQexec(conn, sql)
+   res = PQexec(conn, command)
    if (PQstatus(conn) /= 0 ) then
       print *, PQerrorMessage(conn)
    end if
@@ -68,4 +69,4 @@ program main
    call PQfinish(conn)
 
 
-end program main
+end program demo
