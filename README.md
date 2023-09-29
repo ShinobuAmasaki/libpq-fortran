@@ -74,7 +74,7 @@ The top two need to be installed by the user themselves.
 
 ## Documentation
 
-The documentation is　available at https://shinobuamasaki.github.io./libpq-fortran
+The documentation is available at https://shinobuamasaki.github.io./libpq-fortran
 
 ## Licenses
 

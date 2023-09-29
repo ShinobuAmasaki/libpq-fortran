@@ -189,7 +189,7 @@ As we move forward, the part where command statements are executed becomes appar
 ```fortran
    query = "select datname from pg_database;"
    res = PQexec(conn, query)
-   if (PQstatus(conn) /= 0 ) then
+   if (PQresultStatus(res) /= PGRES_TUPLES_OK ) then
       print *, PQerrorMessage(conn)
    end if
 ```
@@ -279,7 +279,7 @@ program demo
    conninfo = str
 
    conn = PQconnectdb(conninfo)
-   if (PQstatus(conn) /= 0) then
+   if (PQstatus(conn) /= CONNECTION_OK ) then
       print *, PQerrorMessage(conn)
       error stop
    end if
@@ -287,7 +287,7 @@ program demo
    ! The query to retrieve the names of databases within a database cluster is: 
    query = "select datname from pg_database;"
    res = PQexec(conn, query)
-   if (PQstatus(conn) /= 0 ) then
+   if (PQresultstatus(res) /= PGRES_TUPLES_OK ) then
       print *, PQerrorMessage(conn)
    end if
 

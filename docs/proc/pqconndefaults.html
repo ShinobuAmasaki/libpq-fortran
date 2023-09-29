@@ -99,7 +99,7 @@
           <li id="statements"><i class="fa fa-list-ol"></i>
             <a data-toggle="tooltip"
                data-placement="bottom" data-html="true"
-               title=" 4.8% of total for procedures.">104 statements</a>
+               title=" 2.0% of total for procedures.">43 statements</a>
           </li>
 
             <li id="source-file">
@@ -162,16 +162,35 @@
       <ul class="list-group">
           <li class="list-group-item">
             <ul class="list-inline">
-                <li><a href='<a href="http://fortranwiki.org/fortran/show/iso_c_binding">iso_c_binding</a>'>iso_c_binding</a></li>
+                <li><a href='../module/character_operations_m.html'>character_operations_m</a></li>
                 <li><a href='../module/pqconninfooption_t.html'>PQconninfoOption_t</a></li>
+                <li><a href='<a href="http://fortranwiki.org/fortran/show/iso_c_binding">iso_c_binding</a>'>iso_c_binding</a></li>
             </ul>
           </li>
       </ul>
     </div>
 
 
-    <p>Get the default connection options.
-cf. <a href="https://www.postgresql.org/docs/current/libpq-connect.html#LIBPQ-PQCONNDEFAULTS">PostgreSQL Documentation</a></p>
+    <p>Get the default connection options.</p>
+<h3>Example</h3>
+<div class="codehilite"><pre><span></span><code><span class="w">   </span><span class="k">type</span><span class="p">(</span><span class="n">PQconninfoOption</span><span class="p">),</span><span class="w"> </span><span class="k">allocatable</span><span class="p">,</span><span class="w"> </span><span class="k">target</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="k">options</span><span class="p">(:)</span><span class="w"></span>
+<span class="w">   </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">i</span><span class="w"></span>
+
+<span class="w">   </span><span class="k">call </span><span class="n">PQconndefaults</span><span class="p">(</span><span class="k">options</span><span class="p">)</span><span class="w"></span>
+
+<span class="w">   </span><span class="c">! Print the entire default options separated by colons</span>
+<span class="w">   </span><span class="k">do </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">size</span><span class="p">(</span><span class="k">options</span><span class="p">)</span><span class="w"></span>
+<span class="w">      </span><span class="k">print</span><span class="w"> </span><span class="s1">&#39;(12a, i0)&#39;</span><span class="p">,</span><span class="w"> </span><span class="nb">trim</span><span class="p">(</span><span class="k">options</span><span class="p">(</span><span class="n">i</span><span class="p">)%</span><span class="n">keyword</span><span class="p">),</span><span class="s2">&quot; : &quot;</span><span class="p">,</span><span class="w"> </span><span class="p">&amp;</span><span class="w"></span>
+<span class="w">         </span><span class="nb">trim</span><span class="p">(</span><span class="k">options</span><span class="p">(</span><span class="n">i</span><span class="p">)%</span><span class="n">envvar</span><span class="p">),</span><span class="w"> </span><span class="s2">&quot; : &quot;</span><span class="p">,</span><span class="w"> </span><span class="p">&amp;</span><span class="w"></span>
+<span class="w">         </span><span class="nb">trim</span><span class="p">(</span><span class="k">options</span><span class="p">(</span><span class="n">i</span><span class="p">)%</span><span class="n">compiled</span><span class="p">),</span><span class="w"> </span><span class="s2">&quot; : &quot;</span><span class="p">,</span><span class="w"> </span><span class="p">&amp;</span><span class="w"></span>
+<span class="w">         </span><span class="nb">trim</span><span class="p">(</span><span class="k">options</span><span class="p">(</span><span class="n">i</span><span class="p">)%</span><span class="n">val</span><span class="p">),</span><span class="w"> </span><span class="s2">&quot; : &quot;</span><span class="p">,</span><span class="w"> </span><span class="p">&amp;</span><span class="w"></span>
+<span class="w">         </span><span class="nb">trim</span><span class="p">(</span><span class="k">options</span><span class="p">(</span><span class="n">i</span><span class="p">)%</span><span class="n">label</span><span class="p">),</span><span class="w"> </span><span class="s2">&quot; : &quot;</span><span class="p">,</span><span class="w"> </span><span class="p">&amp;</span><span class="w"></span>
+<span class="w">         </span><span class="nb">trim</span><span class="p">(</span><span class="k">options</span><span class="p">(</span><span class="n">i</span><span class="p">)%</span><span class="n">dispchar</span><span class="p">),</span><span class="w"> </span><span class="s2">&quot; : &quot;</span><span class="p">,</span><span class="w"> </span><span class="p">&amp;</span><span class="w"></span>
+<span class="w">         </span><span class="k">options</span><span class="p">(</span><span class="n">i</span><span class="p">)%</span><span class="n">dispsize</span><span class="w"></span>
+<span class="w">   </span><span class="k">end do</span><span class="w"></span>
+</code></pre></div>
+
+<p>cf. <a href="https://www.postgresql.org/docs/current/libpq-connect.html#LIBPQ-PQCONNDEFAULTS">PostgreSQL Documentation</a></p>
 
 
     <h3>Arguments</h3>

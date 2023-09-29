@@ -248,7 +248,7 @@ Following this, the subsequent <code>if</code> block serves as error handling.</
 <p>As we move forward, the part where command statements are executed becomes apparent.</p>
 <div class="codehilite"><pre><span></span><code><span class="w">   </span><span class="n">query</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;select datname from pg_database;&quot;</span><span class="w"></span>
 <span class="w">   </span><span class="n">res</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">PQexec</span><span class="p">(</span><span class="n">conn</span><span class="p">,</span><span class="w"> </span><span class="n">query</span><span class="p">)</span><span class="w"></span>
-<span class="w">   </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">PQstatus</span><span class="p">(</span><span class="n">conn</span><span class="p">)</span><span class="w"> </span><span class="o">/=</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="k">then</span>
+<span class="w">   </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">PQresultStatus</span><span class="p">(</span><span class="n">res</span><span class="p">)</span><span class="w"> </span><span class="o">/=</span><span class="w"> </span><span class="n">PGRES_TUPLES_OK</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="k">then</span>
 <span class="k">      print</span><span class="w"> </span><span class="o">*</span><span class="p">,</span><span class="w"> </span><span class="n">PQerrorMessage</span><span class="p">(</span><span class="n">conn</span><span class="p">)</span><span class="w"></span>
 <span class="w">   </span><span class="k">end if</span><span class="w"></span>
 </code></pre></div>
@@ -272,7 +272,7 @@ Following this, the subsequent <code>if</code> block serves as error handling.</
 <p>It's worth noting that we are using 0-based indexing, following the conventions of C. </p>
 <p>The program written in this manner returns results such as the following: </p>
 <div class="codehilite"><pre><span></span><code><span class="o">===</span> Query <span class="nv">Result</span><span class="o">===</span>
-tuples, fields: <span class="m">3</span>  <span class="nv">1</span>
+tuples, fields: <span class="m">4</span>  <span class="nv">1</span>
 <span class="o">===</span> Available database <span class="nv">names</span> <span class="o">===</span>
 postgres
 template1
@@ -332,7 +332,7 @@ template0
 <span class="w">   </span><span class="c">! The query to retrieve the names of databases within a database cluster is: </span>
 <span class="w">   </span><span class="n">query</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;select datname from pg_database;&quot;</span><span class="w"></span>
 <span class="w">   </span><span class="n">res</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">PQexec</span><span class="p">(</span><span class="n">conn</span><span class="p">,</span><span class="w"> </span><span class="n">query</span><span class="p">)</span><span class="w"></span>
-<span class="w">   </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">PQstatus</span><span class="p">(</span><span class="n">conn</span><span class="p">)</span><span class="w"> </span><span class="o">/=</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="k">then</span>
+<span class="w">   </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">PQresultStatus</span><span class="p">(</span><span class="n">res</span><span class="p">)</span><span class="w"> </span><span class="o">/=</span><span class="w"> </span><span class="n">PGRES_TUPLES_OK</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="k">then</span>
 <span class="k">      print</span><span class="w"> </span><span class="o">*</span><span class="p">,</span><span class="w"> </span><span class="n">PQerrorMessage</span><span class="p">(</span><span class="n">conn</span><span class="p">)</span><span class="w"></span>
 <span class="w">   </span><span class="k">end if</span>
 
@@ -361,6 +361,15 @@ template0
           <ul class="nav nav-stacked nav-pills">
             <li role="presentation" class="disabled">
             <a href='../page/./Quickstart.html'>Quickstart</a>
+            </li>
+            <li role="presentation">
+            <a href='../page/Examples/index.html'>Examples</a>
+            <ul class="nav nav-stacked nav-pills">
+                          <li role="presentation">
+            <a href='../page/Examples/example-1.html'>Example Program 1</a>
+            </li>
+
+            </ul>
             </li>
             <li role="presentation">
             <a href='../page/./Convention.html'>Coding Conventions</a>

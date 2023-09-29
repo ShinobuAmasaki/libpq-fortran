@@ -99,7 +99,7 @@
           <li id="statements"><i class="fa fa-list-ol"></i>
             <a data-toggle="tooltip"
                data-placement="bottom" data-html="true"
-               title="35.8% of total for modules and submodules.">1078 statements</a>
+               title="34.5% of total for modules and submodules.">1017 statements</a>
           </li>
 
             <li id="source-file">
@@ -324,8 +324,7 @@
 </h3></div>
     <div class="panel-body">
           
-  <p>Connect to the database server with the provided connection string <code>conninfo</code>.
-cf. <a href="https://www.postgresql.org/docs/current/libpq-connect.html#LIBPQ-PQCONNECTDB">PostgreSQL Documentation</a></p>
+  <p>Connect to the database server with the provided connection string <code>conninfo</code>.</p><a href="../proc/pqconnectdb.html" class="pull-right"><emph>Read more&hellip;</emph></a>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -350,7 +349,7 @@ cf. <a href="https://www.postgresql.org/docs/current/libpq-connect.html#LIBPQ-PQ
             <td>::</td>
             <td><strong>conninfo</strong></td>
             <td>
-
+<p>PostgreSQL connection string</p>
             </td>
         </tr>
     </tbody>
@@ -370,8 +369,7 @@ cf. <a href="https://www.postgresql.org/docs/current/libpq-connect.html#LIBPQ-PQ
 </h3></div>
     <div class="panel-body">
           
-  <p>Connect to the database server with connection infomation provided as pairs of <code>keywords</code> and <code>values</code> arrays.
-cf. <a href="https://www.postgresql.org/docs/current/libpq-connect.html#LIBPQ-PQCONNECTDBPARAMS">PostgreSQL Documentation</a></p>
+  <p>Connect to the database server with connection infomation provided as pairs of <code>keywords</code> and <code>values</code> arrays.</p><a href="../proc/pqconnectdbparams.html" class="pull-right"><emph>Read more&hellip;</emph></a>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -396,7 +394,7 @@ cf. <a href="https://www.postgresql.org/docs/current/libpq-connect.html#LIBPQ-PQ
             <td>::</td>
             <td><strong>keywords</strong>(:)</td>
             <td>
-
+<p>Keywords, such as <code>host</code>, <code>hostaddr</code>, <code>dbname</code>, <code>user</code>, <code>password</code>, etc.</p>
             </td>
         </tr>
         <tr>
@@ -411,7 +409,7 @@ cf. <a href="https://www.postgresql.org/docs/current/libpq-connect.html#LIBPQ-PQ
             <td>::</td>
             <td><strong>values</strong>(:)</td>
             <td>
-
+<p>The array of each value corresponding to that keyword.</p>
             </td>
         </tr>
         <tr>
@@ -446,7 +444,7 @@ cf. <a href="https://www.postgresql.org/docs/current/libpq-connect.html#LIBPQ-PQ
 </h3></div>
     <div class="panel-body">
           
-  <p>cf. <a href="https://www.postgresql.org/docs/current/libpq-connect.html#LIBPQ-PQSETDBLOGIN">PostgreSQL Documentation</a></p>
+  <p>Connect to the database server with connection infomation provided as each argument</p><a href="../proc/pqsetdblogin.html" class="pull-right"><emph>Read more&hellip;</emph></a>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -471,7 +469,7 @@ cf. <a href="https://www.postgresql.org/docs/current/libpq-connect.html#LIBPQ-PQ
             <td>::</td>
             <td><strong>host</strong></td>
             <td>
-
+<p>Hostname </p>
             </td>
         </tr>
         <tr>
@@ -486,7 +484,7 @@ cf. <a href="https://www.postgresql.org/docs/current/libpq-connect.html#LIBPQ-PQ
             <td>::</td>
             <td><strong>port</strong></td>
             <td>
-
+<p>Port number</p>
             </td>
         </tr>
         <tr>
@@ -501,7 +499,7 @@ cf. <a href="https://www.postgresql.org/docs/current/libpq-connect.html#LIBPQ-PQ
             <td>::</td>
             <td><strong>options</strong></td>
             <td>
-
+<p>Options</p>
             </td>
         </tr>
         <tr>
@@ -516,7 +514,7 @@ cf. <a href="https://www.postgresql.org/docs/current/libpq-connect.html#LIBPQ-PQ
             <td>::</td>
             <td><strong>tty</strong></td>
             <td>
-
+<p>Empty string</p>
             </td>
         </tr>
         <tr>
@@ -531,7 +529,7 @@ cf. <a href="https://www.postgresql.org/docs/current/libpq-connect.html#LIBPQ-PQ
             <td>::</td>
             <td><strong>dbName</strong></td>
             <td>
-
+<p>The name of the database</p>
             </td>
         </tr>
         <tr>
@@ -546,7 +544,7 @@ cf. <a href="https://www.postgresql.org/docs/current/libpq-connect.html#LIBPQ-PQ
             <td>::</td>
             <td><strong>login</strong></td>
             <td>
-
+<p>The user name at this login</p>
             </td>
         </tr>
         <tr>
@@ -561,7 +559,7 @@ cf. <a href="https://www.postgresql.org/docs/current/libpq-connect.html#LIBPQ-PQ
             <td>::</td>
             <td><strong>pwd</strong></td>
             <td>
-
+<p>The password of the user</p>
             </td>
         </tr>
     </tbody>
@@ -581,8 +579,7 @@ cf. <a href="https://www.postgresql.org/docs/current/libpq-connect.html#LIBPQ-PQ
 </h3></div>
     <div class="panel-body">
           
-  <p>Connect to the database server in a nonblocking manner.
-cf. <a href="https://www.postgresql.org/docs/current/libpq-connect.html#LIBPQ-PQCONNECTSTARTPARAMS">PostgreSQL Documentation</a></p>
+  <p>Connect to the database server in a nonblocking manner.</p><a href="../proc/pqconnectstartparams.html" class="pull-right"><emph>Read more&hellip;</emph></a>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -657,8 +654,7 @@ cf. <a href="https://www.postgresql.org/docs/current/libpq-connect.html#LIBPQ-PQ
 </h3></div>
     <div class="panel-body">
           
-  <p>Connect to the database server in a nonblocking manner.
-cf. <a href="https://www.postgresql.org/docs/current/libpq-connect.html#LIBPQ-PQCONNECTSTARTPARAMS">PostgreSQL Documentation</a></p>
+  <p>Connect to the database server in a nonblocking manner.</p><a href="../proc/pqconnectstart.html" class="pull-right"><emph>Read more&hellip;</emph></a>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -703,8 +699,7 @@ cf. <a href="https://www.postgresql.org/docs/current/libpq-connect.html#LIBPQ-PQ
 </h3></div>
     <div class="panel-body">
           
-  <p>Connect to the database server in a nonblocking manner.
-cf. <a href="https://www.postgresql.org/docs/current/libpq-connect.html#LIBPQ-PQCONNECTSTARTPARAMS">PostgreSQL Documentation</a></p>
+  <p>Connect to the database server in a nonblocking manner.</p><a href="../proc/pqconnectpoll.html" class="pull-right"><emph>Read more&hellip;</emph></a>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -2134,8 +2129,7 @@ cf. <a href="https://www.postgresql.org/docs/current/libpq-connect.html#LIBPQ-PQ
 </h3></div>
     <div class="panel-body">
           
-  <p>Get the default connection options.
-cf. <a href="https://www.postgresql.org/docs/current/libpq-connect.html#LIBPQ-PQCONNDEFAULTS">PostgreSQL Documentation</a></p>
+  <p>Get the default connection options.</p><a href="../proc/pqconndefaults.html" class="pull-right"><emph>Read more&hellip;</emph></a>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
