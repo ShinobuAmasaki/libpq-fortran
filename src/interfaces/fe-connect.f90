@@ -61,8 +61,10 @@ contains
    function PQconnectdb(conninfo) result(conn)
       use, intrinsic :: iso_c_binding, only: c_char, c_ptr, c_null_char
       implicit none
-      
+
+      !> PostgreSQL connection string
       character(*), intent(in) :: conninfo
+
       character(:, kind=c_char), allocatable :: c_conninfo
 
       type(c_ptr) :: conn
@@ -83,6 +85,23 @@ contains
       c_conninfo = conninfo//c_null_char
 
       conn = c_PQ_connectdb(c_conninfo)
+
+      !*### Example
+      !```Fortran
+      !   character(:), allocatable :: conninfo
+      !   type(c_ptr) :: conn
+      ! 
+      !   conninfo = "host=localhost user=postgres dbname=postgres password=foobar" 
+      !
+      !   conn = PQcoonectdb(conninfo)
+      !
+      !   ! Error handling
+      !   if (PQstatus(conn) /= CONNECTION_OK) then
+      !      print *, PQerrorMessage(conn)
+      !   end if
+      !```
+      
+
       
    !* cf. [PostgreSQL Documentation](https://www.postgresql.org/docs/current/libpq-connect.html#LIBPQ-PQCONNECTDB)
    end function PQconnectdb
@@ -91,12 +110,34 @@ contains
    !> Connect to the database server with connection infomation provided as pairs of `keywords` and `values` arrays.
    function PQconnectdbParams (keywords, values, expand_dbname) result(conn)
       use, intrinsic :: iso_c_binding
+
+      !> Keywords, such as `host`, `hostaddr`, `dbname`, `user`, `password`, etc.
       character(*), intent(in) :: keywords(:)
+
+      !> The array of each value corresponding to that keyword.
       character(*), intent(in) :: values(:)
+
       integer :: expand_dbname
       type(c_ptr) :: conn
 
       conn =  PQconnectdbParams_back(keywords, values, expand_dbname, .false.)
+
+      !*### Example
+      !```Fortran
+      !   character(16) :: keywords(3), values(3)
+      !   type(c_ptr) :: conn
+      !   
+      !   keywords(1) = 'host';   values(1) = 'localhost'
+      !   keywords(2) = 'user';   values(2) = 'postgres'
+      !   keywords(3) = 'dbname'; values(3) = 'postgres'
+      !   
+      !   conn = PQconnectdbParams(keywords, values, 0)
+      !   
+      !   ! Error handling
+      !   if (PQstatus(conn) /= CONNECTION_OK) then
+      !      print *, PQerrorMessage(conn)
+      !   end if
+      !```
 
    !* cf. [PostgreSQL Documentation](https://www.postgresql.org/docs/current/libpq-connect.html#LIBPQ-PQCONNECTDBPARAMS)
    end function PQconnectdbParams
@@ -184,15 +225,24 @@ contains
    end function PQconnectdbParams_back
 
 
+   !> Connect to the database server with connection infomation provided as each argument
    function PQsetdbLogin (host, port, options, tty, dbName, login, pwd) result(conn)
       use, intrinsic :: iso_c_binding
       implicit none
+      
+      !> Hostname 
       character(*), intent(in) :: host
+      !> Port number
       character(*), intent(in) :: port
+      !> Options
       character(*), intent(in) :: options
+      !> Empty string
       character(*), intent(in) :: tty
+      !> The name of the database
       character(*), intent(in) :: dbName
+      !> The user name at this login
       character(*), intent(in) :: login
+      !> The password of the user
       character(*), intent(in) :: pwd
       
       type(c_ptr) :: conn
@@ -230,6 +280,19 @@ contains
          conn = c_PQ_setdb_login(c_host, c_port, c_options, c_tty, c_dbName, c_login, c_pwd)
       end block
 
+      !*### Example
+      !```Fortran
+      !   type(c_ptr) :: conn
+      !   
+      !   conn = PQsetdbLogin("localhost", "5432", "", "", "postgres","postgres", "")
+      !
+      !   ! Error handling
+      !   if (PQstatus(conn) /= CONNECTION_OK) then
+      !      print *, PQerrorMessage(conn)
+      !   end if
+      !```
+
+
    !* cf. [PostgreSQL Documentation](https://www.postgresql.org/docs/current/libpq-connect.html#LIBPQ-PQSETDBLOGIN)
    end function PQsetdbLogin
 
@@ -243,6 +306,45 @@ contains
       type(c_ptr) :: conn
 
       conn =  PQconnectdbParams_back(keywords, values, expand_dbname, .true.)
+
+      !*### Example
+      !```Fortran
+      !   type(c_ptr) :: conn
+      !   integer :: res = -1
+      !   character(16) :: keywords(3), values(3)
+      !   type(c_ptr) :: conn
+      !   
+      !   keywords(1) = 'host';   values(1) = 'localhost'
+      !   keywords(2) = 'user';   values(2) = 'postgres'
+      !   keywords(3) = 'dbname'; values(3) = 'postgres'   
+      !   
+      !   conn = PQconnectStartParams(keywords, values, 0)
+      !
+      !   if (c_associated(conn)) then
+      !      do while(res /= PGRES_POLLING_OK) ! loop for polling
+      !         
+      !         res = PQconnectPoll(conn)
+      !         select case (res)
+      !         case (PGRES_POLLING_FAILED)
+      !            print *, PQerrorMessage(conn)
+      !            error stop
+      !         case (PGRES_POLLING_OK)
+      !            print *, "CONNECTION ESTABLISHED"
+      !            exit
+      !         case default
+      !            continue   
+      !            ! write some process here! 
+      !         end select
+      ! 
+      !      end do
+      !   else
+      !      print *, "Cannot connect the server."
+      !      error stop 
+      !   end if
+      !```
+
+      !*### References
+      ! cf. [[PQconnectPoll]], [[PQconnectPoll]]
 
    !* cf. [PostgreSQL Documentation](https://www.postgresql.org/docs/current/libpq-connect.html#LIBPQ-PQCONNECTSTARTPARAMS)
    end function PQconnectStartParams
@@ -271,6 +373,42 @@ contains
 
       conn = c_PQ_connect_start(c_conninfo)
 
+      !*### Example
+      !```Fortran
+      !   character(:), allocatable :: conninfo
+      !   type(c_ptr) :: conn
+      !   integer :: res = -1
+      ! 
+      !   conninfo = "host=localhost user=postgres dbname=postgres"
+      !   
+      !   conn = PQconnectStart(conninfo)
+      !
+      !   if (c_associated(conn)) then
+      !      do while(res /= PGRES_POLLING_OK) ! loop for polling
+      !         
+      !         res = PQconnectPoll(conn)
+      !         select case (res)
+      !         case (PGRES_POLLING_FAILED)
+      !            print *, PQerrorMessage(conn)
+      !            error stop
+      !         case (PGRES_POLLING_OK)
+      !            print *, "CONNECTION ESTABLISHED"
+      !            exit
+      !         case default
+      !            continue   
+      !            ! write some process here! 
+      !         end select
+      ! 
+      !      end do
+      !   else
+      !      print *, "Cannot connect the server."
+      !      error stop 
+      !   end if
+      !```
+
+      !*### References
+      ! cf. [[PQconnectPoll]], [[PQconnectStartParams]]
+
    !* cf. [PostgreSQL Documentation](https://www.postgresql.org/docs/current/libpq-connect.html#LIBPQ-PQCONNECTSTARTPARAMS)
    end function PQconnectStart
 
@@ -292,6 +430,9 @@ contains
       end interface
 
       PQconnectPoll = c_PQ_connect_poll(conn)
+
+      !*### References
+      ! cf. [[PQconnectStart]], [[PQconnectStartParams]]
 
    !* cf. [PostgreSQL Documentation](https://www.postgresql.org/docs/current/libpq-connect.html#LIBPQ-PQCONNECTSTARTPARAMS)
    end function PQconnectPoll
