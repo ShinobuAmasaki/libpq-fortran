@@ -90,7 +90,7 @@ user: shinobu
 password: xxx
 === END INPUT ===
 === Query Result===
-tuples, fields: 4  1
+tuples, fields: 3  1
 === Available database names ===
 postgres
 template1
