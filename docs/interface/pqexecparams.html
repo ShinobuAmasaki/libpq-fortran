@@ -215,7 +215,36 @@
     <div class="panel-heading codesum"><span class="anchor" id="proc-pqexecparams_int32"></span><h3>private  function PQexecParams_int32(conn, command, nParams, paramTypes, paramValues) result(res)  
 </h3></div>
     <div class="panel-body">
-        <p>cf. <a href="https://www.postgresql.org/docs/current/libpq-exec.html#LIBPQ-PQEXECPARAMS">PostgreSQL Documentation</a></p>
+        <blockquote>
+<p>Submits a command to the server and waits for the result, with the ability to pass 
+parameters separately from the SQL command text.</p>
+<p><code>PQexecParams</code> is like <a href="../proc/pqexec.html"><code>PQexec</code></a> but offers additional functionality:
+parameter values can be specified separately from the command string proper, and query results
+can be requested in text or binary format.</p>
+<p>cf. <a href="https://www.postgresql.org/docs/current/libpq-exec.html#LIBPQ-PQEXECPARAMS">PostgreSQL Documentation</a></p>
+</blockquote>
+<p></p><div class="alert alert-info" role="alert"><h4>Note</h4><p>Binary format have not been implemented yet.</p></div>
+<h3>Example</h3>
+<div class="codehilite"><pre><span></span><code><span class="w"> </span><span class="k">block</span>
+<span class="k">    </span><span class="kt">character</span><span class="p">(:),</span><span class="w"> </span><span class="k">allocatable</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">command</span><span class="w"></span>
+<span class="w">    </span><span class="kt">character</span><span class="p">(</span><span class="mi">8</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">values</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="k">type</span><span class="p">(</span><span class="kt">c_ptr</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">res</span><span class="w"></span>
+
+<span class="w">    </span><span class="n">command</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;select $1::bigint + $2::bigint;&quot;</span><span class="w"></span>
+<span class="w">    </span><span class="n">values</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;300&quot;</span><span class="w"></span>
+<span class="w">    </span><span class="n">values</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;500&quot;</span><span class="w"></span>
+
+<span class="w">    </span><span class="n">res</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">PQexecParams</span><span class="p">(</span><span class="n">conn</span><span class="p">,</span><span class="w"> </span><span class="n">command</span><span class="p">,</span><span class="w"> </span><span class="n">size</span><span class="p">(</span><span class="n">values</span><span class="p">),</span><span class="w"> </span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">],</span><span class="w"> </span><span class="n">values</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">PQresultStatus</span><span class="p">(</span><span class="n">res</span><span class="p">)</span><span class="w"> </span><span class="o">/=</span><span class="w"> </span><span class="n">PGRES_TUPLES_OK</span><span class="p">)</span><span class="w"> </span><span class="k">then</span>
+<span class="k">       print</span><span class="w"> </span><span class="o">*</span><span class="p">,</span><span class="w"> </span><span class="n">PQerrorMessage</span><span class="p">(</span><span class="n">conn</span><span class="p">)</span><span class="w"></span>
+<span class="w">       </span><span class="k">call </span><span class="n">PQclear</span><span class="p">(</span><span class="n">res</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="k">end if</span>
+
+<span class="k">    print</span><span class="w"> </span><span class="o">*</span><span class="p">,</span><span class="w"> </span><span class="n">PQgetvalue</span><span class="p">(</span><span class="n">res</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="c">! the result &quot;800&quot; is expected.</span>
+<span class="w">    </span><span class="k">call </span><span class="n">PQclear</span><span class="p">(</span><span class="n">res</span><span class="p">)</span><span class="w"></span>
+</code></pre></div>
+
+<p>cf. <a href="https://www.postgresql.org/docs/current/libpq-exec.html#LIBPQ-PQEXECPARAMS">PostgreSQL Documentation</a></p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -240,7 +269,7 @@
             <td>::</td>
             <td><strong>conn</strong></td>
             <td>
-                
+                <p>The connection object to send the command through. </p>
             </td>
         </tr>
         <tr>
@@ -255,7 +284,8 @@
             <td>::</td>
             <td><strong>command</strong></td>
             <td>
-                
+                <p>The SQL command string to be executed. If parameters are used, 
+they are referred to in the command string as <code>$1</code>, <code>$2</code>, etc.</p>
             </td>
         </tr>
         <tr>
@@ -270,7 +300,8 @@
             <td>::</td>
             <td><strong>nParams</strong></td>
             <td>
-                
+                <p>The number of parameters supplied; it is the length of the arrays <code>paramTypes</code>,
+<code>paramValues</code>. </p>
             </td>
         </tr>
         <tr>
@@ -285,7 +316,9 @@
             <td>::</td>
             <td><strong>paramTypes</strong>(:)</td>
             <td>
-                
+                <p>Specifies, by OID, the data types to be assigned to the parameter symbols.
+If any particular element in the array is zero, the server infers a data type
+for the parameter symbol in the same way it would do for an untyped literal string.</p>
             </td>
         </tr>
         <tr>
@@ -300,7 +333,8 @@
             <td>::</td>
             <td><strong>paramValues</strong>(:)</td>
             <td>
-                
+                <p>Specifies the actual values of the parameters. A empty string in this array means
+the corresponding parameter is null. </p>
             </td>
         </tr>
     </tbody>
@@ -319,7 +353,36 @@
     <div class="panel-heading codesum"><span class="anchor" id="proc-pqexecparams_int64"></span><h3>private  function PQexecParams_int64(conn, command, nParams, paramTypes, paramValues) result(res)  
 </h3></div>
     <div class="panel-body">
-        <p>cf. <a href="https://www.postgresql.org/docs/current/libpq-exec.html#LIBPQ-PQEXECPARAMS">PostgreSQL Documentation</a></p>
+        <blockquote>
+<p>Submits a command to the server and waits for the result, with the ability to pass 
+parameters separately from the SQL command text.</p>
+<p><code>PQexecParams</code> is like <a href="../proc/pqexec.html"><code>PQexec</code></a> but offers additional functionality:
+parameter values can be specified separately from the command string proper, and query results
+can be requested in text or binary format.</p>
+<p>cf. <a href="https://www.postgresql.org/docs/current/libpq-exec.html#LIBPQ-PQEXECPARAMS">PostgreSQL Documentation</a></p>
+</blockquote>
+<p></p><div class="alert alert-info" role="alert"><h4>Note</h4><p>Binary format have not been implemented yet.</p></div>
+<h3>Example</h3>
+<div class="codehilite"><pre><span></span><code><span class="w"> </span><span class="k">block</span>
+<span class="k">    </span><span class="kt">character</span><span class="p">(:),</span><span class="w"> </span><span class="k">allocatable</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">command</span><span class="w"></span>
+<span class="w">    </span><span class="kt">character</span><span class="p">(</span><span class="mi">8</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">values</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="k">type</span><span class="p">(</span><span class="kt">c_ptr</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">res</span><span class="w"></span>
+
+<span class="w">    </span><span class="n">command</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;select $1::bigint + $2::bigint;&quot;</span><span class="w"></span>
+<span class="w">    </span><span class="n">values</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;300&quot;</span><span class="w"></span>
+<span class="w">    </span><span class="n">values</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;500&quot;</span><span class="w"></span>
+
+<span class="w">    </span><span class="n">res</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">PQexecParams</span><span class="p">(</span><span class="n">conn</span><span class="p">,</span><span class="w"> </span><span class="n">command</span><span class="p">,</span><span class="w"> </span><span class="n">size</span><span class="p">(</span><span class="n">values</span><span class="p">),</span><span class="w"> </span><span class="p">[</span><span class="mi">0_8</span><span class="p">,</span><span class="w"> </span><span class="mi">0_8</span><span class="p">],</span><span class="w"> </span><span class="n">values</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">PQresultStatus</span><span class="p">(</span><span class="n">res</span><span class="p">)</span><span class="w"> </span><span class="o">/=</span><span class="w"> </span><span class="n">PGRES_TUPLES_OK</span><span class="p">)</span><span class="w"> </span><span class="k">then</span>
+<span class="k">       print</span><span class="w"> </span><span class="o">*</span><span class="p">,</span><span class="w"> </span><span class="n">PQerrorMessage</span><span class="p">(</span><span class="n">conn</span><span class="p">)</span><span class="w"></span>
+<span class="w">       </span><span class="k">call </span><span class="n">PQclear</span><span class="p">(</span><span class="n">res</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="k">end if</span>
+
+<span class="k">    print</span><span class="w"> </span><span class="o">*</span><span class="p">,</span><span class="w"> </span><span class="n">PQgetvalue</span><span class="p">(</span><span class="n">res</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="c">! the result &quot;800&quot; is expected.</span>
+<span class="w">    </span><span class="k">call </span><span class="n">PQclear</span><span class="p">(</span><span class="n">res</span><span class="p">)</span><span class="w"></span>
+</code></pre></div>
+
+<p>cf. <a href="https://www.postgresql.org/docs/current/libpq-exec.html#LIBPQ-PQEXECPARAMS">PostgreSQL Documentation</a></p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -344,7 +407,7 @@
             <td>::</td>
             <td><strong>conn</strong></td>
             <td>
-                
+                <p>The connection object to send the command through. </p>
             </td>
         </tr>
         <tr>
@@ -359,7 +422,8 @@
             <td>::</td>
             <td><strong>command</strong></td>
             <td>
-                
+                <p>The SQL command string to be executed. If parameters are used, 
+they are referred to in the command string as <code>$1</code>, <code>$2</code>, etc.</p>
             </td>
         </tr>
         <tr>
@@ -374,7 +438,8 @@
             <td>::</td>
             <td><strong>nParams</strong></td>
             <td>
-                
+                <p>The number of parameters supplied; it is the length of the arrays <code>paramTypes</code>,
+<code>paramValues</code>. </p>
             </td>
         </tr>
         <tr>
@@ -389,7 +454,9 @@
             <td>::</td>
             <td><strong>paramTypes</strong>(:)</td>
             <td>
-                
+                <p>Specifies, by OID, the data types to be assigned to the parameter symbols.
+If any particular element in the array is zero, the server infers a data type
+for the parameter symbol in the same way it would do for an untyped literal string.</p>
             </td>
         </tr>
         <tr>
@@ -404,7 +471,8 @@
             <td>::</td>
             <td><strong>paramValues</strong>(:)</td>
             <td>
-                
+                <p>Specifies the actual values of the parameters. A empty string in this array means
+the corresponding parameter is null. </p>
             </td>
         </tr>
     </tbody>

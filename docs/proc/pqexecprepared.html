@@ -171,7 +171,17 @@
     </div>
 
 
-    <p>cf. <a href="https://www.postgresql.org/docs/current/libpq-exec.html#LIBPQ-PQEXECPREPARED">PostgreSQL Documentation</a></p>
+    <blockquote>
+<p>Sends a request to execute a prepared statement with given parameters, and waits for the result.</p>
+<p><code>PQexecPrepared</code> is like <code><a>PQexecParam</a></code>, but the command to be executed is spcified by
+naming a previously-prepared statement, instead of giving a query string. This feature allows 
+commands that will be used repeated to be parsed and planned just once, rather than each
+time they are executed. The statement must have been prepared previously in the current session.</p>
+<p>The parameters are identical to <code><a href="../interface/pqexecparams.html">PQexecParams</a></code>, except that the name of a prepared statement
+is given instead of a query string, and the <code>paramTypes</code> parameter is not present (it is not
+needed since the prepared statement's parameter types were determined when it was created).</p>
+<p>cf. <a href="https://www.postgresql.org/docs/current/libpq-exec.html#LIBPQ-PQEXECPREPARED">PostgreSQL Documentation</a></p>
+</blockquote>
 
 
     <h3>Arguments</h3>
@@ -187,7 +197,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-conn~39"></span>
+              <span class="anchor" id="variable-conn~41"></span>
               type(c_ptr),
             </td>
 <td>intent(in)</td>
@@ -217,7 +227,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-nparams"></span>
+              <span class="anchor" id="variable-nparams~3"></span>
               integer(kind=int32),
             </td>
 <td>intent(in)</td>
@@ -232,7 +242,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-paramvalues"></span>
+              <span class="anchor" id="variable-paramvalues~3"></span>
               character(len=*),
             </td>
 <td>intent(in)</td>

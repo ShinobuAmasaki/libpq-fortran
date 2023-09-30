@@ -215,7 +215,28 @@
     <div class="panel-heading codesum"><span class="anchor" id="proc-pqprepare_int32"></span><h3>private  function PQprepare_int32(conn, stmtName, query, nParams, paramTypes) result(res)  
 </h3></div>
     <div class="panel-body">
-        <p>cf. <a href="https://www.postgresql.org/docs/current/libpq-exec.html#LIBPQ-PQPREPARE">PostgreSQL Documentation</a></p>
+        <blockquote>
+<p>Submits a request to create a prepared statement with the given parameters, and waits for completion.</p>
+<p><code>PQprepare</code> creates a prepared statement for later execution with <code>PQexecPrepared</code>.
+This feature allows commands to be executed repeatedly without being parsed and
+planned each time; see <a href="https://www.postgresql.org/docs/current/sql-prepare.html">PREPARE</a> for details.</p>
+<p>The function create a prepared statement named <code>stmtName</code> from the <code>query</code> string, which
+must contain a single SQL command. <code>stmtName</code> can be <code>""</code> to create an unnamed statement,
+in which case any pre-existing unnamed statement is automatically replaced; otherwise it is
+an error if the statement name is already defined in the current session. If any parameters are used, 
+they are referred to in the as <code>$1</code>, <code>$2</code>, etc. <code>nParams</code> is the number of parameters for which types
+are pre-specified in the array <code>paramTypes</code>. 
+<code>paramTypes</code> specifies, by OID, the data types to be assigned to the parameter symbols. 
+If any particuler element in the <code>paramTypes</code> array is zero, the server assigns a data type to the
+parameter symbol in the same way it would do for an untyped literal string. 
+Also, the query can use parameter symbols with the numbers higher than <code>nParams</code>; data types will 
+be inferred for these symbols as well. 
+ (See <a href="../proc/pqdescribeprepared.html">PQdescribePrepared</a>) for a means to find out what data types were inffered.) </p>
+<p>As with <code>[[PQexec]]</code>, the result is normally a <code>PGresult</code> object whose contents indicate server-side
+success or failure. A null result indicates out-of-memory or inability to send to the command at all.
+Use <a href="../proc/pqerrormessage.html"><code>PQerrorMessage</code></a> to get more information about such errors.</p>
+<p>cf. <a href="https://www.postgresql.org/docs/current/libpq-exec.html#LIBPQ-PQPREPARE">PostgreSQL Documentation</a></p>
+</blockquote>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -319,7 +340,28 @@
     <div class="panel-heading codesum"><span class="anchor" id="proc-pqprepare_int64"></span><h3>private  function PQprepare_int64(conn, stmtName, query, nParams, paramTypes) result(res)  
 </h3></div>
     <div class="panel-body">
-        <p>cf. <a href="https://www.postgresql.org/docs/current/libpq-exec.html#LIBPQ-PQPREPARE">PostgreSQL Documentation</a></p>
+        <blockquote>
+<p>Submits a request to create a prepared statement with the given parameters, and waits for completion.</p>
+<p><code>PQprepare</code> creates a prepared statement for later execution with <code>PQexecPrepared</code>.
+This feature allows commands to be executed repeatedly without being parsed and
+planned each time; see <a href="https://www.postgresql.org/docs/current/sql-prepare.html">PREPARE</a> for details.</p>
+<p>The function create a prepared statement named <code>stmtName</code> from the <code>query</code> string, which
+must contain a single SQL command. <code>stmtName</code> can be <code>""</code> to create an unnamed statement,
+in which case any pre-existing unnamed statement is automatically replaced; otherwise it is
+an error if the statement name is already defined in the current session. If any parameters are used, 
+they are referred to in the as <code>$1</code>, <code>$2</code>, etc. <code>nParams</code> is the number of parameters for which types
+are pre-specified in the array <code>paramTypes</code>. 
+<code>paramTypes</code> specifies, by OID, the data types to be assigned to the parameter symbols. 
+If any particuler element in the <code>paramTypes</code> array is zero, the server assigns a data type to the
+parameter symbol in the same way it would do for an untyped literal string. 
+Also, the query can use parameter symbols with the numbers higher than <code>nParams</code>; data types will 
+be inferred for these symbols as well. </p>
+<p>As with <a href="../proc/pqexec.html"><code>PQexec</code></a>, the result is normally a <code>PGresult</code> object whose contents indicate server-side
+success or failure. A null result indicates out-of-memory or inability to send to the command at all.
+Use <a href="../proc/pqerrormessage.html"><code>PQerrorMessage</code></a> to get more information about such errors.</p>
+<p>cf. <a href="https://www.postgresql.org/docs/current/libpq-exec.html#LIBPQ-PQPREPARE">PostgreSQL Documentation</a></p>
+</blockquote>
+<p>cf. <a href="https://www.postgresql.org/docs/current/libpq-exec.html#LIBPQ-PQPREPARE">PostgreSQL Documentation</a></p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">

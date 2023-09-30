@@ -215,7 +215,14 @@
     <div class="panel-heading codesum"><span class="anchor" id="proc-pqsendprepare_int32"></span><h3>private  function PQsendPrepare_int32(conn, stmtName, query, nParams, paramTypes) result(res)  
 </h3></div>
     <div class="panel-body">
-        <p>cf. <a href="https://www.postgresql.org/docs/current/libpq-async.html#LIBPQ-PQSENDPREPARE">PostgreSQL Documentation</a></p>
+        <blockquote>
+<p>Sends a request to create a prepared statement with the given parameters, without waiting for completion.</p>
+<p>This is an asynchronous version of <code>PQprepare</code>:
+it returns <code>1</code> if it was able to dispatch the request, and <code>0</code> if not.
+After a successfull call, call <a href="../proc/pqgetresult.html"><code>PQgetResult</code></a> to determine whether the server successfully created the prepared statement. 
+The function's parameters are handled identically to <code>PQprepare</code>.</p>
+<p>cf. <a href="https://www.postgresql.org/docs/current/libpq-async.html#LIBPQ-PQSENDPREPARE">PostgreSQL Documentation</a></p>
+</blockquote>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -319,7 +326,15 @@
     <div class="panel-heading codesum"><span class="anchor" id="proc-pqsendprepare_int64"></span><h3>private  function PQsendPrepare_int64(conn, stmtName, query, nParams, paramTypes) result(res)  
 </h3></div>
     <div class="panel-body">
-        <p>cf. <a href="https://www.postgresql.org/docs/current/libpq-async.html#LIBPQ-PQSENDPREPARE">PostgreSQL Documentation</a></p>
+        <blockquote>
+<p>Sends a request to create a prepared statement with the given parameters, without waiting for completion.</p>
+<p>This is an asynchronous version of <code>PQprepare</code>:
+it returns <code>1</code> if it was able to dispatch the request, and <code>0</code> if not.
+After a successfull call, call <a href="../proc/pqgetresult.html"><code>PQgetResult</code></a> to determine whether the server successfully created the prepared statement. 
+The function's parameters are handled identically to <code>PQprepare</code>.</p>
+<p>cf. <a href="https://www.postgresql.org/docs/current/libpq-async.html#LIBPQ-PQSENDPREPARE">PostgreSQL Documentation</a>
+ cf. <a href="https://www.postgresql.org/docs/current/libpq-async.html#LIBPQ-PQSENDPREPARE">PostgreSQL Documentation</a></p>
+</blockquote>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">

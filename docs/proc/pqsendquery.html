@@ -170,7 +170,45 @@
     </div>
 
 
-    <p>cf. <a href="https://www.postgresql.org/docs/current/libpq-async.html#LIBPQ-PQSENDQUERY">PostgreSQL Documentation</a></p>
+    <blockquote>
+<p>Submits a command to the server without waiting for the result(s).
+<code>1</code> is returned if the command was successfully dispatched and
+<code>0</code> if not (in which case, use PQerrorMessage to get more information about the failure).</p>
+<p>After successfully calling <code>PQsendQuery</code>, call <code><a href="../proc/pqgetresult.html">PQgetResult</a></code> one or more times
+to obtain the results. <code>PQsendQuery</code> cannot be called again (on the same connection)
+until <code><a href="../proc/pqgetresult.html">PQgetResult</a></code> has returned a null pointer, indicating that the command is done.</p>
+<p>In pipeline mode, this function is disallowed.</p>
+<p>cf. <a href="https://www.postgresql.org/docs/current/libpq-async.html#LIBPQ-PQSENDQUERY">PostgreSQL Documentation</a></p>
+</blockquote>
+<h3>Example</h3>
+<div class="codehilite"><pre><span></span><code><span class="w">   </span><span class="k">type</span><span class="p">(</span><span class="kt">c_ptr</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">conn</span><span class="w"></span>
+<span class="w">   </span><span class="k">type</span><span class="p">(</span><span class="kt">c_ptr</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">res</span><span class="w"></span>
+<span class="w">   </span><span class="kt">character</span><span class="p">(:),</span><span class="w"> </span><span class="k">allocatable</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">command</span><span class="w"></span>
+<span class="w">   </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">ires</span><span class="w"></span>
+
+<span class="w">   </span><span class="n">conn</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">PQconnectdb</span><span class="p">(</span><span class="s2">&quot;dbname=postgres&quot;</span><span class="p">)</span><span class="w"></span>
+<span class="w">   </span><span class="p">(...</span><span class="n">error</span><span class="w"> </span><span class="n">handling</span><span class="p">...)</span><span class="w"></span>
+
+<span class="w">   </span><span class="n">ires</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">PQsendQuery</span><span class="p">(</span><span class="n">conn</span><span class="p">,</span><span class="w"> </span><span class="n">command</span><span class="p">)</span><span class="w"></span>
+<span class="w">   </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">ires</span><span class="w"> </span><span class="o">/=</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="k">then</span>
+<span class="k">      print</span><span class="w"> </span><span class="o">*</span><span class="p">,</span><span class="w"> </span><span class="n">PQerrorMessage</span><span class="p">(</span><span class="n">conn</span><span class="p">)</span><span class="w"></span>
+<span class="w">   </span><span class="k">end if</span>
+
+<span class="k">   </span><span class="n">res</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">PQgetResult</span><span class="p">(</span><span class="n">conn</span><span class="p">)</span><span class="w"></span>
+
+<span class="w">   </span><span class="k">do while</span><span class="w"> </span><span class="p">(</span><span class="nb">c_associated</span><span class="p">(</span><span class="n">res</span><span class="p">))</span><span class="w"></span>
+
+<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">PQresultStatus</span><span class="p">(</span><span class="n">res</span><span class="p">)</span><span class="w"> </span><span class="o">/=</span><span class="w"> </span><span class="n">PGRES_TUPLES_OK</span><span class="p">)</span><span class="w"> </span><span class="k">then</span>
+<span class="k">         print</span><span class="w"> </span><span class="o">*</span><span class="p">,</span><span class="w"> </span><span class="n">PQerrorMessage</span><span class="p">(</span><span class="n">conn</span><span class="p">)</span><span class="w"></span>
+<span class="w">      </span><span class="k">end if</span>
+
+<span class="k">      print</span><span class="w"> </span><span class="o">*</span><span class="p">,</span><span class="w"> </span><span class="n">PQgetvalue</span><span class="p">(</span><span class="n">res</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"></span>
+<span class="w">      </span><span class="k">call </span><span class="n">PQclear</span><span class="p">(</span><span class="n">res</span><span class="p">)</span><span class="w"></span>
+
+<span class="w">      </span><span class="n">res</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">PQgetResult</span><span class="p">(</span><span class="n">conn</span><span class="p">)</span><span class="w"></span>
+
+<span class="w">   </span><span class="k">end do</span><span class="w"></span>
+</code></pre></div>
 
 
     <h3>Arguments</h3>
@@ -186,7 +224,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-conn~44"></span>
+              <span class="anchor" id="variable-conn~46"></span>
               type(c_ptr),
             </td>
 <td>intent(in)</td>
@@ -201,7 +239,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-command"></span>
+              <span class="anchor" id="variable-command~3"></span>
               character(len=*),
             </td>
 <td>intent(in)</td>

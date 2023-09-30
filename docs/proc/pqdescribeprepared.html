@@ -170,7 +170,16 @@
     </div>
 
 
-    <p>cf. <a href="https://www.postgresql.org/docs/current/libpq-exec.html#LIBPQ-PQDESCRIBEPREPARED">PostgreSQL Documentation</a></p>
+    <blockquote>
+<p>Submits a request to obtain information about the specified prepared statement, and waits for completion.</p>
+<p><code>PQdescribePrepared</code> allows an application to obtain information about a previously prepared statement.</p>
+<p><code>stmtName</code> can be <code>""</code> to reference the unnamed statement, otherwise it must be the name of an existing
+prepared statement. On success, a <code>PGresult</code> with status <code>PGRES_COMMAND_OK</code> is returned. The <code><a href="../proc/pqnparams.html">PQnparams</a></code>
+and <code><a href="../proc/pqparamtype.html">PQparamtype</a></code> can be applied to this <code>PGresult</code> to obtain information about the parameters of the
+prepared statement, and the functions <code><a href="../proc/pqnfields.html">PQnfields</a></code>, <code><a href="../proc/pqfname.html">PQfname</a></code>, <code><a href="../proc/pqftype.html">PQftype</a></code> etc. provide information
+about the result columns (if any) of the statement. </p>
+<p>cf. <a href="https://www.postgresql.org/docs/current/libpq-exec.html#LIBPQ-PQDESCRIBEPREPARED">PostgreSQL Documentation</a></p>
+</blockquote>
 
 
     <h3>Arguments</h3>
@@ -186,7 +195,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-conn~40"></span>
+              <span class="anchor" id="variable-conn~42"></span>
               type(c_ptr),
             </td>
 <td>intent(in)</td>
