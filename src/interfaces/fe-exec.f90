@@ -172,7 +172,18 @@ contains
       use :: character_operations_m
       implicit none
 
-            !*### Example
+      !*> Submits a command to the server and waits for the result, with the ability to pass 
+      ! > parameters separately from the SQL command text.
+      ! > 
+      ! > `PQexecParams` is like [`PQexec`](../proc/pqexec.html) but offers additional functionality:
+      ! > parameter values can be specified separately from the command string proper, and query results
+      ! > can be requested in text or binary format.
+      ! > 
+      ! > cf. [PostgreSQL Documentation](https://www.postgresql.org/docs/current/libpq-exec.html#LIBPQ-PQEXECPARAMS)
+
+      !!@note Binary format have not been implemented yet.
+
+       !*### Example
       !```fortran
       ! block
       !    character(:), allocatable :: command
@@ -240,6 +251,17 @@ contains
       use :: unsigned
       use :: character_operations_m
       implicit none
+
+       !*> Submits a command to the server and waits for the result, with the ability to pass 
+      ! > parameters separately from the SQL command text.
+      ! > 
+      ! > `PQexecParams` is like [`PQexec`](../proc/pqexec.html) but offers additional functionality:
+      ! > parameter values can be specified separately from the command string proper, and query results
+      ! > can be requested in text or binary format.
+      ! > 
+      ! > cf. [PostgreSQL Documentation](https://www.postgresql.org/docs/current/libpq-exec.html#LIBPQ-PQEXECPARAMS)
+
+      !!@note Binary format have not been implemented yet.
 
       !*### Example
       !```fortran
@@ -375,6 +397,32 @@ contains
       use :: unsigned
       implicit none
 
+      !*> Submits a request to create a prepared statement with the given parameters, and waits for completion.
+      
+      !*> `PQprepare` creates a prepared statement for later execution with `PQexecPrepared`.
+      ! > This feature allows commands to be executed repeatedly without being parsed and
+      ! > planned each time; see [PREPARE](https://www.postgresql.org/docs/current/sql-prepare.html) for details.
+
+      !*> The function create a prepared statement named `stmtName` from the `query` string, which
+      ! > must contain a single SQL command. `stmtName` can be `""` to create an unnamed statement,
+      ! > in which case any pre-existing unnamed statement is automatically replaced; otherwise it is
+      ! > an error if the statement name is already defined in the current session. If any parameters are used, 
+      ! > they are referred to in the as `$1`, `$2`, etc. `nParams` is the number of parameters for which types
+      ! > are pre-specified in the array `paramTypes`. 
+      ! > `paramTypes` specifies, by OID, the data types to be assigned to the parameter symbols. 
+      ! > If any particuler element in the `paramTypes` array is zero, the server assigns a data type to the
+      ! > parameter symbol in the same way it would do for an untyped literal string. 
+      ! > Also, the query can use parameter symbols with the numbers higher than `nParams`; data types will 
+      ! > be inferred for these symbols as well. 
+         ! (See [PQdescribePrepared](../proc/pqdescribeprepared.html)) for a means to find out what data types were inffered.) 
+      
+      !*> As with `[[PQexec]]`, the result is normally a `PGresult` object whose contents indicate server-side
+      ! > success or failure. A null result indicates out-of-memory or inability to send to the command at all.
+      ! > Use [`PQerrorMessage`](../proc/pqerrormessage.html) to get more information about such errors.
+      ! > 
+      ! > cf. [PostgreSQL Documentation](https://www.postgresql.org/docs/current/libpq-exec.html#LIBPQ-PQPREPARE)
+
+
       type(c_ptr), intent(in) :: conn
       character(*), intent(in) :: stmtName
       character(*), intent(in) :: query
@@ -387,14 +435,14 @@ contains
       integer :: i, siz
 
       siz = size(paramTypes, dim=1)
-      allocate(u_paramTypes(siz))
+      allocate(u_paramTypes(siz)) 
    
       do i = 1, siz
          u_paramTypes(i) = paramTypes(i)
       end do
 
       res = PQprepare_back(conn, stmtName, query, nParams, u_paramTypes)
-   !! cf. [PostgreSQL Documentation](https://www.postgresql.org/docs/current/libpq-exec.html#LIBPQ-PQPREPARE)
+
    end function PQprepare_int32
 
 
@@ -403,6 +451,32 @@ contains
       use, intrinsic :: iso_c_binding
       use :: unsigned
       implicit none
+
+      !*> Submits a request to create a prepared statement with the given parameters, and waits for completion.
+      
+      !*> `PQprepare` creates a prepared statement for later execution with `PQexecPrepared`.
+      ! > This feature allows commands to be executed repeatedly without being parsed and
+      ! > planned each time; see [PREPARE](https://www.postgresql.org/docs/current/sql-prepare.html) for details.
+
+      !*> The function create a prepared statement named `stmtName` from the `query` string, which
+      ! > must contain a single SQL command. `stmtName` can be `""` to create an unnamed statement,
+      ! > in which case any pre-existing unnamed statement is automatically replaced; otherwise it is
+      ! > an error if the statement name is already defined in the current session. If any parameters are used, 
+      ! > they are referred to in the as `$1`, `$2`, etc. `nParams` is the number of parameters for which types
+      ! > are pre-specified in the array `paramTypes`. 
+      ! > `paramTypes` specifies, by OID, the data types to be assigned to the parameter symbols. 
+      ! > If any particuler element in the `paramTypes` array is zero, the server assigns a data type to the
+      ! > parameter symbol in the same way it would do for an untyped literal string. 
+      ! > Also, the query can use parameter symbols with the numbers higher than `nParams`; data types will 
+      ! > be inferred for these symbols as well. 
+      
+      ! (See [PQdescribePrepared](../proc/pqdescribeprepared.html)) for a means to find out what data types were inffered.) 
+      
+      !*> As with [`PQexec`](../proc/pqexec.html), the result is normally a `PGresult` object whose contents indicate server-side
+      ! > success or failure. A null result indicates out-of-memory or inability to send to the command at all.
+      ! > Use [`PQerrorMessage`](../proc/pqerrormessage.html) to get more information about such errors.
+      ! > 
+      ! > cf. [PostgreSQL Documentation](https://www.postgresql.org/docs/current/libpq-exec.html#LIBPQ-PQPREPARE)
 
       type(c_ptr), intent(in) :: conn
       character(*), intent(in) :: stmtName
@@ -481,8 +555,21 @@ contains
       use, intrinsic :: iso_c_binding
       use :: character_operations_m
       implicit none
+
+      !*> Sends a request to execute a prepared statement with given parameters, and waits for the result.
+      ! > 
+      ! > `PQexecPrepared` is like `[[PQexecParam]]`, but the command to be executed is spcified by
+      ! > naming a previously-prepared statement, instead of giving a query string. This feature allows 
+      ! > commands that will be used repeated to be parsed and planned just once, rather than each
+      ! > time they are executed. The statement must have been prepared previously in the current session.
+      ! >
+      ! > The parameters are identical to `[[PQexecParams]]`, except that the name of a prepared statement
+      ! > is given instead of a query string, and the `paramTypes` parameter is not present (it is not
+      ! > needed since the prepared statement's parameter types were determined when it was created).
+      ! >
+      ! > cf. [PostgreSQL Documentation](https://www.postgresql.org/docs/current/libpq-exec.html#LIBPQ-PQEXECPREPARED)
       
-      ! Input paramters
+      ! Input paramters 
       type(c_ptr), intent(in) :: conn
       character(*), intent(in) :: stmtName   ! statement name
       integer(int32), intent(in) :: nParams
@@ -550,7 +637,6 @@ contains
                   )
          end block
       end if 
-   !! cf. [PostgreSQL Documentation](https://www.postgresql.org/docs/current/libpq-exec.html#LIBPQ-PQEXECPREPARED )
    end function PQexecPrepared
 
 
@@ -559,6 +645,18 @@ contains
       use, intrinsic :: iso_c_binding
       use, intrinsic :: iso_fortran_env
       implicit none
+
+      !*> Submits a request to obtain information about the specified prepared statement, and waits for completion.
+
+      !*> `PQdescribePrepared` allows an application to obtain information about a previously prepared statement.
+      ! > 
+      ! > `stmtName` can be `""` to reference the unnamed statement, otherwise it must be the name of an existing
+      ! > prepared statement. On success, a `PGresult` with status `PGRES_COMMAND_OK` is returned. The `[[PQnparams]]`
+      ! > and `[[PQparamtype]]` can be applied to this `PGresult` to obtain information about the parameters of the
+      ! > prepared statement, and the functions `[[PQnfields]]`, `[[PQfname]]`, `[[PQftype]]` etc. provide information
+      ! > about the result columns (if any) of the statement. 
+      ! > 
+      ! > cf. [PostgreSQL Documentation](https://www.postgresql.org/docs/current/libpq-exec.html#LIBPQ-PQDESCRIBEPREPARED)
       
       ! Input paramter
       type(c_ptr), intent(in) :: conn
@@ -584,7 +682,6 @@ contains
 
       res = c_PQ_describe_prepared(conn, c_stmtName)
 
-   !! cf. [PostgreSQL Documentation](https://www.postgresql.org/docs/current/libpq-exec.html#LIBPQ-PQDESCRIBEPREPARED)
    end function PQdescribePrepared
 
 
