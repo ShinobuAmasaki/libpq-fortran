@@ -1580,6 +1580,7 @@ contains
    end function PQsendQueryParams_back
 
 
+   !>> Submit a command and separate parameter to the server without waiting for the result(s).
    function PQsendQueryParams_int32 (conn, command, nParams, paramTypes, paramValues) result(res)
       use, intrinsic :: iso_fortran_env
       use, intrinsic :: iso_c_binding
@@ -1607,10 +1608,15 @@ contains
 
       res = PQsendQueryParams_back(conn, command, nParams, u_paramTypes, paramValues)
 
-   !! cf. [PostgreSQL Documentation](https://www.postgresql.org/docs/current/libpq-async.html#LIBPQ-PQSENDQUERYPARAMS)
+      !*> This is equivalent to [`PQsendQuery`](../proc/pqsendquery.html), except that query parameters can be specified
+      ! > separately form the query string. 
+      ! > This function's parameters are handled identically [`PQexecParams`](../interface/pqexecparams.html).
+      ! > Like [`PQexecParams`](../interface/pqexecparams.html), it allows only one command in the query.
+      ! 
+      ! >  cf. [PostgreSQL Documentation](https://www.postgresql.org/docs/current/libpq-async.html#LIBPQ-PQSENDQUERYPARAMS)
    end function PQsendQueryParams_int32
 
-
+   !>> Submit a command and separate parameter to the server without waiting for the result(s).
    function PQsendQueryParams_int64 (conn, command, nParams, paramTypes, paramValues) result(res)
       use, intrinsic :: iso_fortran_env
       use, intrinsic :: iso_c_binding
@@ -1638,7 +1644,13 @@ contains
 
       res = PQsendQueryParams_back(conn, command, nParams, u_paramTypes, paramValues)
 
-    !! cf. [PostgreSQL Documentation](https://www.postgresql.org/docs/current/libpq-async.html#LIBPQ-PQSENDQUERYPARAMS)
+      !*> This is equivalent to [`PQsendQuery`](../proc/pqsendquery.html), 
+      ! > except that query parameters can be specified
+      ! > separately form the query string. 
+      ! > This function's parameters are handled identically [`PQexecParams`](../interface/pqexecparams.html).
+      ! > Like [`PQexecParams`](../interface/pqexecparams.html), it allows only one command in the query.
+      ! 
+      ! >  cf. [PostgreSQL Documentation](https://www.postgresql.org/docs/current/libpq-async.html#LIBPQ-PQSENDQUERYPARAMS)
    end function PQsendQueryParams_int64
 
       
@@ -1702,7 +1714,14 @@ contains
       
    end function PQsendPrepare_back
 
-
+   !|> Sends a request to create a prepared statement with the given parameters, without waiting for completion.
+   ! >
+   ! > This is an asynchronous version of `PQprepare`:
+   ! > it returns `1` if it was able to dispatch the request, and `0` if not.
+   ! > After a successfull call, call [`PQgetResult`](../proc/pqgetresult.html) to determine whether the server successfully created the prepared statement. 
+   ! > The function's parameters are handled identically to `PQprepare`.
+   ! > 
+   ! > cf. [PostgreSQL Documentation](https://www.postgresql.org/docs/current/libpq-async.html#LIBPQ-PQSENDPREPARE)
    function PQsendPrepare_int32(conn, stmtName, query, nParams, paramTypes) result(res)
       use, intrinsic :: iso_c_binding
       use, intrinsic :: iso_fortran_env
@@ -1729,10 +1748,17 @@ contains
 
       res = PQsendPrepare_back(conn, stmtName, query, nParams, u_paramTypes)
 
-    !! cf. [PostgreSQL Documentation](https://www.postgresql.org/docs/current/libpq-async.html#LIBPQ-PQSENDPREPARE)
+
    end function PQsendPrepare_int32
 
-
+   !|> Sends a request to create a prepared statement with the given parameters, without waiting for completion.
+   ! >
+   ! > This is an asynchronous version of `PQprepare`:
+   ! > it returns `1` if it was able to dispatch the request, and `0` if not.
+   ! > After a successfull call, call [`PQgetResult`](../proc/pqgetresult.html) to determine whether the server successfully created the prepared statement. 
+   ! > The function's parameters are handled identically to `PQprepare`.
+   ! > 
+   ! > cf. [PostgreSQL Documentation](https://www.postgresql.org/docs/current/libpq-async.html#LIBPQ-PQSENDPREPARE)
    function PQsendPrepare_int64(conn, stmtName, query, nParams, paramTypes) result(res)
       use, intrinsic :: iso_c_binding
       use, intrinsic :: iso_fortran_env
