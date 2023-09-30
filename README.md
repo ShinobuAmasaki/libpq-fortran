@@ -214,14 +214,14 @@ Note:
 - [ ] `PQunescapeBytea`
 
 ### Asynchronous Command Processing
-- [x] `PQsendQuery` (plan to test)
-- [x] `PQsendQueryParams` (plan to test)
+- [x] `PQsendQuery`
+- [x] `PQsendQueryParams`
 - [x] `PQsendPrepare` (only in text format; plan to test)
 - [x] `PQsendQueryPrepared` (plan to test)
 - [x] `PQsendDescribePrepared` (plan to test)
 - [x] `PQsendDescribePortal` (plan to test)
-- [x] `PQgetResult` (plan to test)
-- [x] `PQconsumeInput` (plan to test)
+- [x] `PQgetResult`
+- [x] `PQconsumeInput`
 - [x] `PQisBusy` (plan to test)
 - [x] `PQsetnonblocking` (plan to test)
 - [x] `PQisnonblocking` (plan to test)

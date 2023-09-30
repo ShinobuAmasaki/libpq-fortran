@@ -1702,7 +1702,7 @@ contains
             character(1, kind=c_char), intent(in) :: command(*)
             integer(c_int), intent(in), value :: nParams
             type(c_ptr),    intent(in), value :: paramTypes
-            type(c_ptr),    intent(in)        :: paramValues(:)
+            type(c_ptr),    intent(in), value :: paramValues
             type(c_ptr),    intent(in), value :: paramLengths
             type(c_ptr),    intent(in), value :: paramFormats
             integer(c_int), intent(in), value :: resultFormat
