@@ -3,7 +3,7 @@ program main
    use libpq, only: PQconndefaults
 
    ! PQconninfoOption派生型の配列の宣言
-   ! この配列はallocatableかたtargetでなければならない。
+   ! この配列はallocatableかつtargetでなければならない。
    ! この配列は手続PQconndefaultにより動的に割り当てられ、
    ! PQconninfoOptionのインスタンスを格納するのに使用される。
    !
