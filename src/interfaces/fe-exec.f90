@@ -87,6 +87,7 @@ module fe_exec_m
 
    public :: PQmakeEmptyPGresult
    public :: PQcopyResult
+   public :: PQnotifies
       
 
 contains
@@ -1909,7 +1910,7 @@ contains
    !! cf. [PostgreSQL Documentation](https://www.postgresql.org/docs/current/libpq-async.html#LIBPQ-PQGETRESULT)
    end function PQgetResult
    
-   
+   !> If input is available from the server, consume it.
    function PQconsumeInput (conn) result(res)
       use, intrinsic :: iso_c_binding
       use, intrinsic :: iso_fortran_env
@@ -2178,6 +2179,30 @@ contains
       res = c_PQ_set_single_row_mode(conn)
    !! cf. [PostgreSQL Documentation](https://www.postgresql.org/docs/current/libpq-single-row-mode.html#LIBPQ-PQSETSINGLEROWMODE)   
    end function PQsetSingleRowMode
+
+!=================================================================!
+!== Asynchronous Notification
+   
+   function PQnotifies(conn) result(res)
+      use, intrinsic :: iso_c_binding
+      use, intrinsic :: iso_fortran_env
+      implicit none
+      
+      type(c_ptr), intent(in) :: conn
+      type(c_ptr) :: res
+
+      interface
+         function c_PQ_notifies (conn) bind(c, name="PQnotifies")
+            import 
+            implicit none
+            type(c_ptr), intent(in), value :: conn
+            type(c_ptr) :: c_PQ_notifies
+         end function c_PQ_notifies
+      end interface
+
+      res = c_PQ_notifies(conn)
+
+   end function PQnotifies
 
 
 
