@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+      <meta name="description" content="Access PostgreSQL via Modern Fortran.">
+    <meta name="author" content="Amasaki Shinobu" >
+    <link rel="icon" href="../../favicon.png">
+
+    <title>Example Program 2 &ndash; Libpq-Fortran</title>
+
+    <link href="../../css/bootstrap.min.css" rel="stylesheet">
+    <link href="../../css/pygments.css" rel="stylesheet">
+    <link href="../../css/font-awesome.min.css" rel="stylesheet">
+    <link href="../../css/local.css" rel="stylesheet">
+      <link  href="../../tipuesearch/tipuesearch.css" rel="stylesheet">
+      <link href="../../css/user.css" rel="stylesheet">
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+        <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+        <![endif]-->
+
+         <script src="../../js/jquery-2.1.3.min.js"></script>
+         <script src="../../js/svg-pan-zoom.min.js"></script>
+
+  </head>
+
+  <body>
+
+    <!-- Fixed navbar -->
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="../../index.html">Libpq-Fortran </a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+              <li><a href='../../page/index.html'>Readme</a></li>
+            <li class="dropdown hidden-xs visible-sm visible-md hidden-lg">
+              <a href="#" class="dropdown-toggle"
+                 data-toggle="dropdown" role="button"
+                 aria-haspopup="true"
+                 aria-expanded="false">
+                 Contents <span class="caret"></span>
+              </a>
+              <ul class="dropdown-menu">
+                    <li><a href="../../lists/files.html">Source Files</a></li>
+                  <li><a href="../../lists/modules.html">Modules</a></li>
+                  <li><a href="../../lists/procedures.html">Procedures</a></li>
+                  <li><a href="../../lists/types.html">Derived Types</a></li>
+              </ul>
+            </li>
+                <li class="visible-xs hidden-sm visible-lg">
+                  <a href="../../lists/files.html">Source Files</a>
+                </li>
+              <li class="visible-xs hidden-sm visible-lg">
+                <a href="../../lists/modules.html">Modules</a>
+              </li>
+              <li class="visible-xs hidden-sm visible-lg">
+                <a href="../../lists/procedures.html">Procedures</a>
+              </li>
+              <li class="visible-xs hidden-sm visible-lg">
+                <a href="../../lists/types.html">Derived Types</a>
+              </li>
+          </ul>
+            <form action="../../search.html" class="navbar-form navbar-right" role="search">
+              <div class="form-group">
+                <input type="text" class="form-control" placeholder="Search" name="q" id="tipue_search_input" autocomplete="off" required>
+              </div>
+              <!--
+                  <button type="submit" class="btn btn-default">Submit</button>
+                  -->
+            </form>
+        </div><!--/.nav-collapse -->
+      </div>
+    </nav>
+
+    <div class="container">
+  <div class="row">
+    <h1>Example Program 2</h1>
+    <div class="row">
+    <div class="col-lg-12">
+    <div class="well well-sm" style="min-height: 40px;">
+      <ul class="list-inline" style="margin-bottom:0px; display:inline">
+        <li><i class="fa fa-calendar-o"></i> 2023-09-30</li>
+<!--
+-->
+      </ul>
+        <ol class="breadcrumb in-well">
+         <li><a href='../../page/index.html'>Readme</a></li>
+         <li><a href='../../page/Examples/index.html'>Examples</a></li>
+         <li class="active">Example Program 2</li>
+      </ol>
+    </div>
+    </div>
+    </div>
+  </div>
+  
+  <div class="row">
+    <div class="col-md-9 col-md-push-3" id='text'>
+      <h1>Example Program 2</h1>
+<h3>Main program</h3>
+<div class="codehilite"><pre><span></span><code><span class="c">! example/testlibpq2.f90</span>
+<span class="c">!</span>
+<span class="c">! Test of the asynchronous notification interface on Linux</span>
+<span class="c">!</span>
+<span class="c">! The original is the example program 2 from the PostgreSQL official documentation.</span>
+<span class="c">!</span>
+<span class="c">! Start this program, then from psql in another window do</span>
+<span class="c">!    NOTIFY TBL2;</span>
+<span class="c">! Repeat four times to get this program to exit.</span>
+<span class="c">!</span>
+<span class="c">! Or, if you want to get fancy, try this:</span>
+<span class="c">! populate a database with the following commands</span>
+<span class="c">! </span>
+<span class="c">!   CREATE SCHEMA TESTLIBPQ2;</span>
+<span class="c">!   SET search_path = TESTLIBPQ2;</span>
+<span class="c">!   CREATE TABLE TBL1 (i int4);</span>
+<span class="c">!   CREATE TABLE TBL2 (i int4);</span>
+<span class="c">!   CREATE ROLE r1 AS ON INSERT TO TBL1 DO</span>
+<span class="c">!      (INSERT INTO TBL2 VALUES (new.i); NOTIFY TBL2);</span>
+
+<span class="k">program </span><span class="n">main</span><span class="w"></span>
+
+<span class="w">   </span><span class="k">use</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">libpq</span><span class="w"></span>
+<span class="w">   </span><span class="k">use</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">unsigned</span><span class="w"></span>
+<span class="w">   </span><span class="k">use</span><span class="p">,</span><span class="w"> </span><span class="k">intrinsic</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">iso_fortran_env</span><span class="p">,</span><span class="w"> </span><span class="n">stdout</span><span class="o">=&gt;</span><span class="n">output_unit</span><span class="p">,</span><span class="w"> </span><span class="n">stderr</span><span class="o">=&gt;</span><span class="n">error_unit</span><span class="w"></span>
+<span class="w">   </span><span class="k">use</span><span class="p">,</span><span class="w"> </span><span class="k">intrinsic</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="nb">iso_c_binding</span>
+<span class="nb">   </span><span class="k">implicit none</span>
+
+<span class="k">   </span><span class="kt">character</span><span class="p">(:),</span><span class="w"> </span><span class="k">allocatable</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">conninfo</span><span class="w"></span>
+<span class="w">   </span><span class="k">type</span><span class="p">(</span><span class="kt">c_ptr</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">conn</span><span class="p">,</span><span class="w"> </span><span class="n">res</span><span class="w"></span>
+<span class="w">   </span><span class="k">type</span><span class="p">(</span><span class="kt">c_ptr</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">notify</span><span class="w"></span>
+<span class="w">   </span><span class="kt">integer</span><span class="p">(</span><span class="n">int32</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">nnotifies</span><span class="w"></span>
+
+<span class="w">   </span><span class="c">! If the user supplies a parameter on the command line, use it as the</span>
+<span class="w">   </span><span class="c">! conninfo string; otherwise default to setting dbname=postgres and using</span>
+<span class="w">   </span><span class="c">! environment variables or defaults for all other connection parameters</span>
+
+<span class="w">   </span><span class="kt">integer</span><span class="p">(</span><span class="n">int32</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">argc</span><span class="w"></span>
+<span class="w">   </span><span class="k">type</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">arguments</span><span class="w"></span>
+<span class="w">      </span><span class="kt">character</span><span class="p">(:),</span><span class="w"> </span><span class="k">allocatable</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">v</span><span class="w"></span>
+<span class="w">   </span><span class="k">end type</span>
+<span class="k">   type</span><span class="p">(</span><span class="n">arguments</span><span class="p">),</span><span class="w"> </span><span class="k">allocatable</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">arg</span><span class="p">(:)</span><span class="w"></span>
+
+<span class="w">   </span><span class="c">! for Linux</span>
+<span class="w">   </span><span class="k">type</span><span class="p">,</span><span class="w"> </span><span class="k">bind</span><span class="p">(</span><span class="n">c</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">fd_set</span><span class="w"></span>
+<span class="w">      </span><span class="kt">integer</span><span class="p">(</span><span class="kt">c_int64_t</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">fds_bits</span><span class="p">(</span><span class="mi">16</span><span class="p">)</span><span class="w"></span>
+<span class="w">   </span><span class="k">end type</span>
+
+<span class="k">   interface</span>
+<span class="k">      function select</span><span class="p">(</span><span class="n">nfds</span><span class="p">,</span><span class="w"> </span><span class="n">readfds</span><span class="p">,</span><span class="w"> </span><span class="n">writefds</span><span class="p">,</span><span class="w"> </span><span class="n">exceptfds</span><span class="p">,</span><span class="w"> </span><span class="n">timeout</span><span class="p">)</span><span class="w"> </span><span class="k">bind</span><span class="p">(</span><span class="n">c</span><span class="p">)</span><span class="w"></span>
+<span class="w">         </span><span class="k">import </span><span class="kt">c_ptr</span><span class="p">,</span><span class="w"> </span><span class="kt">c_int</span>
+<span class="kt">         </span><span class="k">implicit none</span>
+<span class="k">         </span><span class="kt">integer</span><span class="p">(</span><span class="kt">c_int</span><span class="p">),</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">),</span><span class="w"> </span><span class="k">value</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">nfds</span><span class="w"></span>
+<span class="w">         </span><span class="k">type</span><span class="p">(</span><span class="kt">c_ptr</span><span class="p">),</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">),</span><span class="w"> </span><span class="k">value</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">readfds</span><span class="w"></span>
+<span class="w">         </span><span class="k">type</span><span class="p">(</span><span class="kt">c_ptr</span><span class="p">),</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">),</span><span class="w"> </span><span class="k">value</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">writefds</span><span class="w"></span>
+<span class="w">         </span><span class="k">type</span><span class="p">(</span><span class="kt">c_ptr</span><span class="p">),</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">),</span><span class="w"> </span><span class="k">value</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">exceptfds</span><span class="w"></span>
+<span class="w">         </span><span class="k">type</span><span class="p">(</span><span class="kt">c_ptr</span><span class="p">),</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">),</span><span class="w"> </span><span class="k">value</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">timeout</span><span class="w"></span>
+<span class="w">         </span><span class="kt">integer</span><span class="p">(</span><span class="kt">c_int</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="k">select</span>
+<span class="k">      end function select</span>
+<span class="k">   end interface</span><span class="w"></span>
+
+<span class="w">   </span><span class="c">! Interface for using macro FD_ZERO.</span>
+<span class="w">   </span><span class="k">interface</span>
+<span class="k">      subroutine </span><span class="n">c_FD_ZERO</span><span class="p">(</span><span class="n">set</span><span class="p">)</span><span class="w"> </span><span class="k">bind</span><span class="p">(</span><span class="n">c</span><span class="p">,</span><span class="w"> </span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;fd_zero_wrap&quot;</span><span class="p">)</span><span class="w"></span>
+<span class="w">         </span><span class="k">import </span><span class="n">fd_set</span><span class="w"></span>
+<span class="w">         </span><span class="k">implicit none</span>
+<span class="k">         type</span><span class="p">(</span><span class="n">fd_set</span><span class="p">),</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">inout</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">set</span><span class="w"></span>
+<span class="w">      </span><span class="k">end subroutine </span><span class="n">c_FD_ZERO</span><span class="w"></span>
+<span class="w">   </span><span class="k">end interface</span><span class="w"> </span>
+
+<span class="w">   </span><span class="c">! Interface for using macro FD_SET</span>
+<span class="w">   </span><span class="k">interface</span>
+<span class="k">      subroutine </span><span class="n">c_FD_SET</span><span class="p">(</span><span class="n">fd</span><span class="p">,</span><span class="w"> </span><span class="n">set</span><span class="p">)</span><span class="w"> </span><span class="k">bind</span><span class="p">(</span><span class="n">c</span><span class="p">,</span><span class="w"> </span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;fd_set_wrap&quot;</span><span class="p">)</span><span class="w"></span>
+<span class="w">         </span><span class="k">import </span><span class="n">fd_set</span><span class="p">,</span><span class="w"> </span><span class="kt">c_int</span>
+<span class="kt">         </span><span class="k">implicit none</span>
+<span class="k">         </span><span class="kt">integer</span><span class="p">(</span><span class="kt">c_int</span><span class="p">),</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">),</span><span class="w"> </span><span class="k">value</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">fd</span><span class="w"></span>
+<span class="w">         </span><span class="k">type</span><span class="p">(</span><span class="n">fd_set</span><span class="p">),</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">inout</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">set</span><span class="w"></span>
+<span class="w">      </span><span class="k">end subroutine </span><span class="n">c_FD_SET</span><span class="w"></span>
+<span class="w">   </span><span class="k">end interface</span><span class="w"></span>
+
+
+<span class="w">    </span><span class="c">! Number of arguments not including execution command.</span>
+<span class="w">   </span><span class="n">argc</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">command_argument_count</span><span class="p">()</span><span class="w"></span>
+
+<span class="w">   </span><span class="c">! String array for storing execution commands and arguments.</span>
+<span class="w">   </span><span class="k">allocate</span><span class="p">(</span><span class="n">arg</span><span class="p">(</span><span class="mi">0</span><span class="p">:</span><span class="n">argc</span><span class="p">))</span><span class="w"></span>
+
+<span class="w">   </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">argc</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="k">then</span>
+<span class="k">      </span><span class="n">get_argument</span><span class="p">:</span><span class="w"> </span><span class="k">block</span>
+<span class="k">         </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">n</span><span class="p">,</span><span class="w"> </span><span class="n">length_nth_arg</span><span class="w"></span>
+<span class="w">         </span><span class="k">do </span><span class="n">n</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">argc</span><span class="w"></span>
+
+<span class="w">            </span><span class="c">! get the length of the n-th argument.</span>
+<span class="w">            </span><span class="k">call </span><span class="nb">get_command_argument</span><span class="p">(</span><span class="n">number</span><span class="o">=</span><span class="n">n</span><span class="p">,</span><span class="w"> </span><span class="n">length</span><span class="o">=</span><span class="n">length_nth_arg</span><span class="p">)</span><span class="w"></span>
+
+<span class="w">            </span><span class="c">! allocate a string with the same length as the n-th argument.</span>
+<span class="w">            </span><span class="k">allocate</span><span class="p">(</span><span class="kt">character</span><span class="p">(</span><span class="n">length_nth_arg</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">arg</span><span class="p">(</span><span class="n">n</span><span class="p">)%</span><span class="n">v</span><span class="p">)</span><span class="w"> </span>
+
+<span class="w">            </span><span class="c">! get the value of the n-th argument as a string.</span>
+<span class="w">            </span><span class="k">call </span><span class="nb">get_command_argument</span><span class="p">(</span><span class="n">number</span><span class="o">=</span><span class="n">n</span><span class="p">,</span><span class="w"> </span><span class="k">value</span><span class="o">=</span><span class="n">arg</span><span class="p">(</span><span class="n">n</span><span class="p">)%</span><span class="n">v</span><span class="p">)</span><span class="w"></span>
+
+<span class="w">         </span><span class="k">end do</span>
+<span class="k">      end block </span><span class="n">get_argument</span><span class="w"></span>
+
+<span class="w">      </span><span class="n">conninfo</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">arg</span><span class="p">(</span><span class="mi">1</span><span class="p">)%</span><span class="n">v</span><span class="w"></span>
+<span class="w">   </span><span class="k">else</span>
+<span class="k">      </span><span class="n">conninfo</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;dbname = postgres&quot;</span><span class="w"></span>
+<span class="w">   </span><span class="k">end if</span><span class="w"></span>
+
+<span class="w">   </span><span class="c">! Make a connection to the database.</span>
+<span class="w">   </span><span class="n">conn</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">PQconnectdb</span><span class="p">(</span><span class="n">conninfo</span><span class="p">)</span><span class="w"></span>
+
+<span class="w">   </span><span class="c">! Check to see that the backend connection was successfully made.</span>
+<span class="w">   </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">PQstatus</span><span class="p">(</span><span class="n">conn</span><span class="p">)</span><span class="w"> </span><span class="o">/=</span><span class="w"> </span><span class="n">CONNECTION_OK</span><span class="p">)</span><span class="w"> </span><span class="k">then </span>
+<span class="k">      write</span><span class="p">(</span><span class="n">stderr</span><span class="p">,</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="n">PQerrorMessage</span><span class="p">(</span><span class="n">conn</span><span class="p">)</span><span class="w"></span>
+<span class="w">      </span><span class="k">call </span><span class="n">exit_nicely</span><span class="p">(</span><span class="n">conn</span><span class="p">)</span><span class="w"></span>
+<span class="w">   </span><span class="k">end if</span><span class="w"></span>
+
+<span class="w">   </span><span class="c">! Set always-secure search path, so malicious users can&#39;t take control.</span>
+<span class="w">   </span><span class="n">res</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">PQexec</span><span class="p">(</span><span class="n">conn</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;select pg_catalog.set_config(&#39;search_path&#39;, &#39;&#39;, false)&quot;</span><span class="p">)</span><span class="w"></span>
+<span class="w">   </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">PQresultStatus</span><span class="p">(</span><span class="n">res</span><span class="p">)</span><span class="w"> </span><span class="o">/=</span><span class="w"> </span><span class="n">PGRES_TUPLES_OK</span><span class="p">)</span><span class="w"> </span><span class="k">then</span>
+<span class="k">      write</span><span class="p">(</span><span class="n">stderr</span><span class="p">,</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="s2">&quot;SET failed: &quot;</span><span class="p">,</span><span class="w"> </span><span class="n">PQerrorMessage</span><span class="p">(</span><span class="n">conn</span><span class="p">)</span><span class="w"></span>
+<span class="w">      </span><span class="k">call </span><span class="n">PQclear</span><span class="p">(</span><span class="n">res</span><span class="p">)</span><span class="w"></span>
+<span class="w">      </span><span class="k">call </span><span class="n">exit_nicely</span><span class="p">(</span><span class="n">conn</span><span class="p">)</span><span class="w"></span>
+<span class="w">   </span><span class="k">end if</span><span class="w"></span>
+
+<span class="w">   </span><span class="c">! Should PQclear type(c_ptr) result whenever it is no longer need to avoid</span>
+<span class="w">   </span><span class="c">! memory leaks.</span>
+<span class="w">   </span><span class="k">call </span><span class="n">PQclear</span><span class="p">(</span><span class="n">res</span><span class="p">)</span><span class="w"></span>
+
+<span class="w">   </span><span class="c">! Issue LISTEN command to enable notifications from the rule&#39;s NOTIFY.</span>
+<span class="w">   </span><span class="n">res</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">PQexec</span><span class="p">(</span><span class="n">conn</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;LISTEN TBL2&quot;</span><span class="p">)</span><span class="w"></span>
+<span class="w">   </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">PQresultStatus</span><span class="p">(</span><span class="n">res</span><span class="p">)</span><span class="w"> </span><span class="o">/=</span><span class="w"> </span><span class="n">PGRES_COMMAND_OK</span><span class="p">)</span><span class="w"> </span><span class="k">then</span>
+<span class="k">      write</span><span class="p">(</span><span class="n">stderr</span><span class="p">,</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="s2">&quot;LISTEN command failed: &quot;</span><span class="p">,</span><span class="w"> </span><span class="n">PQerrorMessage</span><span class="p">(</span><span class="n">conn</span><span class="p">)</span><span class="w"></span>
+<span class="w">      </span><span class="k">call </span><span class="n">PQclear</span><span class="p">(</span><span class="n">res</span><span class="p">)</span><span class="w"></span>
+<span class="w">      </span><span class="k">call </span><span class="n">exit_nicely</span><span class="p">(</span><span class="n">conn</span><span class="p">)</span><span class="w"></span>
+<span class="w">   </span><span class="k">end if</span>
+<span class="k">   call </span><span class="n">PQclear</span><span class="p">(</span><span class="n">res</span><span class="p">)</span><span class="w"></span>
+
+<span class="w">   </span><span class="c">! Quit after four notifies are recieved.</span>
+<span class="w">   </span><span class="n">nnotifies</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="w"></span>
+<span class="w">   </span><span class="k">do while</span><span class="w"> </span><span class="p">(</span><span class="n">nnotifies</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">4</span><span class="p">)</span><span class="w"></span>
+
+<span class="w">      </span><span class="c">! Sleep until something happens on the connection.</span>
+<span class="w">      </span><span class="c">! We use select(2) to wait for input, but you could also use poll() or</span>
+<span class="w">      </span><span class="c">! similar facilities.</span>
+
+<span class="w">      </span><span class="k">block</span>
+<span class="k">         </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">sock</span><span class="w"></span>
+<span class="w">         </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">res</span><span class="w"></span>
+<span class="w">         </span><span class="k">type</span><span class="p">(</span><span class="n">fd_set</span><span class="p">),</span><span class="w"> </span><span class="k">target</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">input_mask</span><span class="w"></span>
+<span class="w">         </span><span class="k">type</span><span class="p">(</span><span class="n">pgNotify</span><span class="p">),</span><span class="w"> </span><span class="k">pointer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">fptr</span><span class="w"></span>
+<span class="w">         </span><span class="kt">character</span><span class="p">(</span><span class="mi">4</span><span class="p">),</span><span class="w"> </span><span class="k">pointer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">str_ptr</span><span class="w"></span>
+
+
+<span class="w">         </span><span class="n">sock</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">PQsocket</span><span class="p">(</span><span class="n">conn</span><span class="p">)</span><span class="w"></span>
+
+<span class="w">         </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">sock</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="k">exit</span><span class="w">  </span><span class="c">! shouldn&#39;t happen</span>
+
+<span class="w">         </span><span class="k">call </span><span class="n">c_FD_ZERO</span><span class="p">(</span><span class="n">input_mask</span><span class="p">)</span><span class="w"></span>
+<span class="w">         </span><span class="k">call </span><span class="n">c_FD_SET</span><span class="p">(</span><span class="n">sock</span><span class="p">,</span><span class="w"> </span><span class="n">input_mask</span><span class="p">)</span><span class="w"></span>
+
+<span class="w">         </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="k">select</span><span class="p">(</span><span class="n">sock</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="nb">c_loc</span><span class="p">(</span><span class="n">input_mask</span><span class="p">),</span><span class="w"> </span><span class="nb">c_null_ptr</span><span class="p">,</span><span class="w"> </span><span class="nb">c_null_ptr</span><span class="p">,</span><span class="w"> </span><span class="nb">c_null_ptr</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="k">then</span>
+
+<span class="k">            write</span><span class="p">(</span><span class="n">stderr</span><span class="p">,</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="s2">&quot;select() faild.&quot;</span><span class="w"></span>
+<span class="w">            </span><span class="k">call </span><span class="n">exit_nicely</span><span class="p">(</span><span class="n">conn</span><span class="p">)</span><span class="w"></span>
+
+<span class="w">         </span><span class="k">end if</span><span class="w"> </span>
+
+<span class="w">         </span><span class="c">! Now check for input.</span>
+<span class="w">         </span><span class="n">res</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">PQconsumeInput</span><span class="p">(</span><span class="n">conn</span><span class="p">)</span><span class="w"></span>
+
+<span class="w">         </span><span class="n">notify</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">PQnotifies</span><span class="p">(</span><span class="n">conn</span><span class="p">)</span><span class="w"></span>
+
+<span class="w">         </span><span class="k">do while</span><span class="w"> </span><span class="p">(</span><span class="nb">c_associated</span><span class="p">(</span><span class="n">notify</span><span class="p">))</span><span class="w"></span>
+<span class="w">            </span><span class="k">call </span><span class="nb">c_f_pointer</span><span class="p">(</span><span class="n">notify</span><span class="p">,</span><span class="w"> </span><span class="n">fptr</span><span class="p">)</span><span class="w"></span>
+<span class="w">            </span><span class="k">call </span><span class="nb">c_f_pointer</span><span class="p">(</span><span class="n">fptr</span><span class="p">%</span><span class="n">relname</span><span class="p">,</span><span class="w"> </span><span class="n">str_ptr</span><span class="p">)</span><span class="w"></span>
+<span class="w">            </span><span class="k">write</span><span class="p">(</span><span class="n">stderr</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;(3a, i0)&quot;</span><span class="p">)</span><span class="w"> </span><span class="s1">&#39;ASYNC NOTIFY of &#39;</span><span class="p">,</span><span class="w">  </span><span class="n">str_ptr</span><span class="p">,</span><span class="w"> </span><span class="p">&amp;</span><span class="w"></span>
+<span class="w">               </span><span class="s1">&#39; received from backend PID &#39;</span><span class="p">,</span><span class="w"> </span><span class="n">fptr</span><span class="p">%</span><span class="n">be_pid</span><span class="w"></span>
+<span class="w">            </span><span class="k">call </span><span class="n">PQfreemem</span><span class="p">(</span><span class="n">notify</span><span class="p">)</span><span class="w"></span>
+<span class="w">            </span><span class="n">nnotifies</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">nnotifies</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="w"></span>
+<span class="w">            </span><span class="n">res</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">PQconsumeInput</span><span class="p">(</span><span class="n">conn</span><span class="p">)</span><span class="w"></span>
+<span class="w">            </span><span class="n">notify</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">PQnotifies</span><span class="p">(</span><span class="n">conn</span><span class="p">)</span><span class="w"></span>
+<span class="w">         </span><span class="k">end do</span>
+
+<span class="k">      end block</span>
+<span class="k">   end do</span>
+
+<span class="k">   write</span><span class="p">(</span><span class="n">stderr</span><span class="p">,</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="s2">&quot;Done.&quot;</span><span class="w"></span>
+
+<span class="w">   </span><span class="c">! close the connection to the database and cleanup</span>
+<span class="w">   </span><span class="k">call </span><span class="n">PQfinish</span><span class="p">(</span><span class="n">conn</span><span class="p">)</span><span class="w"></span>
+
+<span class="w">   </span><span class="k">stop</span>
+
+<span class="k">contains</span>
+
+<span class="k">   subroutine </span><span class="n">exit_nicely</span><span class="p">(</span><span class="n">conn</span><span class="p">)</span><span class="w"></span>
+<span class="w">      </span><span class="k">use</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">libpq</span><span class="w"></span>
+<span class="w">      </span><span class="k">use</span><span class="p">,</span><span class="w"> </span><span class="k">intrinsic</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="nb">iso_c_binding</span>
+<span class="nb">      </span><span class="k">implicit none</span>
+
+<span class="k">      type</span><span class="p">(</span><span class="kt">c_ptr</span><span class="p">),</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">inout</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">conn</span><span class="w"></span>
+
+<span class="w">      </span><span class="k">call </span><span class="n">PQfinish</span><span class="p">(</span><span class="n">conn</span><span class="p">)</span><span class="w"></span>
+<span class="w">      </span><span class="k">stop</span>
+<span class="k">   end subroutine </span><span class="n">exit_nicely</span><span class="w"></span>
+
+<span class="k">end program </span><span class="n">main</span><span class="w"></span>
+</code></pre></div>
+
+<h3>C subroutines</h3>
+<div class="codehilite"><pre><span></span><code><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;sys/select.h&gt;</span><span class="cp"></span>
+
+<span class="kt">void</span><span class="w"> </span><span class="nf">fd_zero_wrap</span><span class="p">(</span><span class="n">fd_set</span><span class="w"> </span><span class="o">*</span><span class="n">set</span><span class="p">)</span><span class="w"></span>
+<span class="p">{</span><span class="w"></span>
+<span class="w">   </span><span class="n">FD_ZERO</span><span class="p">(</span><span class="n">set</span><span class="p">);</span><span class="w"></span>
+<span class="w">   </span><span class="k">return</span><span class="p">;</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
+
+<span class="kt">void</span><span class="w"> </span><span class="nf">fd_set_wrap</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">fd</span><span class="p">,</span><span class="w"> </span><span class="n">fd_set</span><span class="o">*</span><span class="n">set</span><span class="p">)</span><span class="w"></span>
+<span class="p">{</span><span class="w"></span>
+<span class="w">   </span><span class="n">FD_SET</span><span class="p">(</span><span class="n">fd</span><span class="p">,</span><span class="w"> </span><span class="n">set</span><span class="p">);</span><span class="w"></span>
+<span class="w">   </span><span class="k">return</span><span class="p">;</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
+</code></pre></div>
+    </div>
+    <div class="col-md-3 col-md-pull-9">
+      <hr class="visible-xs visible-sm">
+        <div class="well toc">
+          <ul class="nav nav-stacked nav-pills">
+            <li role="presentation" class="title"><a href='../../page/index.html'>Readme</a></li>
+          </ul>
+          <hr>
+          <ul class="nav nav-stacked nav-pills">
+            <li role="presentation">
+            <a href='../../page/./Quickstart.html'>Quickstart</a>
+            </li>
+            <li role="presentation">
+            <a href='../../page/Examples/index.html'>Examples</a>
+            <ul class="nav nav-stacked nav-pills">
+                          <li role="presentation">
+            <a href='../../page/Examples/example-1.html'>Example Program 1</a>
+            </li>
+            <li role="presentation" class="disabled">
+            <a href='../../page/Examples/example-2.html'>Example Program 2</a>
+            </li>
+
+            </ul>
+            </li>
+            <li role="presentation">
+            <a href='../../page/./Convention.html'>Coding Conventions</a>
+            </li>
+          </ul>
+        </div>
+    </div>
+  </div>
+      <hr>
+    </div> <!-- /container -->
+    <footer>
+      <div class="container">
+        <div class="row">
+          <div class="col-xs-6 col-md-6"><p>Libpq-Fortran was developed by Amasaki Shinobu<br>&copy; 2023 <a rel="license" href="https://opensource.org/licenses/MIT">MIT</a>
+</p>
+          </div>
+          <div class="col-xs-6 col-md-6">
+            <p class="text-right">
+              Documentation generated by
+              <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
+            </p>
+          </div>
+        </div>
+        <br>
+      </div> <!-- /container -->
+    </footer>
+
+    <!-- Bootstrap core JavaScript
+         ================================================== -->
+         <!-- Placed at the end of the document so the pages load faster -->
+    <!--
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+        -->
+        <script src="../../js/bootstrap.min.js"></script>
+        <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+        <script src="../../js/ie10-viewport-bug-workaround.js"></script>
+
+        <!-- MathJax JavaScript
+             ================================================== -->
+             <!-- Placed at the end of the document so the pages load faster -->
+        <script type="text/x-mathjax-config">
+          MathJax.Hub.Config({
+          TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'AMS' } },
+          jax: ['input/TeX','input/MathML','output/HTML-CSS'],
+          extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']
+          });
+        </script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+          <script src="../../tipuesearch/tipuesearch_content.js"></script>
+          <script src="../../tipuesearch/tipuesearch_set.js"></script>
+          <script src="../../tipuesearch/tipuesearch.js"></script>
+
+  </body>
+</html>

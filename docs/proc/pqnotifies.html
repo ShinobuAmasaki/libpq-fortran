@@ -8,7 +8,7 @@
     <meta name="author" content="Amasaki Shinobu" >
     <link rel="icon" href="../favicon.png">
 
-    <title>PQclear &ndash; Libpq-Fortran</title>
+    <title>PQnotifies &ndash; Libpq-Fortran</title>
 
     <link href="../css/bootstrap.min.css" rel="stylesheet">
     <link href="../css/pygments.css" rel="stylesheet">
@@ -86,8 +86,8 @@
 
     <div class="container">
   <div class="row">
-    <h1>PQclear
-      <small>Subroutine</small>
+    <h1>PQnotifies
+      <small>Function</small>
       
     </h1>
       <div class="row" id="info-bar">
@@ -99,7 +99,7 @@
           <li id="statements"><i class="fa fa-list-ol"></i>
             <a data-toggle="tooltip"
                data-placement="bottom" data-html="true"
-               title=" 0.6% of total for procedures.">13 statements</a>
+               title=" 0.7% of total for procedures.">16 statements</a>
           </li>
 
             <li id="source-file">
@@ -110,7 +110,7 @@
         <ol class="breadcrumb in-well text-right">
               <li><a href='../sourcefile/fe-exec.f90.html'>fe-exec.f90</a></li>
               <li><a href='../module/fe_exec_m.html'>fe_exec_m</a></li>
-          <li class="active">PQclear</li>
+          <li class="active">PQnotifies</li>
         </ol>
       </div>
     </div>
@@ -153,7 +153,7 @@
     </div>
     
     <div class="col-md-9" id='text'>
-    <h2>public  subroutine PQclear(res)  
+    <h2>public  function PQnotifies(conn) result(res)  
 </h2>
         <div class="panel panel-default">
       <div class="panel-heading">
@@ -162,6 +162,7 @@
       <ul class="list-group">
           <li class="list-group-item">
             <ul class="list-inline">
+                <li><a href='<a href="http://fortranwiki.org/fortran/show/iso_fortran_env">iso_fortran_env</a>'>iso_fortran_env</a></li>
                 <li><a href='<a href="http://fortranwiki.org/fortran/show/iso_c_binding">iso_c_binding</a>'>iso_c_binding</a></li>
             </ul>
           </li>
@@ -169,7 +170,6 @@
     </div>
 
 
-    <p>cf. <a href="https://www.postgresql.org/docs/current/libpq-exec.html#LIBPQ-PQCLEAR">PostgreSQL Documentation</a></p>
 
 
     <h3>Arguments</h3>
@@ -185,7 +185,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-res~60"></span>
+              <span class="anchor" id="variable-conn~59"></span>
               type(c_ptr),
             </td>
 <td>intent(in)</td>
@@ -193,7 +193,7 @@
               
             </td>
             <td>::</td>
-            <td><strong>res</strong></td>
+            <td><strong>conn</strong></td>
             <td>
                 
             </td>
@@ -201,6 +201,13 @@
     </tbody>
   </table>
 
+      <h3>Return Value
+        <small>
+          <span class="anchor" id="variable-res~57"></span>
+          type(c_ptr)
+        </small>
+      </h3>
+      
     <br>
 
     <section class="visible-xs visible-sm hidden-md">

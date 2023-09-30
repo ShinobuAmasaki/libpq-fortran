@@ -1,6 +1,6 @@
 ! example/testlibpq2.f90
 !
-! Test of the asynchronous notification interface on LInux
+! Test of the asynchronous notification interface on Linux
 !
 ! The original is the example program 2 from the PostgreSQL official documentation.
 !
@@ -175,7 +175,8 @@ program main
          do while (c_associated(notify))
             call c_f_pointer(notify, fptr)
             call c_f_pointer(fptr%relname, str_ptr)
-            write(stderr, "(3a, i0)") 'ASYNC NOTIFY of ',  str_ptr,' received from backend PID ', fptr%be_pid
+            write(stderr, "(3a, i0)") 'ASYNC NOTIFY of ',  str_ptr, &
+               ' received from backend PID ', fptr%be_pid
             call PQfreemem(notify)
             nnotifies = nnotifies + 1
             res = PQconsumeInput(conn)

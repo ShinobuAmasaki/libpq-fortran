@@ -99,7 +99,7 @@
           <li id="statements"><i class="fa fa-list-ol"></i>
             <a data-toggle="tooltip"
                data-placement="bottom" data-html="true"
-               title="49.0% of total for modules and submodules.">1444 statements</a>
+               title="49.0% of total for modules and submodules.">1461 statements</a>
           </li>
 
             <li id="source-file">
@@ -206,6 +206,7 @@
             <a class="list-group-item" href="../module/fe_exec_m.html#proc-pqpipelinesync">PQpipelineSync</a>
             <a class="list-group-item" href="../module/fe_exec_m.html#proc-pqsendflushrequest">PQsendFlushRequest</a>
             <a class="list-group-item" href="../module/fe_exec_m.html#proc-pqsetsinglerowmode">PQsetSingleRowMode</a>
+            <a class="list-group-item" href="../module/fe_exec_m.html#proc-pqnotifies">PQnotifies</a>
             <a class="list-group-item" href="../module/fe_exec_m.html#proc-pqmakeemptypgresult">PQmakeEmptyPGresult</a>
             <a class="list-group-item" href="../module/fe_exec_m.html#proc-pqcopyresult">PQcopyResult</a>
             <a class="list-group-item" href="../module/fe_exec_m.html#proc-pqisthreadsafe">PQisthreadsafe</a>
@@ -327,6 +328,7 @@
             <a class="list-group-item" href="../module/fe_exec_m.html#proc-pqpipelinesync">PQpipelineSync</a>
             <a class="list-group-item" href="../module/fe_exec_m.html#proc-pqsendflushrequest">PQsendFlushRequest</a>
             <a class="list-group-item" href="../module/fe_exec_m.html#proc-pqsetsinglerowmode">PQsetSingleRowMode</a>
+            <a class="list-group-item" href="../module/fe_exec_m.html#proc-pqnotifies">PQnotifies</a>
             <a class="list-group-item" href="../module/fe_exec_m.html#proc-pqmakeemptypgresult">PQmakeEmptyPGresult</a>
             <a class="list-group-item" href="../module/fe_exec_m.html#proc-pqcopyresult">PQcopyResult</a>
             <a class="list-group-item" href="../module/fe_exec_m.html#proc-pqisthreadsafe">PQisthreadsafe</a>
@@ -3333,7 +3335,8 @@
 </h3></div>
     <div class="panel-body">
           
-  <p>cf. <a href="https://www.postgresql.org/docs/current/libpq-async.html#LIBPQ-PQCONSUMEINPUT">PostgreSQL Documentation</a></p>
+  <p>If input is available from the server, consume it.
+cf. <a href="https://www.postgresql.org/docs/current/libpq-async.html#LIBPQ-PQCONSUMEINPUT">PostgreSQL Documentation</a></p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -3832,6 +3835,51 @@
     <h4>
     Return Value
     <small>integer(kind=int32)</small>
+    </h4>
+    
+
+    </div>
+  </div>
+
+              <div class="panel panel-default">
+    <div class="panel-heading codesum"><span class="anchor" id="proc-pqnotifies"></span><h3>public  function <a href='../proc/pqnotifies.html'>PQnotifies</a>(conn) result(res)  
+</h3></div>
+    <div class="panel-body">
+          
+  
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th>Type</th>
+<th>Intent</th><th>Optional</th>        <th>Attributes</th>
+        <th></th>
+        <th>Name</th>
+        <th></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              type(c_ptr),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>conn</strong></td>
+            <td>
+
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+    <h4>
+    Return Value
+    <small>type(c_ptr)</small>
     </h4>
     
 

@@ -8,7 +8,7 @@
     <meta name="author" content="Amasaki Shinobu" >
     <link rel="icon" href="../favicon.png">
 
-    <title>PQclear &ndash; Libpq-Fortran</title>
+    <title>PGnotify_t &ndash; Libpq-Fortran</title>
 
     <link href="../css/bootstrap.min.css" rel="stylesheet">
     <link href="../css/pygments.css" rel="stylesheet">
@@ -86,8 +86,8 @@
 
     <div class="container">
   <div class="row">
-    <h1>PQclear
-      <small>Subroutine</small>
+    <h1>PGnotify_t
+      <small>Module</small>
       
     </h1>
       <div class="row" id="info-bar">
@@ -99,18 +99,17 @@
           <li id="statements"><i class="fa fa-list-ol"></i>
             <a data-toggle="tooltip"
                data-placement="bottom" data-html="true"
-               title=" 0.6% of total for procedures.">13 statements</a>
+               title=" 0.3% of total for modules and submodules.">10 statements</a>
           </li>
 
             <li id="source-file">
               <i class="fa fa-code"></i>
-              <a href="../src/fe-exec.f90"> Source File</a>
+              <a href="../src/PGnotify_t.f90"> Source File</a>
             </li>
         </ul>
         <ol class="breadcrumb in-well text-right">
-              <li><a href='../sourcefile/fe-exec.f90.html'>fe-exec.f90</a></li>
-              <li><a href='../module/fe_exec_m.html'>fe_exec_m</a></li>
-          <li class="active">PQclear</li>
+              <li><a href='../sourcefile/pgnotify_t.f90.html'>PGnotify_t.f90</a></li>
+          <li class="active">PGnotify_t</li>
         </ol>
       </div>
     </div>
@@ -122,10 +121,10 @@
   </script>
 
   </div>
-  
+
   <div class="row">
     <div class="col-md-3 hidden-xs hidden-sm visible-md visible-lg">
-      <div id="sidebar">
+        <div id="sidebar">
       <h3>Contents</h3>
   
   
@@ -137,7 +136,19 @@
   
   
   
-  
+      <div class="panel panel-primary">
+      <div class="panel-heading text-left">
+        <h3 class="panel-title">
+          <a data-toggle="collapse" href="#types-0">Derived Types</a>
+        </h3>
+      </div>
+      <div id="types-0" class="panel-collapse collapse">
+        <div class="list-group">
+            <a class="list-group-item" href="../module/pgnotify_t.html#type-pgnotify">pgNotify</a>
+        </div>
+      </div>
+    </div>
+
   
   
   
@@ -151,11 +162,10 @@
   </div>
 
     </div>
-    
+
     <div class="col-md-9" id='text'>
-    <h2>public  subroutine PQclear(res)  
-</h2>
-        <div class="panel panel-default">
+      
+<br>          <div class="panel panel-default">
       <div class="panel-heading">
         <h3 class="panel-title">Uses</h3>
       </div>
@@ -168,77 +178,144 @@
       </ul>
     </div>
 
+      
+      <br>
 
-    <p>cf. <a href="https://www.postgresql.org/docs/current/libpq-exec.html#LIBPQ-PQCLEAR">PostgreSQL Documentation</a></p>
+      <section class="visible-xs visible-sm hidden-md">
+          <h3>Contents</h3>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+      <div class="panel panel-primary">
+      <div class="panel-heading text-left">
+        <h3 class="panel-title">
+          <a data-toggle="collapse" href="#types-1">Derived Types</a>
+        </h3>
+      </div>
+      <div id="types-1" class="panel-collapse collapse">
+        <div class="list-group">
+            <a class="list-group-item" href="../module/pgnotify_t.html#type-pgnotify">pgNotify</a>
+        </div>
+      </div>
+    </div>
+
+  
+  
+  
+  
+  
+  
+  
+  
 
 
-    <h3>Arguments</h3>
-        <table class="table table-striped varlist">
+      </section>
+      <br class="visible-xs visible-sm hidden-md">
+
+
+
+
+
+
+        <section>
+          <h2>Derived Types</h2>
+              <div class="panel panel-default">
+    <div class="panel-heading codesum">
+      <span class="anchor" id="type-pgnotify"></span>
+      <h3>
+        type, public&nbsp;::&nbsp;
+        <a href='../type/pgnotify.html'>pgNotify</a>
+        
+      </h3>
+    </div>
+    <div class="panel-body">
+      
+
+        <h4>Components</h4>
+          <table class="table table-striped varlist">
     <thead>
       <tr>
         <th>Type</th>
-<th>Intent</th><th>Optional</th>        <th>Attributes</th>
+<th>Visibility</th>        <th>Attributes</th>
         <th></th>
         <th>Name</th>
-        <th></th>
+<th></th><th>Initial</th>        <th></th>
     </thead>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-res~60"></span>
+              <span class="anchor" id="variable-relname"></span>
               type(c_ptr),
             </td>
-<td>intent(in)</td>
-              <td></td>            <td>
+              <td>public</td>
+            <td>
               
             </td>
             <td>::</td>
-            <td><strong>res</strong></td>
+            <td><strong>relname</strong></td>
+                <td></td>
+                <td></td>
             <td>
-                
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-be_pid"></span>
+              integer(kind=c_int),
+            </td>
+              <td>public</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>be_pid</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-extra"></span>
+              type(c_ptr),
+            </td>
+              <td>public</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>extra</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+
             </td>
         </tr>
     </tbody>
   </table>
 
-    <br>
-
-    <section class="visible-xs visible-sm hidden-md">
-        <h3>Contents</h3>
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
 
 
-    </section>
-    <br class="visible-xs visible-sm hidden-md">
+
+    </div>
+  </div>
+
+        </section>
+        <br>
 
 
-    
-    
-
-    
-    
 
 
-    
-    
+
     </div>
   </div>
 

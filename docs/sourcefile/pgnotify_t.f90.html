@@ -8,7 +8,7 @@
     <meta name="author" content="Amasaki Shinobu" >
     <link rel="icon" href="../favicon.png">
 
-    <title>PQclear &ndash; Libpq-Fortran</title>
+    <title>PGnotify_t.f90 &ndash; Libpq-Fortran</title>
 
     <link href="../css/bootstrap.min.css" rel="stylesheet">
     <link href="../css/pygments.css" rel="stylesheet">
@@ -86,8 +86,8 @@
 
     <div class="container">
   <div class="row">
-    <h1>PQclear
-      <small>Subroutine</small>
+    <h1>PGnotify_t.f90
+      <small>Source File</small>
       
     </h1>
       <div class="row" id="info-bar">
@@ -99,18 +99,16 @@
           <li id="statements"><i class="fa fa-list-ol"></i>
             <a data-toggle="tooltip"
                data-placement="bottom" data-html="true"
-               title=" 0.6% of total for procedures.">13 statements</a>
+               title=" 0.3% of total for source files.">10 statements</a>
           </li>
 
             <li id="source-file">
               <i class="fa fa-code"></i>
-              <a href="../src/fe-exec.f90"> Source File</a>
+              <a href="../src/PGnotify_t.f90"> Source File</a>
             </li>
         </ul>
         <ol class="breadcrumb in-well text-right">
-              <li><a href='../sourcefile/fe-exec.f90.html'>fe-exec.f90</a></li>
-              <li><a href='../module/fe_exec_m.html'>fe_exec_m</a></li>
-          <li class="active">PQclear</li>
+          <li class="active">PGnotify_t.f90</li>
         </ol>
       </div>
     </div>
@@ -122,7 +120,6 @@
   </script>
 
   </div>
-  
   <div class="row">
     <div class="col-md-3 hidden-xs hidden-sm visible-md visible-lg">
       <div id="sidebar">
@@ -132,6 +129,19 @@
   
   
   
+      <div class="panel panel-primary">
+      <div class="panel-heading text-left">
+        <h3 class="panel-title">
+          <a data-toggle="collapse" href="#mods-0">Modules</a>
+        </h3>
+      </div>
+      <div id="mods-0" class="panel-collapse collapse">
+        <div class="list-group">
+            <a class="list-group-item" href="../module/pgnotify_t.html">PGnotify_t</a>
+        </div>
+      </div>
+    </div>
+
   
   
   
@@ -145,63 +155,20 @@
   
   
   
-  
+    <div class="panel panel-primary">
+      <div class="panel-heading text-left"><h3 class="panel-title">Source Code</h3></div>
+      <div class="list-group">
+        <a class="list-group-item" href="../sourcefile/pgnotify_t.f90.html#src">PGnotify_t.f90</a>
+      </div>
+    </div>
 
 
   </div>
 
     </div>
-    
     <div class="col-md-9" id='text'>
-    <h2>public  subroutine PQclear(res)  
-</h2>
-        <div class="panel panel-default">
-      <div class="panel-heading">
-        <h3 class="panel-title">Uses</h3>
-      </div>
-      <ul class="list-group">
-          <li class="list-group-item">
-            <ul class="list-inline">
-                <li><a href='<a href="http://fortranwiki.org/fortran/show/iso_c_binding">iso_c_binding</a>'>iso_c_binding</a></li>
-            </ul>
-          </li>
-      </ul>
-    </div>
-
-
-    <p>cf. <a href="https://www.postgresql.org/docs/current/libpq-exec.html#LIBPQ-PQCLEAR">PostgreSQL Documentation</a></p>
-
-
-    <h3>Arguments</h3>
-        <table class="table table-striped varlist">
-    <thead>
-      <tr>
-        <th>Type</th>
-<th>Intent</th><th>Optional</th>        <th>Attributes</th>
-        <th></th>
-        <th>Name</th>
-        <th></th>
-    </thead>
-    <tbody>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-res~60"></span>
-              type(c_ptr),
-            </td>
-<td>intent(in)</td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>res</strong></td>
-            <td>
-                
-            </td>
-        </tr>
-    </tbody>
-  </table>
-
-    <br>
+      
+      <br>
 
     <section class="visible-xs visible-sm hidden-md">
         <h3>Contents</h3>
@@ -210,6 +177,19 @@
   
   
   
+      <div class="panel panel-primary">
+      <div class="panel-heading text-left">
+        <h3 class="panel-title">
+          <a data-toggle="collapse" href="#mods-1">Modules</a>
+        </h3>
+      </div>
+      <div id="mods-1" class="panel-collapse collapse">
+        <div class="list-group">
+            <a class="list-group-item" href="../module/pgnotify_t.html">PGnotify_t</a>
+        </div>
+      </div>
+    </div>
+
   
   
   
@@ -223,22 +203,34 @@
   
   
   
-  
+    <div class="panel panel-primary">
+      <div class="panel-heading text-left"><h3 class="panel-title">Source Code</h3></div>
+      <div class="list-group">
+        <a class="list-group-item" href="../sourcefile/pgnotify_t.f90.html#src">PGnotify_t.f90</a>
+      </div>
+    </div>
 
 
     </section>
     <br class="visible-xs visible-sm hidden-md">
 
+    <section>
+      <h2><span class="anchor" id="src"></span>Source Code</h2>
+    <div class="hl"><pre><span></span><a id="ln-1" name="ln-1" href="#ln-1"></a><span class="k">module </span><span class="n">PGnotify_t</span><span class="w"></span>
+<a id="ln-2" name="ln-2" href="#ln-2"></a><span class="w">   </span><span class="k">use</span><span class="p">,</span><span class="w"> </span><span class="k">intrinsic</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="nb">iso_c_binding</span>
+<a id="ln-3" name="ln-3" href="#ln-3"></a><span class="nb">   </span><span class="k">implicit none</span>
+<a id="ln-4" name="ln-4" href="#ln-4"></a><span class="k">   private</span>
+<a id="ln-5" name="ln-5" href="#ln-5"></a>
+<a id="ln-6" name="ln-6" href="#ln-6"></a><span class="k">   type</span><span class="p">,</span><span class="w"> </span><span class="k">public</span><span class="p">,</span><span class="w"> </span><span class="k">bind</span><span class="p">(</span><span class="n">c</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">pgNotify</span><span class="w"></span>
+<a id="ln-7" name="ln-7" href="#ln-7"></a><span class="w">      </span><span class="k">type</span><span class="p">(</span><span class="kt">c_ptr</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">relname</span><span class="w"></span>
+<a id="ln-8" name="ln-8" href="#ln-8"></a><span class="w">      </span><span class="kt">integer</span><span class="p">(</span><span class="kt">c_int</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">be_pid</span><span class="w"></span>
+<a id="ln-9" name="ln-9" href="#ln-9"></a><span class="w">      </span><span class="k">type</span><span class="p">(</span><span class="kt">c_ptr</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">extra</span><span class="w"></span>
+<a id="ln-10" name="ln-10" href="#ln-10"></a><span class="w">   </span><span class="k">end type </span><span class="n">pgNotify</span><span class="w"></span>
+<a id="ln-11" name="ln-11" href="#ln-11"></a>
+<a id="ln-12" name="ln-12" href="#ln-12"></a><span class="k">end module </span><span class="n">PGnotify_t</span><span class="w"></span>
+</pre></div>
 
-    
-    
-
-    
-    
-
-
-    
-    
+    </section>
     </div>
   </div>
 

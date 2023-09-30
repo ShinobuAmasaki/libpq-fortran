@@ -32,13 +32,15 @@ module libpq
             PQpipelineStatus, PQenterPipelineMode, PQexitPipelineMode, &
             PQpipelineSync, PQsendFlushRequest, PQsetSingleRowMode, &
             PQsendQueryParams, PQisthreadsafe, PQmakeEmptyPGresult, &
-            PQcopyResult
+            PQcopyResult, PQnotifies, PQfreemem
 
    use :: fe_auth_m, only: PQencryptPasswordConn
 
    use :: fe_misc_m, only: PQlibVersion
 
    use :: PQconninfoOption_t, only: PQconninfoOption
+
+   use :: PGnotify_t, only: PGnotify
 
    use :: enumerators_t
 
@@ -96,6 +98,9 @@ module libpq
    public :: PQgetCancel
    public :: PQfreeCancel
    public :: PQcancel
+
+   ! Notification
+   public :: PQnotifies
 
    ! Misc.
    public :: PQclientEncoding
@@ -155,6 +160,7 @@ module libpq
    public :: PQsendFlushRequest
    public :: PQescapeLiteral
    public :: PQescapeIdentifier
+   public :: PQfreemem
 
    public :: PQisthreadsafe
 
@@ -166,6 +172,7 @@ module libpq
 
    ! Derived types
    public :: PQconninfoOption
+   public :: pgNotify
 
    ! enumerators_t
    public :: CONNECTION_OK, CONNECTION_BAD, &
