@@ -98,7 +98,7 @@ contains
 !== Main Functions
 
    !> Send query to the server and wait until receiving the result.
-   function PQexec(conn, query) result(res)
+   function PQexec (conn, query) result(res)
       use, intrinsic :: iso_c_binding
       implicit none
       
@@ -134,9 +134,9 @@ contains
       ! > Returns a `PGresult` pointer or possibly a null pointer.
       ! > A non-null pointer will generally be returned except in out-of-memory conditions or
       ! > serious errors such as inability to send the command to the server.
-      ! > The [[PGresultStatus]] function should be called to check the return value for any errors
+      ! > The `[[PQresultStatus]]` function should be called to check the return value for any errors
       ! > (including the value of a null pointer, in which case it will return PGRES_FATAL_ERROR).
-      ! > Use [[PQerrorMessage]] to get more information about such errors.
+      ! > Use `[[PQerrorMessage]]` to get more information about such errors.
       ! > 
       ! > cf. [PostgreSQL Documentation](https://www.postgresql.org/docs/current/libpq-exec.html#LIBPQ-PQEXEC)
 
@@ -171,13 +171,47 @@ contains
       use :: unsigned
       use :: character_operations_m
       implicit none
+
+            !*### Example
+      !```fortran
+      ! block
+      !    character(:), allocatable :: command
+      !    character(8) :: values(2)
+      !    type(c_ptr) :: res
+      ! 
+      !    command = "select $1::bigint + $2::bigint;"
+      !    values(1) = "300"
+      !    values(2) = "500"
+      !
+      !    res = PQexecParams(conn, command, size(values), [0, 0], values)
+      !    if (PQresultStatus(res) /= PGRES_TUPLES_OK) then
+      !       print *, PQerrorMessage(conn)
+      !       call PQclear(res)
+      !    end if
+      !    
+      !    print *, PQgetvalue(res, 0, 0) ! the result "800" is expected.
+      !    call PQclear(res)
+      !```
       
       ! Input parameters
+      !> The connection object to send the command through. 
       type(c_ptr),    intent(in) :: conn
+      
+      !> The SQL command string to be executed. If parameters are used, 
+      !> they are referred to in the command string as `$1`, `$2`, etc.
       character(*),   intent(in) :: command
+
+      !> The number of parameters supplied; it is the length of the arrays `paramTypes`,
+      !> `paramValues`. 
       integer(int32), intent(in) :: nParams
 
+      !> Specifies, by OID, the data types to be assigned to the parameter symbols.
+      !> If any particular element in the array is zero, the server infers a data type
+      !> for the parameter symbol in the same way it would do for an untyped literal string.
       integer(int32), intent(in) :: paramTypes(:)
+
+      !> Specifies the actual values of the parameters. A empty string in this array means
+      !> the corresponding parameter is null. 
       character(*),   intent(in) :: paramValues(:)    ! paramValues(nParams)
       
       ! Output pgresult 
@@ -206,13 +240,48 @@ contains
       use :: unsigned
       use :: character_operations_m
       implicit none
+
+      !*### Example
+      !```fortran
+      ! block
+      !    character(:), allocatable :: command
+      !    character(8) :: values(2)
+      !    type(c_ptr) :: res
+      ! 
+      !    command = "select $1::bigint + $2::bigint;"
+      !    values(1) = "300"
+      !    values(2) = "500"
+      !
+      !    res = PQexecParams(conn, command, size(values), [0_8, 0_8], values)
+      !    if (PQresultStatus(res) /= PGRES_TUPLES_OK) then
+      !       print *, PQerrorMessage(conn)
+      !       call PQclear(res)
+      !    end if
+      !    
+      !    print *, PQgetvalue(res, 0, 0) ! the result "800" is expected.
+      !    call PQclear(res)
+      !```
+
       
       ! Input parameters
+      !> The connection object to send the command through. 
       type(c_ptr),    intent(in) :: conn
+
+      !> The SQL command string to be executed. If parameters are used, 
+      !> they are referred to in the command string as `$1`, `$2`, etc.
       character(*),   intent(in) :: command
+
+      !> The number of parameters supplied; it is the length of the arrays `paramTypes`,
+      !> `paramValues`. 
       integer(int32), intent(in) :: nParams
 
+      !> Specifies, by OID, the data types to be assigned to the parameter symbols.
+      !> If any particular element in the array is zero, the server infers a data type
+      !> for the parameter symbol in the same way it would do for an untyped literal string.
       integer(int64), intent(in) :: paramTypes(:)
+
+      !> Specifies the actual values of the parameters. A empty string in this array means
+      !> the corresponding parameter is null. 
       character(*),   intent(in) :: paramValues(:)    ! paramValues(nParams)
 
       ! Output pgresult 
