@@ -22,6 +22,9 @@ program main
    command = "select 1234;"
 
    ires = PQsendQuery(conn, command)
+   if (ires /= 1) then
+      print *, PQerrorMessage(conn)
+   end if
 
    res = PQgetResult(conn)
 
@@ -32,6 +35,7 @@ program main
       end if
 
       print *, PQgetvalue(res, 0, 0)
+      call PQclear(res)
    
       res = PQgetResult(conn)
 

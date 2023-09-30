@@ -1391,6 +1391,10 @@ contains
 !=================================================================!
 !== Asynchronous Command Processing
 
+   !|> Submits a command to the server without waiting for the result(s).
+   ! > `1` is returned if the command was successfully dispatched and
+   ! > `0` if not (in which case, use PQerrorMessage to get more information about the failure).
+   !
    function PQsendQuery (conn, command) result(res)
       use, intrinsic :: iso_c_binding
       use, intrinsic :: iso_fortran_env
@@ -1416,7 +1420,45 @@ contains
 
       res = c_PQ_send_query(conn, c_command)
 
-   !! cf. [PostgreSQL Documentation](https://www.postgresql.org/docs/current/libpq-async.html#LIBPQ-PQSENDQUERY)
+      !*> After successfully calling `PQsendQuery`, call `[[PQgetResult]]` one or more times
+      ! > to obtain the results. `PQsendQuery` cannot be called again (on the same connection)
+      ! > until `[[PQgetResult]]` has returned a null pointer, indicating that the command is done.
+
+      !*> In pipeline mode, this function is disallowed.
+      ! > 
+      ! > cf. [PostgreSQL Documentation](https://www.postgresql.org/docs/current/libpq-async.html#LIBPQ-PQSENDQUERY)
+
+      !*### Example
+      !```Fortran
+      !   type(c_ptr) :: conn
+      !   type(c_ptr) :: res
+      !   character(:), allocatable :: command
+      !   integer :: ires
+      !
+      !   conn = PQconnectdb("dbname=postgres")
+      !   (...error handling...)
+      !
+      !   ires = PQsendQuery(conn, command)
+      !   if (ires /= 1) then
+      !      print *, PQerrorMessage(conn)
+      !   end if
+      !
+      !   res = PQgetResult(conn)
+      !
+      !   do while (c_associated(res))
+      !
+      !      if (PQresultStatus(res) /= PGRES_TUPLES_OK) then
+      !         print *, PQerrorMessage(conn)
+      !      end if
+      !
+      !      print *, PQgetvalue(res, 0, 0)
+      !      call PQclear(res)
+      !      
+      !      res = PQgetResult(conn)
+      !
+      !   end do
+      !```
+
    end function PQsendQuery
 
    ! 戻り値はinteger(4)なのでPQexecParamsとは別に実装する
