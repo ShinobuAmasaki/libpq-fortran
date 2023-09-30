@@ -739,7 +739,10 @@ contains
       
       res = c_PQ_result_status(pgresult)
 
-   !! cf. [PostgreSQL Documentation](https://www.postgresql.org/docs/current/libpq-exec.html#LIBPQ-PQRESULTSTATUS)
+      !*> Returns the result status of the command.
+      ! > 
+      ! > cf. [PostgreSQL Documentation](https://www.postgresql.org/docs/current/libpq-exec.html#LIBPQ-PQRESULTSTATUS)
+      
    end function PQresultStatus
 
 
