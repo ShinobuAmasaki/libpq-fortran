@@ -129,6 +129,38 @@ contains
 
       res = c_PQ_exec(conn, c_query)
 
+      !|> Submit a command to the server and waits for the result.
+      ! > 
+      ! > Returns a `PGresult` pointer or possibly a null pointer.
+      ! > A non-null pointer will generally be returned except in out-of-memory conditions or
+      ! > serious errors such as inability to send the command to the server.
+      ! > The [[PGresultStatus]] function should be called to check the return value for any errors
+      ! > (including the value of a null pointer, in which case it will return PGRES_FATAL_ERROR).
+      ! > Use [[PQerrorMessage]] to get more information about such errors.
+      ! > 
+      ! > cf. [PostgreSQL Documentation](https://www.postgresql.org/docs/current/libpq-exec.html#LIBPQ-PQEXEC)
+
+      !*### Example
+      !```Fortran
+      ! type(c_ptr) :: conn, res
+      ! integer :: stat 
+      ! 
+      ! conn = PQconnectdb("dbname=postgres")
+      ! !...error handling...
+      !
+      ! res = PQexec(conn, "select 1234;")
+      ! stat = PQresultStatus(res)
+      ! if (stat /= PGRES_COMMAND_OK .and. stat /= PGRES_TUPLES_OK) then
+      !    print *, PQerrorMessage(conn)
+      !    call PQclear(res)
+      !    call PQfinish(conn)
+      !    error stop
+      ! end if
+      !
+      ! ! ... some statements ...
+      ! call PQclear(res)
+      !```
+
    end function PQexec
 
    ! Only TEXT format for now 
