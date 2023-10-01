@@ -223,8 +223,8 @@ Note:
 - [x] `PQgetResult`
 - [x] `PQconsumeInput`
 - [x] `PQisBusy` (plan to test)
-- [x] `PQsetnonblocking` (plan to test)
-- [x] `PQisnonblocking` (plan to test)
+- [x] `PQsetnonblocking`
+- [x] `PQisnonblocking`
 - [x] `PQflush` (plan to test)
 
 ### Pipeline Mode
@@ -242,6 +242,9 @@ Note:
 - [x] `PQfreeCancel`
 - [x] `PQcancel`
 - <s>`PQrequestCancel`</s>
+
+### Asynchronous Notification 
+- [x] PQnotifies
 
 ### Functions Associated with the COPY Command
 - [ ] `PQnfields`
