@@ -169,7 +169,13 @@
     </div>
 
 
-    <p>cf. <a href="https://www.postgresql.org/docs/current/libpq-status.html#LIBPQ-PQSOCKET">PostgreSQL Documentation</a></p>
+    <blockquote>
+<p>Obtain the file descriptor number of the connection socket to the server. </p>
+<p>A valid descriptor will be greater than or equal to 0; a result of -1 indicates that no server connection is
+currently open. (This will not change during normal operation, but could change during connection set up or 
+reset.)</p>
+<p>cf. <a href="https://www.postgresql.org/docs/current/libpq-status.html#LIBPQ-PQSOCKET">PostgreSQL Documentation</a></p>
+</blockquote>
 
 
     <h3>Arguments</h3>

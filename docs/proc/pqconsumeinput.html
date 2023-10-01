@@ -162,16 +162,22 @@
       <ul class="list-group">
           <li class="list-group-item">
             <ul class="list-inline">
-                <li><a href='<a href="http://fortranwiki.org/fortran/show/iso_fortran_env">iso_fortran_env</a>'>iso_fortran_env</a></li>
                 <li><a href='<a href="http://fortranwiki.org/fortran/show/iso_c_binding">iso_c_binding</a>'>iso_c_binding</a></li>
+                <li><a href='<a href="http://fortranwiki.org/fortran/show/iso_fortran_env">iso_fortran_env</a>'>iso_fortran_env</a></li>
             </ul>
           </li>
       </ul>
     </div>
 
 
-    <p>If input is available from the server, consume it.
-cf. <a href="https://www.postgresql.org/docs/current/libpq-async.html#LIBPQ-PQCONSUMEINPUT">PostgreSQL Documentation</a></p>
+    <blockquote>
+<p>If input is available from the server, consume it.</p>
+<p><code>PQconsumeInput</code> normally returns <code>1</code> indicating "no error", but returns <code>0</code> if there was some kind of 
+trouble (in which case <code><a href="../proc/pqerrormessage.html">PQerrorMessage</a></code> can be consulted). Note that the result does not say whether any
+input data was actually collected. After calling <code>PQconsumeInput</code>, the application can check <code><a href="../proc/pqisbusy.html">PQisBusy</a></code>
+and/or <code><a href="../proc/pqnotifies.html">PQnotifies</a></code> to see if their state has changed.</p>
+<p>cf. <a href="https://www.postgresql.org/docs/current/libpq-async.html#LIBPQ-PQCONSUMEINPUT">PostgreSQL Documentation</a></p>
+</blockquote>
 
 
     <h3>Arguments</h3>

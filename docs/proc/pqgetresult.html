@@ -162,15 +162,32 @@
       <ul class="list-group">
           <li class="list-group-item">
             <ul class="list-inline">
-                <li><a href='<a href="http://fortranwiki.org/fortran/show/iso_fortran_env">iso_fortran_env</a>'>iso_fortran_env</a></li>
                 <li><a href='<a href="http://fortranwiki.org/fortran/show/iso_c_binding">iso_c_binding</a>'>iso_c_binding</a></li>
+                <li><a href='<a href="http://fortranwiki.org/fortran/show/iso_fortran_env">iso_fortran_env</a>'>iso_fortran_env</a></li>
             </ul>
           </li>
       </ul>
     </div>
 
 
-    <p>cf. <a href="https://www.postgresql.org/docs/current/libpq-async.html#LIBPQ-PQGETRESULT">PostgreSQL Documentation</a></p>
+    <blockquote>
+<p>Waits for the next result from a prior <code><a href="../proc/pqsendquery.html">PQsendQuery</a></code>, <code><a href="../interface/pqsendqueryparams.html">PQsendQueryParams</a></code>, <code><a href="../interface/pqsendprepare.html">PQsendPrepare</a></code>,
+<code><a href="../interface/pqsendqueryprepared.html">PQsendQueryPrepared</a></code>, <code><a href="../proc/pqsenddescribeprepared.html">PQsendDescribePrepared</a></code>, <code><a>PQsendDescribePortra</a></code>, or <code><a href="../proc/pqpipelinesync.html">PQpipelineSync</a></code> call,
+and returns it.  A null pointer is returned when the command is complete and there will be no more results.</p>
+<p><code>PQgetResult</code> must be called repeatedly until it returns a null pointer, indicating that the command is done.
+(If called when no command is active, <code>PQgetResult</code> will just return a null pointer at once.)
+Each non-null result from <code>PQgetResult</code> should be processed using  the same <code>PGresult</code> accessor functions
+prebiously described. Don't forget to free each result object with <code>PQclear</code> when done with it.
+Note that <code>PQgetResult</code> will block only if a command is active and the necessary response data has not yet
+been read by <code><a href="../proc/pqconsumeinput.html">PQconsumeInput</a></code>.</p>
+<p>In pipeline mode, <code>PQgetResult</code> will return normally unless an error occurs; for any subsequent query sent
+after the one that caused the error unit (and excluding) the next synchronization point, a special result of 
+type <code>PGRES_PIPELINE_ABORTED</code> will be returned, and a null pointer will be returned after it.
+When the pipeline synchronization point is reached, a result of type <code>PGRES_PIPELINE_SYNC</code> will be returned.
+The result of the next query after the synchronization point follows immediately (that is, no null pointer
+is returned after the synchronization point).</p>
+<p>cf. <a href="https://www.postgresql.org/docs/current/libpq-async.html#LIBPQ-PQGETRESULT">PostgreSQL Documentation</a></p>
+</blockquote>
 
 
     <h3>Arguments</h3>

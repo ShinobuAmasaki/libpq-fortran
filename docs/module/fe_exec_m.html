@@ -3432,7 +3432,9 @@ Like <a href="../interface/pqexecparams.html"><code>PQexecParams</code></a>, it 
 </h3></div>
     <div class="panel-body">
           
-  <p>cf. <a href="https://www.postgresql.org/docs/current/libpq-async.html#LIBPQ-PQGETRESULT">PostgreSQL Documentation</a></p>
+  <p>Waits for the next result from a prior <code><a href="../proc/pqsendquery.html">PQsendQuery</a></code>, <code><a href="../interface/pqsendqueryparams.html">PQsendQueryParams</a></code>, <code><a href="../interface/pqsendprepare.html">PQsendPrepare</a></code>,
+<code><a href="../interface/pqsendqueryprepared.html">PQsendQueryPrepared</a></code>, <code><a href="../proc/pqsenddescribeprepared.html">PQsendDescribePrepared</a></code>, <code><a>PQsendDescribePortra</a></code>, or <code><a href="../proc/pqpipelinesync.html">PQpipelineSync</a></code> call,
+and returns it.  A null pointer is returned when the command is complete and there will be no more results.</p><a href="../proc/pqgetresult.html" class="pull-right"><emph>Read more&hellip;</emph></a>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -3477,8 +3479,7 @@ Like <a href="../interface/pqexecparams.html"><code>PQexecParams</code></a>, it 
 </h3></div>
     <div class="panel-body">
           
-  <p>If input is available from the server, consume it.
-cf. <a href="https://www.postgresql.org/docs/current/libpq-async.html#LIBPQ-PQCONSUMEINPUT">PostgreSQL Documentation</a></p>
+  <p>If input is available from the server, consume it.</p><a href="../proc/pqconsumeinput.html" class="pull-right"><emph>Read more&hellip;</emph></a>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">

@@ -276,10 +276,14 @@
 <span class="k">            write</span><span class="p">(</span><span class="n">stderr</span><span class="p">,</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="s2">&quot;select() faild.&quot;</span><span class="w"></span>
 <span class="w">            </span><span class="k">call </span><span class="n">exit_nicely</span><span class="p">(</span><span class="n">conn</span><span class="p">)</span><span class="w"></span>
 
-<span class="w">         </span><span class="k">end if</span><span class="w"> </span>
+<span class="w">         </span><span class="k">end if </span>
+
+<span class="k">         print</span><span class="w"> </span><span class="o">*</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;PQisBusy: &quot;</span><span class="p">,</span><span class="w"> </span><span class="n">PQisBusy</span><span class="p">(</span><span class="n">conn</span><span class="p">)</span><span class="w"></span>
 
 <span class="w">         </span><span class="c">! Now check for input.</span>
 <span class="w">         </span><span class="n">res</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">PQconsumeInput</span><span class="p">(</span><span class="n">conn</span><span class="p">)</span><span class="w"></span>
+<span class="w">         </span><span class="k">print</span><span class="w"> </span><span class="o">*</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;PQconsumeInput&quot;</span><span class="w"></span>
+<span class="w">         </span><span class="k">print</span><span class="w"> </span><span class="o">*</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;PQisBusy: &quot;</span><span class="p">,</span><span class="w"> </span><span class="n">PQisBusy</span><span class="p">(</span><span class="n">conn</span><span class="p">)</span><span class="w"></span>
 
 <span class="w">         </span><span class="n">notify</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">PQnotifies</span><span class="p">(</span><span class="n">conn</span><span class="p">)</span><span class="w"></span>
 
