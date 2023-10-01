@@ -219,13 +219,13 @@ Note:
 - [x] `PQsendPrepare` (only in text format)
 - [x] `PQsendQueryPrepared`
 - [x] `PQsendDescribePrepared`
-- [x] `PQsendDescribePortal` (plan to test)
+- [x] `PQsendDescribePortal` (not tested)
 - [x] `PQgetResult`
 - [x] `PQconsumeInput`
 - [x] `PQisBusy`
 - [x] `PQsetnonblocking`
 - [x] `PQisnonblocking`
-- [x] `PQflush` (plan to test)
+- [x] `PQflush` (not tested)
 
 ### Pipeline Mode
 - [x] `PQpipelineStatus`
