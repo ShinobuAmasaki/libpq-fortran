@@ -167,8 +167,12 @@ program main
 
          end if 
 
+         print *, "PQisBusy: ", PQisBusy(conn)
+
          ! Now check for input.
          res = PQconsumeInput(conn)
+         print *, "PQconsumeInput"
+         print *, "PQisBusy: ", PQisBusy(conn)
 
          notify = PQnotifies(conn)
 

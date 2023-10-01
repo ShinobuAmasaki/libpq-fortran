@@ -222,7 +222,7 @@ Note:
 - [x] `PQsendDescribePortal` (plan to test)
 - [x] `PQgetResult`
 - [x] `PQconsumeInput`
-- [x] `PQisBusy` (plan to test)
+- [x] `PQisBusy`
 - [x] `PQsetnonblocking`
 - [x] `PQisnonblocking`
 - [x] `PQflush` (plan to test)
