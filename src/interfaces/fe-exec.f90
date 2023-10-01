@@ -2175,11 +2175,31 @@ contains
          end function c_PQ_get_result
       end interface
 
+      !*> Waits for the next result from a prior `[[PQsendQuery]]`, `[[PQsendQueryParams]]`, `[[PQsendPrepare]]`,
+      ! > `[[PQsendQueryPrepared]]`, `[[PQsendDescribePrepared]]`, `[[PQsendDescribePortra]]`, or `[[PQpipelineSync]]` call,
+      ! > and returns it.  A null pointer is returned when the command is complete and there will be no more results.
+      
+      !*> `PQgetResult` must be called repeatedly until it returns a null pointer, indicating that the command is done.
+      ! > (If called when no command is active, `PQgetResult` will just return a null pointer at once.)
+      ! > Each non-null result from `PQgetResult` should be processed using  the same `PGresult` accessor functions
+      ! > prebiously described. Don't forget to free each result object with `PQclear` when done with it.
+      ! > Note that `PQgetResult` will block only if a command is active and the necessary response data has not yet
+      ! > been read by `[[PQconsumeInput]]`.
+
+      !*> In pipeline mode, `PQgetResult` will return normally unless an error occurs; for any subsequent query sent
+      ! > after the one that caused the error unit (and excluding) the next synchronization point, a special result of 
+      ! > type `PGRES_PIPELINE_ABORTED` will be returned, and a null pointer will be returned after it.
+      ! > When the pipeline synchronization point is reached, a result of type `PGRES_PIPELINE_SYNC` will be returned.
+      ! > The result of the next query after the synchronization point follows immediately (that is, no null pointer
+      ! > is returned after the synchronization point).
+      ! > 
+      ! > cf. [PostgreSQL Documentation](https://www.postgresql.org/docs/current/libpq-async.html#LIBPQ-PQGETRESULT)
+
       res = c_PQ_get_result(conn)
-   !! cf. [PostgreSQL Documentation](https://www.postgresql.org/docs/current/libpq-async.html#LIBPQ-PQGETRESULT)
    end function PQgetResult
    
-   !> If input is available from the server, consume it.
+   !>> If input is available from the server, consume it.
+   !>> 
    function PQconsumeInput (conn) result(res)
       use, intrinsic :: iso_c_binding
       use, intrinsic :: iso_fortran_env
@@ -2198,7 +2218,12 @@ contains
 
       res = c_PQ_consume_input(conn)
 
-   !! cf. [PostgreSQL Documentation](https://www.postgresql.org/docs/current/libpq-async.html#LIBPQ-PQCONSUMEINPUT)
+      !*> `PQconsumeInput` normally returns `1` indicating "no error", but returns `0` if there was some kind of 
+      ! > trouble (in which case `[[PQerrorMessage]]` can be consulted). Note that the result does not say whether any
+      ! > input data was actually collected. After calling `PQconsumeInput`, the application can check `[[PQisBusy]]`
+      ! > and/or `[[PQnotifies]]` to see if their state has changed.
+      ! > 
+      ! > cf. [PostgreSQL Documentation](https://www.postgresql.org/docs/current/libpq-async.html#LIBPQ-PQCONSUMEINPUT)
    end function PQconsumeInput
       
 
