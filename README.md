@@ -216,9 +216,9 @@ Note:
 ### Asynchronous Command Processing
 - [x] `PQsendQuery`
 - [x] `PQsendQueryParams`
-- [x] `PQsendPrepare` (only in text format; plan to test)
-- [x] `PQsendQueryPrepared` (plan to test)
-- [x] `PQsendDescribePrepared` (plan to test)
+- [x] `PQsendPrepare` (only in text format)
+- [x] `PQsendQueryPrepared`
+- [x] `PQsendDescribePrepared`
 - [x] `PQsendDescribePortal` (plan to test)
 - [x] `PQgetResult`
 - [x] `PQconsumeInput`
