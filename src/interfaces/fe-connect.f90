@@ -1219,6 +1219,8 @@ contains
    end function PQsocket
 
 
+   !>> Returns the process ID (PID) of the backend process handling this connection.
+   !>> 
    function PQbackendPID(conn)
       use, intrinsic :: iso_c_binding
       implicit none
@@ -1237,7 +1239,11 @@ contains
 
       PQbackendPID = c_PQ_backend_pid(conn)
 
-      !* cf. [PostgreSQL Documentation](https://www.postgresql.org/docs/current/libpq-status.html#LIBPQ-PQBACKENDPID)
+      !*> The backend PID is useful for debugging purposes and for comparison to `NOTIFY` messages (which include the PID
+      ! > of the notifying backend process). Note that the PID belongs to a process executing on the database server host,
+      ! > not the local host!
+      ! >
+      ! > cf. [PostgreSQL Documentation](https://www.postgresql.org/docs/current/libpq-status.html#LIBPQ-PQBACKENDPID)
    end function PQbackendPID
 
 
