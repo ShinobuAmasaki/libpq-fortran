@@ -864,6 +864,9 @@ contains
 
 
    !-- Delete a PGresult
+   !>> Frees the storage associated with a `PGresult`.
+   !>> Every command result should be freed via `PQclear` when it is no longer needed.
+   !>> 
    subroutine PQclear(res)
       use, intrinsic :: iso_c_binding
       implicit none
@@ -884,7 +887,13 @@ contains
 
       call c_PQ_clear(res)
 
-   !! cf. [PostgreSQL Documentation](https://www.postgresql.org/docs/current/libpq-exec.html#LIBPQ-PQCLEAR)
+      !*> If the argumentis a `NULL` pointer, no operation is performed.
+      ! >
+      ! > You can keep a `PGresult` object around for as long as you need it; it does not go away when you issue a new
+      ! > command, nor even if you close the connection. 
+      ! > To get rid of it, you must call `PQclear`. Failure to do this will result in memory leaks in your application.
+      ! >
+      ! > cf. [PostgreSQL Documentation](https://www.postgresql.org/docs/current/libpq-exec.html#LIBPQ-PQCLEAR)
    end subroutine PQclear
 
    
