@@ -1515,7 +1515,8 @@ contains
    !* cf. [PostgreSQL Documentation](https://www.postgresql.org/docs/current/libpq-cancel.html#LIBPQ-PQFREECANCEL)
    end subroutine PQfreeCancel
 
-
+   !>> Requests that the server abandon processing of the current command.
+   !>> 
    function PQcancel (cancel, errbuf, errbufsize)
       use, intrinsic :: iso_c_binding
       use, intrinsic :: iso_fortran_env
@@ -1550,7 +1551,22 @@ contains
 
       errbuf = c_errbuf(1:errbufsize)
 
-   !* cf. [PostgreSQL Documentation](https://www.postgresql.org/docs/current/libpq-cancel.html#LIBPQ-PQCANCEL)
+      !*> The return value is `1` if the cancel request was successfully dispatched and `0` if not.
+      ! > If not, `errbuf` is filled with an explanatory error message. `errbuf` must be a char array
+      ! > of size `errbufsize` (the recommended size is 256 bites).
+      ! >
+      
+      !*> Successful dispatch is no guarantee that the request will have any effect, however.
+      ! > If the cancellation is effective, the current command will terminate early and return an error
+      ! > result. If the cancellation fails (say, because the server was already done processing the command),
+      ! > then there will be no visible result at all.
+      ! > 
+      
+      !*> `PQcancel` can safely be invoked from a signal handler, if the `errbuf` is a local variable in the
+      ! > signal handler. The `PGcancel` object is read-only as far as `PQcancel` is concerned, so it 
+      ! > can also be invoked from a thread that is separate from the one manipulating the `PGconn` object.
+      ! > 
+      ! > cf. [PostgreSQL Documentation](https://www.postgresql.org/docs/current/libpq-cancel.html#LIBPQ-PQCANCEL)
    end function PQcancel
 
 
