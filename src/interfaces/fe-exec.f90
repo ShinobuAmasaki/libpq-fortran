@@ -558,7 +558,7 @@ contains
 
       !*> Sends a request to execute a prepared statement with given parameters, and waits for the result.
       ! > 
-      ! > `PQexecPrepared` is like `[[PQexecParam]]`, but the command to be executed is spcified by
+      ! > `PQexecPrepared` is like `[[PQexecParams]]`, but the command to be executed is spcified by
       ! > naming a previously-prepared statement, instead of giving a query string. This feature allows 
       ! > commands that will be used repeated to be parsed and planned just once, rather than each
       ! > time they are executed. The statement must have been prepared previously in the current session.
@@ -1059,6 +1059,9 @@ contains
    end function PQftablecol
 
 
+   !>> Returns the format code indicating the format of the given column.
+   !>> Column numbers start at `0`.
+   !>> 
    function PQfformat (pgresult, column_number) result(res)
       use, intrinsic :: iso_c_binding
       use, intrinsic :: iso_fortran_env
@@ -1081,7 +1084,10 @@ contains
 
       res = c_PQ_field_format(pgresult, column_number)
 
-   !! cf. [PostgreSQL Documentation](https://www.postgresql.org/docs/current/libpq-exec.html#LIBPQ-PQFFORMAT)
+      !*> Format code zero indicates textual data representatiion, while format code one indicates binary
+      ! > representation. (Other codes are reserved for future definition.)
+      ! > 
+      ! > cf. [PostgreSQL Documentation](https://www.postgresql.org/docs/current/libpq-exec.html#LIBPQ-PQFFORMAT)
    end function PQfformat
 
 
@@ -1172,6 +1178,8 @@ contains
    end function PQfsize
 
 
+   !>> Return `.true.` if the PQresult contains binary data and `.false.` if it contains text data.
+   !>>
    function PQbinaryTuples (pgresult)
       use, intrinsic :: iso_c_binding
       use, intrinsic :: iso_fortran_env
@@ -1201,7 +1209,12 @@ contains
 
       end if
 
-   !! cf. [PostgreSQL Documentation](https://www.postgresql.org/docs/current/libpq-exec.html#LIBPQ-PQBINARYTUPLES)
+      !*> This function is deprecated (except for its use in connection with `COPY`), because it is possible
+      ! > for a single `PGresult` to contain text data in some columns and binary data in others.
+      ! > `[[PQfformat]]` is preferred.
+      ! > `PQbinaryTuples` returns `1` only if all columns of the result are binary (format 1).
+      ! >
+      ! > cf. [PostgreSQL Documentation](https://www.postgresql.org/docs/current/libpq-exec.html#LIBPQ-PQBINARYTUPLES)
    end function PQbinaryTuples
 
   
@@ -2176,7 +2189,7 @@ contains
       end interface
 
       !*> Waits for the next result from a prior `[[PQsendQuery]]`, `[[PQsendQueryParams]]`, `[[PQsendPrepare]]`,
-      ! > `[[PQsendQueryPrepared]]`, `[[PQsendDescribePrepared]]`, `[[PQsendDescribePortra]]`, or `[[PQpipelineSync]]` call,
+      ! > `[[PQsendQueryPrepared]]`, `[[PQsendDescribePrepared]]`, `[[PQsendDescribePortal]]`, or `[[PQpipelineSync]]` call,
       ! > and returns it.  A null pointer is returned when the command is complete and there will be no more results.
       
       !*> `PQgetResult` must be called repeatedly until it returns a null pointer, indicating that the command is done.
