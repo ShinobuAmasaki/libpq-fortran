@@ -1579,6 +1579,11 @@ contains
       use, intrinsic :: iso_c_binding
       use, intrinsic :: iso_fortran_env
 
+      !* Returns the client encoding.
+      !  
+      !  It returns the encoding string such as `UTF8`.
+      !  This function wraps both `PQclientEncoding` and `pg_encoding_to_char`.
+
       ! Input parameter
       type(c_ptr), intent(in) :: conn
       
