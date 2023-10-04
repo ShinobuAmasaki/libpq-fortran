@@ -35,12 +35,29 @@ module PQconninfoOption_t
    integer, parameter :: CONNINFO_LABEL_LEN = 64 
 
    type, public :: PQconninfoOption
+      !> The keyword of the option.
       character(CONNINFO_LABEL_LEN) :: keyword
+
+      !> Fallback environment variable name
       character(CONNINFO_LABEL_LEN) :: envvar
+
+      !> Fallback compiled in default value
       character(CONNINFO_LABEL_LEN) :: compiled
+
+      !> Option's current value, or empty.
       character(CONNINFO_LABEL_LEN) :: val
+
+      !> Lable for field in connect dialog
       character(CONNINFO_LABEL_LEN) :: label
+
+      !| Indicates how to display this field in a connect dialog.
+      !  Values are: <br>
+      ! `""`  &#009; Display entered value as is,<br>
+      !  `"*"` &#009; Password field - hide value,<br>
+      !  `"D"` &#009; Debug option - don't show by default.
       character(1) :: dispchar
+
+      !> Field size in characters for dialog.
       integer(int32)            :: dispsize
    end type
 
