@@ -558,7 +558,7 @@ contains
 
       !*> Sends a request to execute a prepared statement with given parameters, and waits for the result.
       ! > 
-      ! > `PQexecPrepared` is like `[[PQexecParam]]`, but the command to be executed is spcified by
+      ! > `PQexecPrepared` is like `[[PQexecParams]]`, but the command to be executed is spcified by
       ! > naming a previously-prepared statement, instead of giving a query string. This feature allows 
       ! > commands that will be used repeated to be parsed and planned just once, rather than each
       ! > time they are executed. The statement must have been prepared previously in the current session.
@@ -690,6 +690,15 @@ contains
       use, intrinsic :: iso_fortran_env
       implicit none
       
+      !*> Submits a request to obtain information about the specified portral, and waits for completion.
+      ! > 
+      ! > `PQdescribePortal` allows an application to obtain information about a previously created 
+      ! > portal. (libpq does not provide any direct access to portals, but you can use this function
+      ! > to inspect the properties fo a cursor created with a `DECLARE CURSOR` SQL command.)
+      ! >
+      ! > cf. [PostgreSQL Documentation](https://www.postgresql.org/docs/current/libpq-exec.html#LIBPQ-PQDESCRIBEPORTAL)
+
+
       ! Input parameters
       type(c_ptr), intent(in) :: conn
       character(*), intent(in) :: portalName
@@ -713,7 +722,7 @@ contains
       c_portalName = trim(adjustl(portalName))//c_null_char
 
       res = c_PQ_describe_portal(conn, c_portalName)
-   !! cf. [PostgreSQL Documentation](https://www.postgresql.org/docs/current/libpq-exec.html#LIBPQ-PQDESCRIBEPORTAL)
+
    end function PQdescribePortal
 
 
@@ -752,6 +761,10 @@ contains
       use, intrinsic :: iso_fortran_env
       implicit none
 
+      !*> Converts the enumerated type returned by `PQresultStatus` into a string constant describing the status code..
+      ! > 
+      ! > cf. [PostgreSQL Documentation](https://www.postgresql.org/docs/current/libpq-exec.html#LIBPQ-PQRESSTATUS)
+
       ! 入力
       integer(int32), intent(in) :: status
       
@@ -776,7 +789,6 @@ contains
       ! 結果のCポインタをFortranの文字列ポインタに変換する。
       res => c_to_f_charpointer(status_description)
 
-   !! cf. [PostgreSQL Documentation](https://www.postgresql.org/docs/current/libpq-exec.html#LIBPQ-PQRESSTATUS)
    end function PQresStatus
 
 
@@ -864,6 +876,9 @@ contains
 
 
    !-- Delete a PGresult
+   !>> Frees the storage associated with a `PGresult`.
+   !>> Every command result should be freed via `PQclear` when it is no longer needed.
+   !>> 
    subroutine PQclear(res)
       use, intrinsic :: iso_c_binding
       implicit none
@@ -884,7 +899,13 @@ contains
 
       call c_PQ_clear(res)
 
-   !! cf. [PostgreSQL Documentation](https://www.postgresql.org/docs/current/libpq-exec.html#LIBPQ-PQCLEAR)
+      !*> If the argumentis a `NULL` pointer, no operation is performed.
+      ! >
+      ! > You can keep a `PGresult` object around for as long as you need it; it does not go away when you issue a new
+      ! > command, nor even if you close the connection. 
+      ! > To get rid of it, you must call `PQclear`. Failure to do this will result in memory leaks in your application.
+      ! >
+      ! > cf. [PostgreSQL Documentation](https://www.postgresql.org/docs/current/libpq-exec.html#LIBPQ-PQCLEAR)
    end subroutine PQclear
 
    
@@ -1059,6 +1080,9 @@ contains
    end function PQftablecol
 
 
+   !>> Returns the format code indicating the format of the given column.
+   !>> Column numbers start at `0`.
+   !>> 
    function PQfformat (pgresult, column_number) result(res)
       use, intrinsic :: iso_c_binding
       use, intrinsic :: iso_fortran_env
@@ -1081,7 +1105,10 @@ contains
 
       res = c_PQ_field_format(pgresult, column_number)
 
-   !! cf. [PostgreSQL Documentation](https://www.postgresql.org/docs/current/libpq-exec.html#LIBPQ-PQFFORMAT)
+      !*> Format code zero indicates textual data representatiion, while format code one indicates binary
+      ! > representation. (Other codes are reserved for future definition.)
+      ! > 
+      ! > cf. [PostgreSQL Documentation](https://www.postgresql.org/docs/current/libpq-exec.html#LIBPQ-PQFFORMAT)
    end function PQfformat
 
 
@@ -1172,6 +1199,8 @@ contains
    end function PQfsize
 
 
+   !>> Return `.true.` if the PQresult contains binary data and `.false.` if it contains text data.
+   !>>
    function PQbinaryTuples (pgresult)
       use, intrinsic :: iso_c_binding
       use, intrinsic :: iso_fortran_env
@@ -1201,7 +1230,12 @@ contains
 
       end if
 
-   !! cf. [PostgreSQL Documentation](https://www.postgresql.org/docs/current/libpq-exec.html#LIBPQ-PQBINARYTUPLES)
+      !*> This function is deprecated (except for its use in connection with `COPY`), because it is possible
+      ! > for a single `PGresult` to contain text data in some columns and binary data in others.
+      ! > `[[PQfformat]]` is preferred.
+      ! > `PQbinaryTuples` returns `1` only if all columns of the result are binary (format 1).
+      ! >
+      ! > cf. [PostgreSQL Documentation](https://www.postgresql.org/docs/current/libpq-exec.html#LIBPQ-PQBINARYTUPLES)
    end function PQbinaryTuples
 
   
@@ -1364,6 +1398,15 @@ contains
       use, intrinsic :: iso_fortran_env
       implicit none
 
+      !*> Returns the command status tag from the SQL command that generated the `PGresult`.
+      ! > 
+      ! > Commonly this is just the name of the command, but it might include additional data such as the number
+      ! > of rows processed. 
+      ! > The caller should not free the result directly. It will be freed when the associated `PGresult` handle
+      ! > is passed to `PQclear`.
+      ! > 
+      ! > cf. [PostgreSQL Documentation](https://www.postgresql.org/docs/current/libpq-exec.html#LIBPQ-PQCMDSTATUS)
+
       type(c_ptr), intent(in) :: pgresult
       character(:), allocatable, target, save :: str
       character(:), pointer :: res
@@ -1381,7 +1424,6 @@ contains
 
       res => str
       
-   !! cf. [PostgreSQL Documentation](https://www.postgresql.org/docs/current/libpq-exec.html#LIBPQ-PQCMDSTATUS)
    end function PQcmdStatus
 
 
@@ -1390,6 +1432,19 @@ contains
       use, intrinsic :: iso_c_binding
       use, intrinsic :: iso_fortran_env
       implicit none
+
+      !*> Returns the number of rows affected by the SQL command.
+      ! > 
+      ! > This function returns a string containning the number of rows affected by the SQL statement 
+      ! > that generated the `PGresult`.
+      ! > This function can only be used following the execution of a `SELECT`, `CREATE`, `TABLE AS`, `INSERT`,
+      ! > `UPDATE`, `DELETE`, `MERGE`, `MOVE`, `FETCH`, or `COPY` statement, or an `EXECUTE` of a prepared
+      ! > query that contains an `INSERT`, `UPDATE`, `DELETE`, or `MERGE` statement.
+      ! > IF the command that generated the `PGresult` was anything else, `PQcmdTuples` returns an empty string.
+      ! > The caller should not free the return value directly. It will be freed when the associated `PGresult`
+      ! > handle is passed to [[PQclear]].
+      ! >
+      ! >  cf. [PostgreSQL Documentation](https://www.postgresql.org/docs/current/libpq-exec.html#LIBPQ-PQCMDTUPLES)
       
       ! Input parameters
       type(c_ptr), intent(in) :: pgresult
@@ -1417,7 +1472,6 @@ contains
 
       res => str
 
-   !! cf. [PostgreSQL Documentation](https://www.postgresql.org/docs/current/libpq-exec.html#LIBPQ-PQCMDTUPLES)
    end function PQcmdTuples
 
 
@@ -2176,7 +2230,7 @@ contains
       end interface
 
       !*> Waits for the next result from a prior `[[PQsendQuery]]`, `[[PQsendQueryParams]]`, `[[PQsendPrepare]]`,
-      ! > `[[PQsendQueryPrepared]]`, `[[PQsendDescribePrepared]]`, `[[PQsendDescribePortra]]`, or `[[PQpipelineSync]]` call,
+      ! > `[[PQsendQueryPrepared]]`, `[[PQsendDescribePrepared]]`, `[[PQsendDescribePortal]]`, or `[[PQpipelineSync]]` call,
       ! > and returns it.  A null pointer is returned when the command is complete and there will be no more results.
       
       !*> `PQgetResult` must be called repeatedly until it returns a null pointer, indicating that the command is done.

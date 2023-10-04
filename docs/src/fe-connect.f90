@@ -438,12 +438,19 @@ contains
    end function PQconnectPoll
 
 
-   !> Get the default connection options.
+   !> Return the default connection options.
+   !> 
    subroutine PQconndefaults (options)
       use :: PQconninfoOption_t
       use :: character_operations_m
       use, intrinsic :: iso_c_binding
       implicit none
+
+      !*> Returns a connection options array. This can be used to determin all possible [[PQconnectdb]] options and
+      ! > their current default values. 
+      ! > 
+      ! > cf. [PostgreSQL Documentation](https://www.postgresql.org/docs/current/libpq-connect.html#LIBPQ-PQCONNDEFAULTS)
+      
 
       type(PQconninfoOption), dimension(:), allocatable, target, intent(out) :: options
 
@@ -515,7 +522,6 @@ contains
       !   end do
       !```
 
-   !* cf. [PostgreSQL Documentation](https://www.postgresql.org/docs/current/libpq-connect.html#LIBPQ-PQCONNDEFAULTS)
    end subroutine PQconndefaults
 
 
@@ -524,6 +530,15 @@ contains
       use :: PQconninfoOption_t
       use, intrinsic :: iso_c_binding
       implicit none
+
+      !*> Returns the connection options used by a live connection.
+      ! >
+      ! > Returns a connection options array. This can be used to determine all possible `PQconnectdb` options 
+      ! > and the values that were used to connect to the server. The return value points to an array of 
+      ! > `PQconninfoOption` strucures, which ends with an entry having a null keyword pointer.
+      ! > All notes above for [[PQconndefaults]] also apply to the result of `PQconninfo`.
+      ! > 
+      ! > cf. [PostgreSQL Documentation](https://www.postgresql.org/docs/current/libpq-connect.html#LIBPQ-PQCONNINFO)
 
       type(c_ptr), intent(in) :: conn
       type(PQconninfoOption), dimension(:), allocatable, target, intent(out) :: options
@@ -577,7 +592,6 @@ contains
       call c_PQ_conninfo_prepare_free(cptr_siz)
       call PQconninfoFree(cptr_obj)
 
-      !* cf. [PostgreSQL Documentation](https://www.postgresql.org/docs/current/libpq-connect.html#LIBPQ-PQCONNINFO)
    end subroutine PQconninfo
             
 
@@ -1219,6 +1233,8 @@ contains
    end function PQsocket
 
 
+   !>> Returns the process ID (PID) of the backend process handling this connection.
+   !>> 
    function PQbackendPID(conn)
       use, intrinsic :: iso_c_binding
       implicit none
@@ -1237,7 +1253,11 @@ contains
 
       PQbackendPID = c_PQ_backend_pid(conn)
 
-      !* cf. [PostgreSQL Documentation](https://www.postgresql.org/docs/current/libpq-status.html#LIBPQ-PQBACKENDPID)
+      !*> The backend PID is useful for debugging purposes and for comparison to `NOTIFY` messages (which include the PID
+      ! > of the notifying backend process). Note that the PID belongs to a process executing on the database server host,
+      ! > not the local host!
+      ! >
+      ! > cf. [PostgreSQL Documentation](https://www.postgresql.org/docs/current/libpq-status.html#LIBPQ-PQBACKENDPID)
    end function PQbackendPID
 
 
@@ -1245,8 +1265,16 @@ contains
       use, intrinsic :: iso_c_binding
       use, intrinsic :: iso_fortran_env
 
+      !*> Retuens true if the connection authentication method required a password, but none was available.
+      ! > Returns false if not.
+      ! >
+      ! > This function can be applied after a failed connection attempt to decide whether to prompt the user for a password.
+      ! >
+      ! > cf. [PostgreSQL Documentation](https://www.postgresql.org/docs/current/libpq-status.html#LIBPQ-PQCONNECTIONNEEDSPASSWORD)
+
       type(c_ptr), intent(in) :: conn
-      integer(int32) :: PQconnectionNeedsPassword
+      logical :: PQconnectionNeedsPassword
+      integer :: result
 
       interface
          function c_PQ_connection_needs_password (conn)  &
@@ -1258,9 +1286,14 @@ contains
          end function c_PQ_connection_needs_password
       end interface
 
-      PQconnectionNeedsPassword = c_PQ_connection_needs_password(conn)
+      result = c_PQ_connection_needs_password(conn)
 
-      !* cf. [PostgreSQL Documentation](https://www.postgresql.org/docs/current/libpq-status.html#LIBPQ-PQCONNECTIONNEEDSPASSWORD)
+      if (result == 1) then
+         PQconnectionNeedsPassword = .true.
+      else
+         PQconnectionNeedsPassword = .false. 
+      end if
+
    end function PQconnectionNeedsPassword
 
 
@@ -1268,8 +1301,16 @@ contains
       use, intrinsic :: iso_c_binding
       use, intrinsic :: iso_fortran_env
 
+      !*> Returns true if the connection authentication method used a password. Returns false if not.
+      ! > 
+      ! > This function can be applied after a failed connection attempt to decide whether to prompt
+      ! > the user for a password.
+      ! > 
+      ! > cf. [PostgreSQL Documentation](https://www.postgresql.org/docs/current/libpq-status.html#LIBPQ-PQCONNECTIONUSEDPASSWORD)
+
       type(c_ptr), intent(in) :: conn
-      integer(int32) :: PQconnectionUsedPassword
+      integer(int32) :: result
+      logical ::  PQconnectionUsedPassword
 
       interface
          function c_PQ_connection_used_password (conn) &
@@ -1281,9 +1322,14 @@ contains
          end function c_PQ_connection_used_password
       end interface
 
-      PQconnectionUsedPassword = c_PQ_connection_used_password(conn)
+      result = c_PQ_connection_used_password(conn)
 
-      !* cf. [PostgreSQL Documentation](https://www.postgresql.org/docs/current/libpq-status.html#LIBPQ-PQCONNECTIONUSEDPASSWORD)
+      if (result == 1) then
+         PQconnectionUsedPassword = .true.
+      else
+         PQconnectionUsedPassword = .false.
+      end if
+
    end function PQconnectionUsedPassword
 
 
@@ -1509,7 +1555,8 @@ contains
    !* cf. [PostgreSQL Documentation](https://www.postgresql.org/docs/current/libpq-cancel.html#LIBPQ-PQFREECANCEL)
    end subroutine PQfreeCancel
 
-
+   !>> Requests that the server abandon processing of the current command.
+   !>> 
    function PQcancel (cancel, errbuf, errbufsize)
       use, intrinsic :: iso_c_binding
       use, intrinsic :: iso_fortran_env
@@ -1544,7 +1591,22 @@ contains
 
       errbuf = c_errbuf(1:errbufsize)
 
-   !* cf. [PostgreSQL Documentation](https://www.postgresql.org/docs/current/libpq-cancel.html#LIBPQ-PQCANCEL)
+      !*> The return value is `1` if the cancel request was successfully dispatched and `0` if not.
+      ! > If not, `errbuf` is filled with an explanatory error message. `errbuf` must be a char array
+      ! > of size `errbufsize` (the recommended size is 256 bites).
+      ! >
+      
+      !*> Successful dispatch is no guarantee that the request will have any effect, however.
+      ! > If the cancellation is effective, the current command will terminate early and return an error
+      ! > result. If the cancellation fails (say, because the server was already done processing the command),
+      ! > then there will be no visible result at all.
+      ! > 
+      
+      !*> `PQcancel` can safely be invoked from a signal handler, if the `errbuf` is a local variable in the
+      ! > signal handler. The `PGcancel` object is read-only as far as `PQcancel` is concerned, so it 
+      ! > can also be invoked from a thread that is separate from the one manipulating the `PGconn` object.
+      ! > 
+      ! > cf. [PostgreSQL Documentation](https://www.postgresql.org/docs/current/libpq-cancel.html#LIBPQ-PQCANCEL)
    end function PQcancel
 
 
@@ -1556,6 +1618,11 @@ contains
       use fe_exec_m, only: PQfreemem
       use, intrinsic :: iso_c_binding
       use, intrinsic :: iso_fortran_env
+
+      !* Returns the client encoding.
+      !  
+      !  It returns the encoding string such as `UTF8`.
+      !  This function wraps both `PQclientEncoding` and `pg_encoding_to_char`.
 
       ! Input parameter
       type(c_ptr), intent(in) :: conn

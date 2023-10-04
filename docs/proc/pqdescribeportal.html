@@ -162,15 +162,21 @@
       <ul class="list-group">
           <li class="list-group-item">
             <ul class="list-inline">
-                <li><a href='<a href="http://fortranwiki.org/fortran/show/iso_c_binding">iso_c_binding</a>'>iso_c_binding</a></li>
                 <li><a href='<a href="http://fortranwiki.org/fortran/show/iso_fortran_env">iso_fortran_env</a>'>iso_fortran_env</a></li>
+                <li><a href='<a href="http://fortranwiki.org/fortran/show/iso_c_binding">iso_c_binding</a>'>iso_c_binding</a></li>
             </ul>
           </li>
       </ul>
     </div>
 
 
-    <p>cf. <a href="https://www.postgresql.org/docs/current/libpq-exec.html#LIBPQ-PQDESCRIBEPORTAL">PostgreSQL Documentation</a></p>
+    <blockquote>
+<p>Submits a request to obtain information about the specified portral, and waits for completion.</p>
+<p><code>PQdescribePortal</code> allows an application to obtain information about a previously created 
+portal. (libpq does not provide any direct access to portals, but you can use this function
+to inspect the properties fo a cursor created with a <code>DECLARE CURSOR</code> SQL command.)</p>
+<p>cf. <a href="https://www.postgresql.org/docs/current/libpq-exec.html#LIBPQ-PQDESCRIBEPORTAL">PostgreSQL Documentation</a></p>
+</blockquote>
 
 
     <h3>Arguments</h3>

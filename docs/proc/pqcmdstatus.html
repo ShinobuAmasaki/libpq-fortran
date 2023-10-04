@@ -171,7 +171,14 @@
     </div>
 
 
-    <p>cf. <a href="https://www.postgresql.org/docs/current/libpq-exec.html#LIBPQ-PQCMDSTATUS">PostgreSQL Documentation</a></p>
+    <blockquote>
+<p>Returns the command status tag from the SQL command that generated the <code>PGresult</code>.</p>
+<p>Commonly this is just the name of the command, but it might include additional data such as the number
+of rows processed. 
+The caller should not free the result directly. It will be freed when the associated <code>PGresult</code> handle
+is passed to <code>PQclear</code>.</p>
+<p>cf. <a href="https://www.postgresql.org/docs/current/libpq-exec.html#LIBPQ-PQCMDSTATUS">PostgreSQL Documentation</a></p>
+</blockquote>
 
 
     <h3>Arguments</h3>

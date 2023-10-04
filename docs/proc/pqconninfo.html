@@ -171,7 +171,14 @@
     </div>
 
 
-    <p>cf. <a href="https://www.postgresql.org/docs/current/libpq-connect.html#LIBPQ-PQCONNINFO">PostgreSQL Documentation</a></p>
+    <blockquote>
+<p>Returns the connection options used by a live connection.</p>
+<p>Returns a connection options array. This can be used to determine all possible <code>PQconnectdb</code> options 
+and the values that were used to connect to the server. The return value points to an array of 
+<code>PQconninfoOption</code> strucures, which ends with an entry having a null keyword pointer.
+All notes above for <a href="../proc/pqconndefaults.html">PQconndefaults</a> also apply to the result of <code>PQconninfo</code>.</p>
+<p>cf. <a href="https://www.postgresql.org/docs/current/libpq-connect.html#LIBPQ-PQCONNINFO">PostgreSQL Documentation</a></p>
+</blockquote>
 
 
     <h3>Arguments</h3>

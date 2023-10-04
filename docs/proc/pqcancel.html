@@ -162,15 +162,30 @@
       <ul class="list-group">
           <li class="list-group-item">
             <ul class="list-inline">
-                <li><a href='<a href="http://fortranwiki.org/fortran/show/iso_c_binding">iso_c_binding</a>'>iso_c_binding</a></li>
                 <li><a href='<a href="http://fortranwiki.org/fortran/show/iso_fortran_env">iso_fortran_env</a>'>iso_fortran_env</a></li>
+                <li><a href='<a href="http://fortranwiki.org/fortran/show/iso_c_binding">iso_c_binding</a>'>iso_c_binding</a></li>
             </ul>
           </li>
       </ul>
     </div>
 
 
-    <p>cf. <a href="https://www.postgresql.org/docs/current/libpq-cancel.html#LIBPQ-PQCANCEL">PostgreSQL Documentation</a></p>
+    <blockquote>
+<p>Requests that the server abandon processing of the current command.</p>
+<p>The return value is <code>1</code> if the cancel request was successfully dispatched and <code>0</code> if not.
+If not, <code>errbuf</code> is filled with an explanatory error message. <code>errbuf</code> must be a char array
+of size <code>errbufsize</code> (the recommended size is 256 bites).
+</p>
+<p>Successful dispatch is no guarantee that the request will have any effect, however.
+If the cancellation is effective, the current command will terminate early and return an error
+result. If the cancellation fails (say, because the server was already done processing the command),
+then there will be no visible result at all.
+</p>
+<p><code>PQcancel</code> can safely be invoked from a signal handler, if the <code>errbuf</code> is a local variable in the
+signal handler. The <code>PGcancel</code> object is read-only as far as <code>PQcancel</code> is concerned, so it 
+can also be invoked from a thread that is separate from the one manipulating the <code>PGconn</code> object.</p>
+<p>cf. <a href="https://www.postgresql.org/docs/current/libpq-cancel.html#LIBPQ-PQCANCEL">PostgreSQL Documentation</a></p>
+</blockquote>
 
 
     <h3>Arguments</h3>

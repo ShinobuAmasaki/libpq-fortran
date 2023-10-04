@@ -171,7 +171,18 @@
     </div>
 
 
-    <p>cf. <a href="https://www.postgresql.org/docs/current/libpq-exec.html#LIBPQ-PQCMDTUPLES">PostgreSQL Documentation</a></p>
+    <blockquote>
+<p>Returns the number of rows affected by the SQL command.</p>
+<p>This function returns a string containning the number of rows affected by the SQL statement 
+that generated the <code>PGresult</code>.
+This function can only be used following the execution of a <code>SELECT</code>, <code>CREATE</code>, <code>TABLE AS</code>, <code>INSERT</code>,
+<code>UPDATE</code>, <code>DELETE</code>, <code>MERGE</code>, <code>MOVE</code>, <code>FETCH</code>, or <code>COPY</code> statement, or an <code>EXECUTE</code> of a prepared
+query that contains an <code>INSERT</code>, <code>UPDATE</code>, <code>DELETE</code>, or <code>MERGE</code> statement.
+IF the command that generated the <code>PGresult</code> was anything else, <code>PQcmdTuples</code> returns an empty string.
+The caller should not free the return value directly. It will be freed when the associated <code>PGresult</code>
+handle is passed to <a href="../proc/pqclear.html">PQclear</a>.</p>
+<p>cf. <a href="https://www.postgresql.org/docs/current/libpq-exec.html#LIBPQ-PQCMDTUPLES">PostgreSQL Documentation</a></p>
+</blockquote>
 
 
     <h3>Arguments</h3>

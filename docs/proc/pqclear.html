@@ -169,7 +169,15 @@
     </div>
 
 
-    <p>cf. <a href="https://www.postgresql.org/docs/current/libpq-exec.html#LIBPQ-PQCLEAR">PostgreSQL Documentation</a></p>
+    <blockquote>
+<p>Frees the storage associated with a <code>PGresult</code>.
+Every command result should be freed via <code>PQclear</code> when it is no longer needed.</p>
+<p>If the argumentis a <code>NULL</code> pointer, no operation is performed.</p>
+<p>You can keep a <code>PGresult</code> object around for as long as you need it; it does not go away when you issue a new
+command, nor even if you close the connection. 
+To get rid of it, you must call <code>PQclear</code>. Failure to do this will result in memory leaks in your application.</p>
+<p>cf. <a href="https://www.postgresql.org/docs/current/libpq-exec.html#LIBPQ-PQCLEAR">PostgreSQL Documentation</a></p>
+</blockquote>
 
 
     <h3>Arguments</h3>

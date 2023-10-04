@@ -99,7 +99,7 @@
           <li id="statements"><i class="fa fa-list-ol"></i>
             <a data-toggle="tooltip"
                data-placement="bottom" data-html="true"
-               title="34.1% of total for modules and submodules.">1017 statements</a>
+               title="34.4% of total for modules and submodules.">1029 statements</a>
           </li>
 
             <li id="source-file">
@@ -1599,7 +1599,7 @@
 </h3></div>
     <div class="panel-body">
           
-  <p>cf. <a href="https://www.postgresql.org/docs/current/libpq-status.html#LIBPQ-PQBACKENDPID">PostgreSQL Documentation</a></p>
+  <p>Returns the process ID (PID) of the backend process handling this connection.</p><a href="../proc/pqbackendpid.html" class="pull-right"><emph>Read more&hellip;</emph></a>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -1644,7 +1644,8 @@
 </h3></div>
     <div class="panel-body">
           
-  <p>cf. <a href="https://www.postgresql.org/docs/current/libpq-status.html#LIBPQ-PQCONNECTIONNEEDSPASSWORD">PostgreSQL Documentation</a></p>
+  <p>Retuens true if the connection authentication method required a password, but none was available.
+Returns false if not.</p><a href="../proc/pqconnectionneedspassword.html" class="pull-right"><emph>Read more&hellip;</emph></a>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -1677,7 +1678,7 @@
 
     <h4>
     Return Value
-    <small>integer(kind=int32)</small>
+    <small>logical</small>
     </h4>
     
 
@@ -1689,7 +1690,7 @@
 </h3></div>
     <div class="panel-body">
           
-  <p>cf. <a href="https://www.postgresql.org/docs/current/libpq-status.html#LIBPQ-PQCONNECTIONUSEDPASSWORD">PostgreSQL Documentation</a></p>
+  <p>Returns true if the connection authentication method used a password. Returns false if not.</p><a href="../proc/pqconnectionusedpassword.html" class="pull-right"><emph>Read more&hellip;</emph></a>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -1722,7 +1723,7 @@
 
     <h4>
     Return Value
-    <small>integer(kind=int32)</small>
+    <small>logical</small>
     </h4>
     
 
@@ -1824,7 +1825,7 @@
 </h3></div>
     <div class="panel-body">
           
-  <p>cf. <a href="https://www.postgresql.org/docs/current/libpq-cancel.html#LIBPQ-PQCANCEL">PostgreSQL Documentation</a></p>
+  <p>Requests that the server abandon processing of the current command.</p><a href="../proc/pqcancel.html" class="pull-right"><emph>Read more&hellip;</emph></a>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -1899,7 +1900,7 @@
 </h3></div>
     <div class="panel-body">
           
-  <p>cf. <a href="https://www.postgresql.org/docs/current/libpq-control.html#LIBPQ-PQCLIENTENCODING">PostgreSQL Documentation</a></p>
+  <p>Returns the client encoding.</p><a href="../proc/pqclientencoding.html" class="pull-right"><emph>Read more&hellip;</emph></a>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -2129,7 +2130,7 @@
 </h3></div>
     <div class="panel-body">
           
-  <p>Get the default connection options.</p><a href="../proc/pqconndefaults.html" class="pull-right"><emph>Read more&hellip;</emph></a>
+  <p>Return the default connection options.</p><a href="../proc/pqconndefaults.html" class="pull-right"><emph>Read more&hellip;</emph></a>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -2169,7 +2170,7 @@
 </h3></div>
     <div class="panel-body">
           
-  <p>cf. <a href="https://www.postgresql.org/docs/current/libpq-connect.html#LIBPQ-PQCONNINFO">PostgreSQL Documentation</a></p>
+  <p>Returns the connection options used by a live connection.</p><a href="../proc/pqconninfo.html" class="pull-right"><emph>Read more&hellip;</emph></a>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">

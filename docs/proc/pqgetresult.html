@@ -162,8 +162,8 @@
       <ul class="list-group">
           <li class="list-group-item">
             <ul class="list-inline">
-                <li><a href='<a href="http://fortranwiki.org/fortran/show/iso_c_binding">iso_c_binding</a>'>iso_c_binding</a></li>
                 <li><a href='<a href="http://fortranwiki.org/fortran/show/iso_fortran_env">iso_fortran_env</a>'>iso_fortran_env</a></li>
+                <li><a href='<a href="http://fortranwiki.org/fortran/show/iso_c_binding">iso_c_binding</a>'>iso_c_binding</a></li>
             </ul>
           </li>
       </ul>
@@ -172,7 +172,7 @@
 
     <blockquote>
 <p>Waits for the next result from a prior <code><a href="../proc/pqsendquery.html">PQsendQuery</a></code>, <code><a href="../interface/pqsendqueryparams.html">PQsendQueryParams</a></code>, <code><a href="../interface/pqsendprepare.html">PQsendPrepare</a></code>,
-<code><a href="../interface/pqsendqueryprepared.html">PQsendQueryPrepared</a></code>, <code><a href="../proc/pqsenddescribeprepared.html">PQsendDescribePrepared</a></code>, <code><a>PQsendDescribePortra</a></code>, or <code><a href="../proc/pqpipelinesync.html">PQpipelineSync</a></code> call,
+<code><a href="../interface/pqsendqueryprepared.html">PQsendQueryPrepared</a></code>, <code><a href="../proc/pqsenddescribeprepared.html">PQsendDescribePrepared</a></code>, <code><a href="../proc/pqsenddescribeportal.html">PQsendDescribePortal</a></code>, or <code><a href="../proc/pqpipelinesync.html">PQpipelineSync</a></code> call,
 and returns it.  A null pointer is returned when the command is complete and there will be no more results.</p>
 <p><code>PQgetResult</code> must be called repeatedly until it returns a null pointer, indicating that the command is done.
 (If called when no command is active, <code>PQgetResult</code> will just return a null pointer at once.)

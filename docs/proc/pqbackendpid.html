@@ -169,7 +169,13 @@
     </div>
 
 
-    <p>cf. <a href="https://www.postgresql.org/docs/current/libpq-status.html#LIBPQ-PQBACKENDPID">PostgreSQL Documentation</a></p>
+    <blockquote>
+<p>Returns the process ID (PID) of the backend process handling this connection.</p>
+<p>The backend PID is useful for debugging purposes and for comparison to <code>NOTIFY</code> messages (which include the PID
+of the notifying backend process). Note that the PID belongs to a process executing on the database server host,
+not the local host!</p>
+<p>cf. <a href="https://www.postgresql.org/docs/current/libpq-status.html#LIBPQ-PQBACKENDPID">PostgreSQL Documentation</a></p>
+</blockquote>
 
 
     <h3>Arguments</h3>

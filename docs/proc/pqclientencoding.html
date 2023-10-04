@@ -162,17 +162,20 @@
       <ul class="list-group">
           <li class="list-group-item">
             <ul class="list-inline">
-                <li><a href='<a href="http://fortranwiki.org/fortran/show/iso_fortran_env">iso_fortran_env</a>'>iso_fortran_env</a></li>
-                <li><a href='<a href="http://fortranwiki.org/fortran/show/iso_c_binding">iso_c_binding</a>'>iso_c_binding</a></li>
                 <li><a href='../module/fe_exec_m.html'>fe_exec_m</a></li>
+                <li><a href='<a href="http://fortranwiki.org/fortran/show/iso_c_binding">iso_c_binding</a>'>iso_c_binding</a></li>
                 <li><a href='../module/character_operations_m.html'>character_operations_m</a></li>
+                <li><a href='<a href="http://fortranwiki.org/fortran/show/iso_fortran_env">iso_fortran_env</a>'>iso_fortran_env</a></li>
             </ul>
           </li>
       </ul>
     </div>
 
 
-    <p>cf. <a href="https://www.postgresql.org/docs/current/libpq-control.html#LIBPQ-PQCLIENTENCODING">PostgreSQL Documentation</a></p>
+    <p>Returns the client encoding.</p>
+<p>It returns the encoding string such as <code>UTF8</code>.
+ This function wraps both <code>PQclientEncoding</code> and <code>pg_encoding_to_char</code>.</p>
+<p>cf. <a href="https://www.postgresql.org/docs/current/libpq-control.html#LIBPQ-PQCLIENTENCODING">PostgreSQL Documentation</a></p>
 
 
     <h3>Arguments</h3>
