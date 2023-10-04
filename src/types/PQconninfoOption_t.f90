@@ -34,6 +34,7 @@ module PQconninfoOption_t
    
    integer, parameter :: CONNINFO_LABEL_LEN = 64 
 
+   !> This is a derived-type that you are expected to use. 
    type, public :: PQconninfoOption
       !> The keyword of the option.
       character(CONNINFO_LABEL_LEN) :: keyword
@@ -61,6 +62,7 @@ module PQconninfoOption_t
       integer(int32)            :: dispsize
    end type
 
+   !> This type is for wraps, such as `[[PQconninfo]]`, `[[PQconndefaults]]`, `[[PQconninfoParse]]`. 
    type, public :: c_PQconninfoOption
       type(c_ptr) :: keyword
       type(c_ptr) :: envvar
@@ -71,6 +73,7 @@ module PQconninfoOption_t
       integer(c_int) :: dispsize
    end type
 
+   !> This type is for wraps, such as `[[PQconninfo]]`, `[[PQconndefaults]]`, `[[PQconninfoParse]]`. 
    type, public :: c_PQconnOptionSizes
       integer(c_int) :: keyword
       integer(c_int) :: envvar
