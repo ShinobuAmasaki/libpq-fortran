@@ -761,6 +761,10 @@ contains
       use, intrinsic :: iso_fortran_env
       implicit none
 
+      !*> Converts the enumerated type returned by `PQresultStatus` into a string constant describing the status code..
+      ! > 
+      ! > cf. [PostgreSQL Documentation](https://www.postgresql.org/docs/current/libpq-exec.html#LIBPQ-PQRESSTATUS)
+
       ! 入力
       integer(int32), intent(in) :: status
       
@@ -785,7 +789,6 @@ contains
       ! 結果のCポインタをFortranの文字列ポインタに変換する。
       res => c_to_f_charpointer(status_description)
 
-   !! cf. [PostgreSQL Documentation](https://www.postgresql.org/docs/current/libpq-exec.html#LIBPQ-PQRESSTATUS)
    end function PQresStatus
 
 
@@ -1395,6 +1398,15 @@ contains
       use, intrinsic :: iso_fortran_env
       implicit none
 
+      !*> Returns the command status tag from the SQL command that generated the `PGresult`.
+      ! > 
+      ! > Commonly this is just the name of the command, but it might include additional data such as the number
+      ! > of rows processed. 
+      ! > The caller should not free the result directly. It will be freed when the associated `PGresult` handle
+      ! > is passed to `PQclear`.
+      ! > 
+      ! > cf. [PostgreSQL Documentation](https://www.postgresql.org/docs/current/libpq-exec.html#LIBPQ-PQCMDSTATUS)
+
       type(c_ptr), intent(in) :: pgresult
       character(:), allocatable, target, save :: str
       character(:), pointer :: res
@@ -1412,7 +1424,6 @@ contains
 
       res => str
       
-   !! cf. [PostgreSQL Documentation](https://www.postgresql.org/docs/current/libpq-exec.html#LIBPQ-PQCMDSTATUS)
    end function PQcmdStatus
 
 
@@ -1421,6 +1432,19 @@ contains
       use, intrinsic :: iso_c_binding
       use, intrinsic :: iso_fortran_env
       implicit none
+
+      !*> Returns the number of rows affected by the SQL command.
+      ! > 
+      ! > This function returns a string containning the number of rows affected by the SQL statement 
+      ! > that generated the `PGresult`.
+      ! > This function can only be used following the execution of a `SELECT`, `CREATE`, `TABLE AS`, `INSERT`,
+      ! > `UPDATE`, `DELETE`, `MERGE`, `MOVE`, `FETCH`, or `COPY` statement, or an `EXECUTE` of a prepared
+      ! > query that contains an `INSERT`, `UPDATE`, `DELETE`, or `MERGE` statement.
+      ! > IF the command that generated the `PGresult` was anything else, `PQcmdTuples` returns an empty string.
+      ! > The caller should not free the return value directly. It will be freed when the associated `PGresult`
+      ! > handle is passed to [[PQclear]].
+      ! >
+      ! >  cf. [PostgreSQL Documentation](https://www.postgresql.org/docs/current/libpq-exec.html#LIBPQ-PQCMDTUPLES)
       
       ! Input parameters
       type(c_ptr), intent(in) :: pgresult
@@ -1448,7 +1472,6 @@ contains
 
       res => str
 
-   !! cf. [PostgreSQL Documentation](https://www.postgresql.org/docs/current/libpq-exec.html#LIBPQ-PQCMDTUPLES)
    end function PQcmdTuples
 
 
