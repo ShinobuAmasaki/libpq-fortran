@@ -438,12 +438,19 @@ contains
    end function PQconnectPoll
 
 
-   !> Get the default connection options.
+   !> Return the default connection options.
+   !> 
    subroutine PQconndefaults (options)
       use :: PQconninfoOption_t
       use :: character_operations_m
       use, intrinsic :: iso_c_binding
       implicit none
+
+      !*> Returns a connection options array. This can be used to determin all possible [[PQconnectdb]] options and
+      ! > their current default values. 
+      ! > 
+      ! > cf. [PostgreSQL Documentation](https://www.postgresql.org/docs/current/libpq-connect.html#LIBPQ-PQCONNDEFAULTS)
+      
 
       type(PQconninfoOption), dimension(:), allocatable, target, intent(out) :: options
 
@@ -515,7 +522,6 @@ contains
       !   end do
       !```
 
-   !* cf. [PostgreSQL Documentation](https://www.postgresql.org/docs/current/libpq-connect.html#LIBPQ-PQCONNDEFAULTS)
    end subroutine PQconndefaults
 
 
@@ -524,6 +530,15 @@ contains
       use :: PQconninfoOption_t
       use, intrinsic :: iso_c_binding
       implicit none
+
+      !*> Returns the connection options used by a live connection.
+      ! >
+      ! > Returns a connection options array. This can be used to determine all possible `PQconnectdb` options 
+      ! > and the values that were used to connect to the server. The return value points to an array of 
+      ! > `PQconninfoOption` strucures, which ends with an entry having a null keyword pointer.
+      ! > All notes above for [[PQconndefaults]] also apply to the result of `PQconninfo`.
+      ! > 
+      ! > cf. [PostgreSQL Documentation](https://www.postgresql.org/docs/current/libpq-connect.html#LIBPQ-PQCONNINFO)
 
       type(c_ptr), intent(in) :: conn
       type(PQconninfoOption), dimension(:), allocatable, target, intent(out) :: options
@@ -577,7 +592,6 @@ contains
       call c_PQ_conninfo_prepare_free(cptr_siz)
       call PQconninfoFree(cptr_obj)
 
-      !* cf. [PostgreSQL Documentation](https://www.postgresql.org/docs/current/libpq-connect.html#LIBPQ-PQCONNINFO)
    end subroutine PQconninfo
             
 
