@@ -1251,8 +1251,16 @@ contains
       use, intrinsic :: iso_c_binding
       use, intrinsic :: iso_fortran_env
 
+      !*> Retuens true if the connection authentication method required a password, but none was available.
+      ! > Returns false if not.
+      ! >
+      ! > This function can be applied after a failed connection attempt to decide whether to prompt the user for a password.
+      ! >
+      ! > cf. [PostgreSQL Documentation](https://www.postgresql.org/docs/current/libpq-status.html#LIBPQ-PQCONNECTIONNEEDSPASSWORD)
+
       type(c_ptr), intent(in) :: conn
-      integer(int32) :: PQconnectionNeedsPassword
+      logical :: PQconnectionNeedsPassword
+      integer :: result
 
       interface
          function c_PQ_connection_needs_password (conn)  &
@@ -1264,9 +1272,14 @@ contains
          end function c_PQ_connection_needs_password
       end interface
 
-      PQconnectionNeedsPassword = c_PQ_connection_needs_password(conn)
+      result = c_PQ_connection_needs_password(conn)
 
-      !* cf. [PostgreSQL Documentation](https://www.postgresql.org/docs/current/libpq-status.html#LIBPQ-PQCONNECTIONNEEDSPASSWORD)
+      if (result == 1) then
+         PQconnectionNeedsPassword = .true.
+      else
+         PQconnectionNeedsPassword = .false. 
+      end if
+
    end function PQconnectionNeedsPassword
 
 
@@ -1274,8 +1287,16 @@ contains
       use, intrinsic :: iso_c_binding
       use, intrinsic :: iso_fortran_env
 
+      !*> Returns true if the connection authentication method used a password. Returns false if not.
+      ! > 
+      ! > This function can be applied after a failed connection attempt to decide whether to prompt
+      ! > the user for a password.
+      ! > 
+      ! > cf. [PostgreSQL Documentation](https://www.postgresql.org/docs/current/libpq-status.html#LIBPQ-PQCONNECTIONUSEDPASSWORD)
+
       type(c_ptr), intent(in) :: conn
-      integer(int32) :: PQconnectionUsedPassword
+      integer(int32) :: result
+      logical ::  PQconnectionUsedPassword
 
       interface
          function c_PQ_connection_used_password (conn) &
@@ -1287,9 +1308,14 @@ contains
          end function c_PQ_connection_used_password
       end interface
 
-      PQconnectionUsedPassword = c_PQ_connection_used_password(conn)
+      result = c_PQ_connection_used_password(conn)
 
-      !* cf. [PostgreSQL Documentation](https://www.postgresql.org/docs/current/libpq-status.html#LIBPQ-PQCONNECTIONUSEDPASSWORD)
+      if (result == 1) then
+         PQconnectionUsedPassword = .true.
+      else
+         PQconnectionUsedPassword = .false.
+      end if
+
    end function PQconnectionUsedPassword
 
 

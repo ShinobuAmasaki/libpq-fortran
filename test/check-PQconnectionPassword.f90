@@ -1,6 +1,8 @@
 program main
    use libpq
    use iso_c_binding
+   implicit none
+   
 
    type(c_ptr) :: conn
 
@@ -8,7 +10,7 @@ program main
    conn = PQconnectdb("host=localhost user=postgres dbname=postgres")
 !==Add a test below===================================================!
    block
-      integer :: res
+      logical :: res
 
       res = PQconnectionNeedsPassword(conn)
       print *, "Connection needs password? > ", res
