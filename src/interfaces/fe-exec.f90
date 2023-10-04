@@ -690,6 +690,15 @@ contains
       use, intrinsic :: iso_fortran_env
       implicit none
       
+      !*> Submits a request to obtain information about the specified portral, and waits for completion.
+      ! > 
+      ! > `PQdescribePortal` allows an application to obtain information about a previously created 
+      ! > portal. (libpq does not provide any direct access to portals, but you can use this function
+      ! > to inspect the properties fo a cursor created with a `DECLARE CURSOR` SQL command.)
+      ! >
+      ! > cf. [PostgreSQL Documentation](https://www.postgresql.org/docs/current/libpq-exec.html#LIBPQ-PQDESCRIBEPORTAL)
+
+
       ! Input parameters
       type(c_ptr), intent(in) :: conn
       character(*), intent(in) :: portalName
@@ -713,7 +722,7 @@ contains
       c_portalName = trim(adjustl(portalName))//c_null_char
 
       res = c_PQ_describe_portal(conn, c_portalName)
-   !! cf. [PostgreSQL Documentation](https://www.postgresql.org/docs/current/libpq-exec.html#LIBPQ-PQDESCRIBEPORTAL)
+
    end function PQdescribePortal
 
 
