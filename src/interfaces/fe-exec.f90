@@ -2557,8 +2557,68 @@ contains
 !=================================================================!
 !== Functions Associated with the COPY Command
    
-   ! function PQputCopyData
-   ! function PQputCopyEnd
+   function PQputCopyData(conn, buffer, nbytes) result(res)
+      use, intrinsic :: iso_c_binding
+      use, intrinsic :: iso_fortran_env
+      implicit none
+      
+      type(c_ptr), intent(in) :: conn
+      character(*), intent(in) :: buffer
+      integer(int32), intent(in) :: nbytes
+
+      integer(int32) :: res
+
+      character(:, kind=c_char), allocatable, target :: c_buff
+
+      interface
+         function c_PQ_put_copy_data(conn, buffer, nbytes) bind(c, name='PQputCopyData')
+            import c_ptr, c_int, c_char
+            implicit none
+            type(c_ptr), intent(in), value :: conn
+            character(1, kind=c_char), intent(in) :: buffer(*)
+            integer(c_int), intent(in), value :: nbytes
+            integer(c_int) :: c_PQ_put_copy_data
+         end function
+      end interface
+
+      c_buff = trim(adjustl(buffer))//c_null_char
+
+      res = c_PQ_put_copy_data(conn, c_buff, nbytes)
+
+   end function PQputCopyData
+
+
+   function PQputCopyEnd(conn, errormsg) result(res)
+      use :: character_operations_m
+      use, intrinsic :: iso_fortran_env
+      use, intrinsic :: iso_c_binding
+      implicit none
+
+      type(c_ptr), intent(in) :: conn
+      character(*), intent(out) :: errormsg
+      integer(int32) :: res
+
+      type(c_ptr) :: c_errmsg
+      character(:, kind=c_char), pointer :: char_ptr
+
+      interface
+         function c_PQ_put_copy_end(conn, errormsg) bind(c, name='PQputCopyEnd')
+            import c_ptr, c_int
+            implicit none
+            type(c_ptr), intent(in), value :: conn
+            type(c_ptr), intent(in), value :: errormsg
+            integer(c_int) :: c_PQ_put_copy_end
+         end function c_PQ_put_copy_end
+      end interface
+
+      res = c_PQ_put_copy_end(conn, c_errmsg)
+
+      char_ptr => c_to_f_charpointer(c_errmsg)
+
+      errormsg = trim(adjustl(char_ptr))
+      
+   end function PQputCopyEnd
+
    ! function PQgetCopyData
 
 !=================================================================!
