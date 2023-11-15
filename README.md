@@ -247,11 +247,8 @@ Note:
 - [x] PQnotifies
 
 ### Functions Associated with the COPY Command
-- [ ] `PQnfields`
-- [ ] `PQbinaryTuples`
-- [ ] `PQfformat`
-- [ ] `PQputCopyData`
-- [ ] `PQputCopyEnd`
+- [x] `PQputCopyData` (not tested)
+- [x] `PQputCopyEnd` (not tested)
 - [ ] `PQgetCopyData`
 - <s>`PQgetline`</s>
 - <s>`PQgetlineAsync`</s>
