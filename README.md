@@ -249,7 +249,7 @@ Note:
 ### Functions Associated with the COPY Command
 - [x] `PQputCopyData` (not tested)
 - [x] `PQputCopyEnd` (not tested)
-- [ ] `PQgetCopyData`
+- [x] `PQgetCopyData` (not tested)
 - <s>`PQgetline`</s>
 - <s>`PQgetlineAsync`</s>
 - <s>`PQputline`</s>

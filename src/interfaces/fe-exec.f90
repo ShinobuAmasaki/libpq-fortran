@@ -2619,7 +2619,45 @@ contains
       
    end function PQputCopyEnd
 
-   ! function PQgetCopyData
+
+   function PQgetCopyData(conn, buffer, async) result(res)
+      use, intrinsic :: iso_fortran_env
+      use, intrinsic :: iso_c_binding
+      implicit none
+      
+      type(c_ptr), intent(in) :: conn
+      character(*), intent(out) :: buffer
+      logical, intent(in) :: async
+
+      integer(c_int) :: c_async
+      character(len=256, kind=c_char), target :: c_buffer
+      type(c_ptr) :: cptr
+
+      integer(int32) :: res
+
+      interface
+         function c_PQ_get_copy_data(conn, buffer, async) bind(c, name='PQgetCopyData')
+            import c_ptr, c_int
+            type(c_ptr), intent(in), value :: conn
+            type(c_ptr), intent(out) :: buffer
+            integer(c_int), intent(in), value :: async
+            integer(c_int) :: c_PQ_get_copy_data
+         end function c_PQ_get_copy_data
+      end interface
+
+      if (async) then
+         c_async = 1
+      else
+         c_async = 0 
+      end if 
+
+      cptr = c_loc(c_buffer)
+
+      res = c_PQ_get_copy_data(conn, cptr, c_async)
+
+      buffer = trim(c_buffer)
+ 
+   end function PQgetCopyData
 
 !=================================================================!
 !== Miscellaneous Functions
