@@ -359,7 +359,7 @@ contains
 
             
             res = c_PQ_exec_parameters(&
-                  conn, command, nParams, c_loc(c_paramTypes), &
+                  conn, c_command, nParams, c_loc(c_paramTypes), &
                   c_loc(ptr_values(1)), c_null_ptr, c_null_ptr, resultFormat)
 
             ! for BINARY format
