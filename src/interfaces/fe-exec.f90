@@ -379,7 +379,7 @@ contains
             type(c_ptr) :: null_paramFormats = c_null_ptr
          
          res = c_PQ_exec_parameters(&
-                        conn, command, nParams, &
+                        conn, c_command, nParams, &
                         null_paramTypes,   &
                         null_paramValues,  &
                         null_paramLength,  &
@@ -1799,7 +1799,7 @@ contains
 
          block
             character(max_len_val+1, kind=c_char), allocatable, target :: c_values(:)
-            type(c_ptr), allocatable :: ptr_values(:)
+            type(c_ptr), allocatable, target :: ptr_values(:)
             
 
             call cchar_array_from_strings_no_null(paramValues, c_values, max_len_val)
@@ -1808,7 +1808,7 @@ contains
             res = c_PQ_send_query_parameters(&
                      conn, c_command, nParams, &
                      cptr_paramTypes, &
-                     ptr_values(1), &
+                     c_loc(ptr_values(1)), &
                      null_paramLengths, &
                      null_paramFormats, &
                      resultFormat &
@@ -2104,14 +2104,14 @@ contains
 
          block
             character(max_len_val+1, kind=c_char), allocatable, target :: c_values(:)
-            type(c_ptr), allocatable :: ptr_values(:)
+            type(c_ptr), allocatable, target :: ptr_values(:)
 
             call cchar_array_from_strings_no_null(paramValues, c_values, max_len_val)
             call cptr_array_from_cchar_no_null(c_values, ptr_values)
 
             res = c_PQ_send_query_prepared( &
                      conn, c_stmtName, nParams, &
-                     ptr_values(1), &
+                     c_loc(ptr_values(1)), &
                      null_paramLengths, &
                      null_paramFormats, &
                      resultFormat &
