@@ -19,6 +19,8 @@
 !      (INSERT INTO TBL2 VALUES (new.i); NOTIFY TBL2);
 
 program main
+#ifdef __linux__
+
 
    use :: libpq
    use :: unsigned
@@ -210,4 +212,6 @@ contains
       stop
    end subroutine exit_nicely
 
+#endif
 end program main
+

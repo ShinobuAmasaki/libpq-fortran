@@ -1,3 +1,5 @@
+#ifdef __linux__
+
 #include <sys/select.h>
 
 void fd_zero_wrap(fd_set *set)
@@ -11,3 +13,5 @@ void fd_set_wrap(int fd, fd_set*set)
    FD_SET(fd, set);
    return;
 }
+
+#endif
