@@ -1494,7 +1494,11 @@ contains
          do i = 1, siz
 
             ! Convert the pointer to a Fortran character pointer with its length.
-            strptr => c_to_f_charpointer_with_length(ptr_array(i), lengths(i))
+            ! strptr => c_to_f_charpointer_with_length(ptr_array(i), lengths(i)) 
+               ! Error outs on Windows: 'Unequal character lengths in pointer assignment`
+
+            ! 
+            strptr => c_to_f_charpointer(ptr_array(i))
 
             ! Store the string in the strings array.
             strings(i) = strptr(:)
