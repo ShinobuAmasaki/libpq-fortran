@@ -38,14 +38,42 @@ This package needs [Fortran Package Manager (`fpm`)](https://fpm.fortran-lang.or
    libpq-fortran = {git = "https://github.com/shinobuamasaki/libpq-fortran"}
    ```
 
+### Test
+
 Tested on
    - FreeBSD 
       - Release 13.2 (`gfortran` v13.1.0)
    - Linux
-      - Gentoo Linux (`gfortran` v12.3.1, `ifort` 2021.9.0, `ifx` 2023.1.0)
-      - Ubuntu 22.04 LTS (`gfortran` v11.4.0)
+      - Gentoo Linux (`gfortran` v13.2.1, `ifort` 2021.9.0, `ifx` 2023.1.0)
    - Windows
       - Microsoft Windows 10 (`gfortran` MinGW-W64 13.1.0)
+
+The unit tests contained in the `test/` directory can be executed using the command `fpm test` on your environment,
+but a local PostgreSQL server is required for this operation. 
+
+In that case, an appropriate configuration must be set in the following PostgreSQL configuration files:
+
+- `postgresql.conf`
+   - Ensure that `localhost` is included in the `listen_address` configuration.
+- `pg_hba.conf`
+   - Set the "METHOD" to `trust` for the following two connection methods:
+
+     ```
+      # TYPE  DATABASE        USER            ADDRESS                 METHOD
+      local   all             all                                     trust
+      host    all             all             127.0.0.1/32            trust
+     ```
+
+Note: These configurations entail security risks, and it is your responsibility to appropriately configure them your own discretion.
+
+After updating these configurations, it is necessary to restart the PostgreSQL server. On Linux, use the command for OpenRC or systemd.
+For Windows, execute the following command in Powershell with administrator privileges:
+
+```powershell
+PS> net stop postgresql-x64-15
+PS> net start postgresql-x64-15
+```
+
 
 ### Goals
 
