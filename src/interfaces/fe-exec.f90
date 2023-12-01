@@ -1808,7 +1808,7 @@ contains
             res = c_PQ_send_query_parameters(&
                      conn, c_command, nParams, &
                      cptr_paramTypes, &
-                     ptr_values, &
+                     ptr_values(1), &
                      null_paramLengths, &
                      null_paramFormats, &
                      resultFormat &
@@ -2111,7 +2111,7 @@ contains
 
             res = c_PQ_send_query_prepared( &
                      conn, c_stmtName, nParams, &
-                     ptr_values, &
+                     ptr_values(1), &
                      null_paramLengths, &
                      null_paramFormats, &
                      resultFormat &
