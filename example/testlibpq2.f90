@@ -23,7 +23,7 @@ program main
 
 
    use :: libpq
-   use :: unsigned
+   use :: unsigned_m
    use, intrinsic :: iso_fortran_env, stdout=>output_unit, stderr=>error_unit
    use, intrinsic :: iso_c_binding
    implicit none

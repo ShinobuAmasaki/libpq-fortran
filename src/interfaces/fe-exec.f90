@@ -168,7 +168,7 @@ contains
    function PQexecParams_int32 (conn, command, nParams, paramTypes, paramValues) result(res)
       use, intrinsic :: iso_fortran_env
       use, intrinsic :: iso_c_binding
-      use :: unsigned
+      use :: unsigned_m 
       use :: character_operations_m
       implicit none
 
@@ -248,7 +248,7 @@ contains
    function PQexecParams_int64 (conn, command, nParams, paramTypes, paramValues) result(res)
       use, intrinsic :: iso_fortran_env
       use, intrinsic :: iso_c_binding
-      use :: unsigned
+      use :: unsigned_m 
       use :: character_operations_m
       implicit none
 
@@ -394,7 +394,7 @@ contains
    function PQprepare_int32 (conn, stmtName, query, nParams, paramTypes) result(res)
       use, intrinsic :: iso_fortran_env
       use, intrinsic :: iso_c_binding
-      use :: unsigned
+      use :: unsigned_m 
       implicit none
 
       !*> Submits a request to create a prepared statement with the given parameters, and waits for completion.
@@ -449,7 +449,7 @@ contains
    function PQprepare_int64 (conn, stmtName, query, nParams, paramTypes) result(res)
       use, intrinsic :: iso_fortran_env
       use, intrinsic :: iso_c_binding
-      use :: unsigned
+      use :: unsigned_m 
       implicit none
 
       !*> Submits a request to create a prepared statement with the given parameters, and waits for completion.
@@ -505,7 +505,7 @@ contains
    function PQprepare_back (conn, stmtName, query, nParams, paramTypes) result(res)
       use, intrinsic :: iso_fortran_env
       use, intrinsic :: iso_c_binding
-      use :: unsigned
+      use :: unsigned_m 
       use :: character_operations_m
       implicit none
 
@@ -1021,7 +1021,7 @@ contains
    function PQftable (pgresult, column_number) result(res)
       use, intrinsic :: iso_c_binding
       use, intrinsic :: iso_fortran_env
-      use :: unsigned
+      use :: unsigned_m 
 
       ! 入力
       type(c_ptr), intent(in) :: pgresult
@@ -1048,7 +1048,7 @@ contains
       oid = c_PQ_field_table(pgresult, column_number)
 
       ! カラムのOidを整数型に変換して結果に格納する。
-      res = int(oid)
+      res = cast_to_int64(oid)
 
    !! cf. [PostgreSQL Documentation](https://www.postgresql.org/docs/current/libpq-exec.html#LIBPQ-PQFTABLE)
    end function PQftable
@@ -1115,7 +1115,7 @@ contains
    function PQftype(pgresult, column_number) result(res)
       use, intrinsic :: iso_c_binding
       use, intrinsic :: iso_fortran_env
-      use :: unsigned
+      use :: unsigned_m 
 
       ! 入力
       type(c_ptr), intent(in) :: pgresult
@@ -1141,7 +1141,7 @@ contains
       oid = c_PQ_field_type(pgresult, column_number)
 
       ! カラムのOidを64ビット整数型に変換して結果を格納する。
-      res = int(oid)
+      res = cast_to_int64(oid)
 
    !! cf. [PostgreSQL Documentation](https://www.postgresql.org/docs/current/libpq-exec.html#LIBPQ-PQFTYPE)
    end function PQftype
@@ -1362,7 +1362,7 @@ contains
    function PQparamtype(pgresult, param_number) result(res)
       use, intrinsic :: iso_fortran_env
       use, intrinsic :: iso_c_binding
-      use :: unsigned
+      use :: unsigned_m 
 
       type(c_ptr), intent(in) :: pgresult
       integer(int32), intent(in) :: param_number
@@ -1383,7 +1383,7 @@ contains
 
       oid = c_PQ_parameter_type(pgresult, param_number)
 
-      res = int(oid)
+      res = cast_to_int64(oid)
 
    !! cf. [PostgreSQL Documentation](https://www.postgresql.org/docs/current/libpq-exec.html#LIBPQ-PQPARAMTYPE)
    end function PQparamtype
@@ -1478,7 +1478,7 @@ contains
    function PQoidValue(pgresult) result(res)
       use, intrinsic :: iso_c_binding
       use, intrinsic :: iso_fortran_env
-      use :: unsigned
+      use :: unsigned_m 
 
       type(c_ptr), intent(in) :: pgresult
       integer(int64) :: res
@@ -1492,7 +1492,7 @@ contains
          end function c_PQ_oid_value
       end interface
 
-      res = int(c_PQ_oid_value(pgresult))
+      res = cast_to_int64(c_PQ_oid_value(pgresult))
 
    !! cf. [PostgreSQL Documentation](https://www.postgresql.org/docs/current/libpq-exec.html#LIBPQ-PQOIDVALUE)
    end function PQoidValue
@@ -1722,7 +1722,7 @@ contains
    function PQsendQueryParams_back (conn, command, nParams, paramTypes, paramValues) result(res)
       use, intrinsic :: iso_c_binding
       use, intrinsic :: iso_fortran_env
-      use :: unsigned
+      use :: unsigned_m 
       use :: character_operations_m
 
       ! Input parameters
@@ -1839,7 +1839,7 @@ contains
    function PQsendQueryParams_int32 (conn, command, nParams, paramTypes, paramValues) result(res)
       use, intrinsic :: iso_fortran_env
       use, intrinsic :: iso_c_binding
-      use :: unsigned
+      use :: unsigned_m 
 
       type(c_ptr), intent(in) :: conn
       character(*), intent(in) :: command
@@ -1875,7 +1875,7 @@ contains
    function PQsendQueryParams_int64 (conn, command, nParams, paramTypes, paramValues) result(res)
       use, intrinsic :: iso_fortran_env
       use, intrinsic :: iso_c_binding
-      use :: unsigned
+      use :: unsigned_m 
 
       type(c_ptr), intent(in) :: conn
       character(*), intent(in) :: command
@@ -1924,7 +1924,7 @@ contains
    function PQsendPrepare_back (conn, stmtName, query, nParams, paramTypes) result(res)
       use, intrinsic :: iso_fortran_env
       use, intrinsic :: iso_c_binding
-      use :: unsigned
+      use :: unsigned_m 
       use :: character_operations_m
       implicit none
 
@@ -1980,7 +1980,7 @@ contains
    function PQsendPrepare_int32(conn, stmtName, query, nParams, paramTypes) result(res)
       use, intrinsic :: iso_c_binding
       use, intrinsic :: iso_fortran_env
-      use :: unsigned
+      use :: unsigned_m 
       implicit none
       
       type(c_ptr), intent(in) :: conn
@@ -2017,7 +2017,7 @@ contains
    function PQsendPrepare_int64(conn, stmtName, query, nParams, paramTypes) result(res)
       use, intrinsic :: iso_c_binding
       use, intrinsic :: iso_fortran_env
-      use :: unsigned
+      use :: unsigned_m 
       implicit none
       
       type(c_ptr), intent(in) :: conn
