@@ -5,7 +5,7 @@
 
 #include "pqf-wraps.h"
 
-int PQconninfoParsePrepare(const char *conninfo, char **errmsg, int **errlen, PQFconninfoSize**optionsizes)
+int PQconninfoParsePrepare(const char *conninfo, char **errmsg, int *errlen, PQFconninfoSize**optionsizes)
 {
    int length;
    char* errmsg_local;
